@@ -1,0 +1,25 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "userIds": {
+      "$provider": {
+        ".indexOn": ".value"
+      }
+    },
+    "agents": {
+      "$provider": {
+        ".indexOn": ".value"
+      }
+    },
+    "assignments": {
+      "$provider": {
+        ".indexOn": ".value"
+      }
+    },
+    "sentinel": {
+      ".read": true,
+      ".write": false
+    }
+  }
+}

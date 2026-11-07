@@ -1,0 +1,18 @@
+name: Check Firebase Functions build
+on:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Use Node.js 22
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: functions/package-lock.json
+      - uses: ./.github/actions/twitch-cli
+      - run: npm ci && npm run format:check && npm run build && npm test
+        working-directory: functions

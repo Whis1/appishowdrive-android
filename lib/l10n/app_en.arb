@@ -1,0 +1,1628 @@
+{
+  "sendAMessage": "Send a message...",
+  "@sendAMessage": {
+    "description": "Message input field placeholder text"
+  },
+  "writeSomething": "Write something...",
+  "@writeSomething": {
+    "description": "Message input field placeholder text"
+  },
+  "speakToTheCrowds": "Speak to the crowds...",
+  "@speakToTheCrowds": {
+    "description": "Message input field placeholder text"
+  },
+  "shareYourThoughts": "Share your thoughts...",
+  "@shareYourThoughts": {
+    "description": "Message input field placeholder text"
+  },
+  "saySomethingYouLittleBitch": "Say something, you little bitch...",
+  "@saySomethingYouLittleBitch": {
+    "description": "Message input field placeholder text"
+  },
+  "search": "Search",
+  "@search": {
+    "description": "Placeholder text for search bar"
+  },
+  "notSignedIn": "Not signed in",
+  "@notSignedIn": {
+    "description": "Label for unauthenticated user"
+  },
+  "searchChannels": "Search",
+  "@searchChannels": {
+    "description": "Header for a page that lets the user search channels"
+  },
+  "raidAChannel": "Raid",
+  "@raidAChannel": {
+    "description": "Header for a page that lets the raid channels"
+  },
+  "noMessagesEmptyState": "It's quiet in here.",
+  "@noMessagesEmptyState": {
+    "description": "Empty state placeholder when there are no messages"
+  },
+  "newMessageCount": "{count,plural, =0{No new messages} =1{1 new message} other{{count} new messages}}",
+  "@newMessageCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "signInWithTwitch": "Sign in with Twitch",
+  "@signInWithTwitch": {
+    "description": "Button label to allow a user to sign in with Twitch"
+  },
+  "signInError": "An error occurred when signing in. Please try again.",
+  "@signInError": {
+    "description": "Error message that shows when signing in fails"
+  },
+  "continueAsGuest": "Continue as Guest",
+  "@continueAsGuest": {
+    "description": "Button label to allow a user to use the app without signing in"
+  },
+  "signInToSendMessages": "Sign in to send messages",
+  "@signInToSendMessages": {
+    "description": "Text label to indicate that signing in is required to send messages"
+  },
+  "currentViewers": "Current viewers",
+  "@currentViewers": {
+    "description": "Tooltip text for a button that shows the current viewers"
+  },
+  "textToSpeech": "Text to speech",
+  "@textToSpeech": {
+    "description": "Tooltip text for a button that enables text to speech"
+  },
+  "streamPreview": "Stream preview",
+  "@streamPreview": {
+    "description": "Tooltip text for a button that shows the stream preview"
+  },
+  "activityFeed": "Activity feed",
+  "@activityFeed": {
+    "description": "Header for the activity feed settings page and tooltip text for a button that shows the activity feed"
+  },
+  "streamOnline": "Stream online at {date}, {time}",
+  "@streamOnline": {
+    "description": "Event label to indicate that the stream is online",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMMMMEEEEd"
+      },
+      "time": {
+        "type": "DateTime",
+        "format": "jms"
+      }
+    }
+  },
+  "streamOffline": "Stream offline at {date}, {time}",
+  "@streamOffline": {
+    "description": "Event label to indicate that the stream is offline",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMMMMEEEEd"
+      },
+      "time": {
+        "type": "DateTime",
+        "format": "jms"
+      }
+    }
+  },
+  "chatCleared": "Chat cleared at {date}, {time}",
+  "@chatCleared": {
+    "description": "Event label to indicate that the chat was cleared",
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMMMMEEEEd"
+      },
+      "time": {
+        "type": "DateTime",
+        "format": "jms"
+      }
+    }
+  },
+  "configureQuickLinks": "Configure quick links",
+  "@configureQuickLinks": {
+    "description": "Button label that shows the quick links configuration"
+  },
+  "disableRainMode": "Disable rain mode",
+  "@disableRainMode": {
+    "description": "Button label that disables rain mode"
+  },
+  "enableRainMode": "Enable rain mode",
+  "@enableRainMode": {
+    "description": "Button label that enables rain mode"
+  },
+  "disableRainModeSubtitle": "Interaction will be enabled",
+  "@disableRainModeSubtitle": {
+    "description": "Subtitle for the button that disables rain mode, indicating that interaction will be enabled"
+  },
+  "enableRainModeSubtitle": "Interaction will be disabled",
+  "@enableRainModeSubtitle": {
+    "description": "Subtitle for the button that enables rain mode, indicating that interaction will be disabled"
+  },
+  "refreshAudioSources": "Refresh audio sources",
+  "@refreshAudioSources": {
+    "description": "Button label that refreshes the audio sources"
+  },
+  "refreshAudioSourcesCount": "{count,plural, =0{No audio sources refreshed} =1{1 audio source refreshed} other{{count} audio sources refreshed}}",
+  "@refreshAudioSourcesCount": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Button label that shows the settings"
+  },
+  "signOut": "Sign out",
+  "@signOut": {
+    "description": "Button label that signs the user out"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Button label that cancels an action"
+  },
+  "signOutConfirmation": "Are you sure you want to sign out?",
+  "@signOutConfirmation": {
+    "description": "Confirmation message that shows when the user wants to sign out"
+  },
+  "broadcaster": "Broadcaster",
+  "@broadcaster": {
+    "description": "Label for the broadcaster"
+  },
+  "moderators": "Moderators",
+  "@moderators": {
+    "description": "Label for the moderators"
+  },
+  "viewers": "Viewers",
+  "@viewers": {
+    "description": "Label for the viewers"
+  },
+  "communityVips": "Community VIPs",
+  "@communityVips": {
+    "description": "Label for the community VIPs"
+  },
+  "searchViewers": "Search Viewers",
+  "@searchViewers": {
+    "description": "Header for the search bar that lets the user search viewers"
+  },
+  "reconnecting": "Reconnecting...",
+  "@reconnecting": {
+    "description": "Text label that shows when the app is reconnecting"
+  },
+  "twitchBadges": "Twitch badges",
+  "@twitchBadges": {
+    "description": "Header for the Twitch badges page"
+  },
+  "selectAll": "Select all",
+  "@selectAll": {
+    "description": "Button label that selects all badges"
+  },
+  "quickLinks": "Quick links",
+  "@quickLinks": {
+    "description": "Header for the quick links page"
+  },
+  "swipeToDeleteQuickLinks": "Swipe left or right to delete quick link",
+  "@swipeToDeleteQuickLinks": {
+    "description": "Text label that shows when the user can swipe to delete a quick link"
+  },
+  "quickLinksLabelHint": "Label",
+  "@quickLinksLabelHint": {
+    "description": "Hint text for the quick link label"
+  },
+  "invalidUrlErrorText": "This doesn't look like a valid URL",
+  "@invalidUrlErrorText": {
+    "description": "Error message that shows when the URL is invalid"
+  },
+  "duplicateUrlErrorText": "This link already exists",
+  "@duplicateUrlErrorText": {
+    "description": "Error message that shows when the URL already exists"
+  },
+  "or": "or",
+  "@or": {
+    "description": "Text label that separates two options"
+  },
+  "clearCookies": "Clear cookies",
+  "@clearCookies": {
+    "description": "Button label that clears the cookies"
+  },
+  "disabled": "Disabled",
+  "@disabled": {
+    "description": "Option label to disable a feature"
+  },
+  "twitchActivityFeed": "Twitch activity feed",
+  "@twitchActivityFeed": {
+    "description": "Option label to use the default Twitch activity feed"
+  },
+  "signInToEnable": "You must be signed in to enable this",
+  "@signInToEnable": {
+    "description": "Error message that shows when the user must be signed in to enable a feature"
+  },
+  "customUrl": "Custom URL",
+  "@customUrl": {
+    "description": "Option label to use a custom URL"
+  },
+  "preview": "Preview",
+  "@preview": {
+    "description": "Section header for the activity feed preview"
+  },
+  "audioSources": "Audio sources",
+  "@audioSources": {
+    "description": "Header for the audio sources page"
+  },
+  "enableOffStreamSwitchTitle": "Enable off-stream (uses more battery)",
+  "@enableOffStreamSwitchTitle": {
+    "description": "Option label to enable the off-stream tile"
+  },
+  "enableOffStreamSwitchEnabledSubtitle": "Audio will also play when you're offline",
+  "@enableOffStreamSwitchEnabledSubtitle": {
+    "description": "Subtitle for the option to enable the off-stream tile, indicating that audio will also play when the user is offline"
+  },
+  "enableOffStreamSwitchDisabledSubtitle": "Audio will only play when you're live",
+  "@enableOffstreamSwitchDisabledSubtitle": {
+    "description": "Subtitle for the option to enable the off-stream tile, indicating that audio will only play when the user is live"
+  },
+  "iosOggWarningTitle": "Hey! Listen!",
+  "@iosOggWarningTitle": {
+    "description": "Title for the warning that shows when the user is on iOS and the audio source is OGG"
+  },
+  "iosOggWarningSubtitle": "iOS doesn't support *.ogg media files, which are the default files on Streamlabs. Ensure your audio sources use another format, otherwise they won't play.",
+  "@iosOggWarningSubtitle": {
+    "description": "Message for the warning that shows when the user is on iOS and the audio source is OGG"
+  },
+  "url": "URL",
+  "@url": {
+    "description": "Label for the URL"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Header for the settings page"
+  },
+  "activityFeedSubtitle": "Customize your activity feed",
+  "@activityFeedSubtitle": {
+    "description": "Subtitle for the activity feed settings page"
+  },
+  "audioSourcesSubtitle": "Add web sources for alert sounds",
+  "@audioSourcesSubtitle": {
+    "description": "Subtitle for the audio sources page"
+  },
+  "quickLinksSubtitle": "Add shortcuts to commonly used tools",
+  "@quickLinksSubtitle": {
+    "description": "Subtitle for the quick links page"
+  },
+  "chatHistory": "Chat history",
+  "@chatHistory": {
+    "description": "Header for the chat history page"
+  },
+  "chatHistorySubtitle": "Change the chat appearance",
+  "@chatHistorySubtitle": {
+    "description": "Subtitle for the chat history page"
+  },
+  "textToSpeechSubtitle": "Change text to speech settings",
+  "@textToSpeechSubtitle": {
+    "description": "Subtitle for the text to speech page"
+  },
+  "events": "Events",
+  "@events": {
+    "description": "Header for the events page"
+  },
+  "eventsSubtitle": "Configure Twitch events",
+  "@eventsSubtitle": {
+    "description": "Subtitle for the events page"
+  },
+  "thirdPartyServices": "Third-party services",
+  "@thirdPartyServices": {
+    "description": "Header for the third-party services page"
+  },
+  "thirdPartyServicesSubtitle": "Connect to a third-party service",
+  "@thirdPartyServicesSubtitle": {
+    "description": "Subtitle for the third-party services page"
+  },
+  "followingEvent": "<b>{displayName}</b> is following you",
+  "@followingEvent": {
+    "description": "Text label that shows when a user follows the streamer",
+    "placeholders": {
+      "displayName": {
+        "type": "String",
+        "example": "muxfd"
+      }
+    }
+  },
+  "followingEvent2": "<b>{displayName}</b> and <b>{displayNameTwo}</b> are following you",
+  "@followingEvent2": {
+    "description": "Text label that shows when two users follow the streamer",
+    "placeholders": {
+      "displayName": {
+        "type": "String",
+        "example": "muxfd"
+      },
+      "displayNameTwo": {
+        "type": "String",
+        "example": "muxfd"
+      }
+    }
+  },
+  "followingEvent3": "<b>{displayName}</b>, <b>{displayNameTwo}</b>, and {numOthers} others are following you",
+  "@followingEvent3": {
+    "description": "Text label that shows when three or more users follow the streamer",
+    "placeholders": {
+      "displayName": {
+        "type": "String",
+        "example": "muxfd"
+      },
+      "displayNameTwo": {
+        "type": "String",
+        "example": "muxfd"
+      },
+      "numOthers": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "unmuteUser": "Unmute {displayName}",
+  "@unmuteUser": {
+    "description": "Unmute option shown when long pressing on a chat message",
+    "placeholders": {
+      "displayName": {
+        "type": "String",
+        "example": "muxfd"
+      }
+    }
+  },
+  "muteUser": "Mute {displayName}",
+  "@muteUser": {
+    "description": "Mute option shown when long pressing on a chat message",
+    "placeholders": {
+      "displayName": {
+        "type": "String",
+        "example": "muxfd"
+      }
+    }
+  },
+  "timeoutUser": "Timeout {displayName}",
+  "@timeoutUser": {
+    "description": "Timeout option shown when long pressing on a chat message",
+    "placeholders": {
+      "displayName": {
+        "type": "String",
+        "example": "muxfd"
+      }
+    }
+  },
+  "banUser": "Ban {displayName}",
+  "@banUser": {
+    "description": "Ban option shown when long pressing on a chat message",
+    "placeholders": {
+      "displayName": {
+        "type": "String",
+        "example": "muxfd"
+      }
+    }
+  },
+  "unbanUser": "Unban {displayName}",
+  "@unbanUser": {
+    "description": "Unban option shown when long pressing on a chat message",
+    "placeholders": {
+      "displayName": {
+        "type": "String",
+        "example": "muxfd"
+      }
+    }
+  },
+  "viewProfile": "View {displayName}'s profile",
+  "@viewProfile": {
+    "description": "Unban option shown when long pressing on a chat message",
+    "placeholders": {
+      "displayName": {
+        "type": "String",
+        "example": "muxfd"
+      }
+    }
+  },
+  "copyMessage": "Copy Message",
+  "@copyMessage": {
+    "description": "Copy option shown when long pressing on a chat message"
+  },
+  "deleteMessage": "Delete Message",
+  "@deleteMessage": {
+    "description": "Delete option shown when long pressing on a chat message"
+  },
+  "longScrollNotification": "You're scrolling kind of far, don't you think?",
+  "@longScrollNotification": {
+    "description": "Notification shown when the user scrolls very far back in the chat history"
+  },
+  "stfu": "stfu",
+  "@stfu": {
+    "description": "Text label for the stfu button"
+  },
+  "globalEmotes": "Global Emotes",
+  "@globalEmotes": {
+    "description": "Text label for the global emotes category header"
+  },
+  "followerCount": "{count,plural, =0{0 followers} =1{1 follower} other{{count} followers}}",
+  "@followerCount": {
+    "description": "Text label for the followers count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "compact"
+      }
+    }
+  },
+  "viewerCount": "{count,plural, =0{0 viewers} =1{1 viewer} other{{count} viewers}}",
+  "@viewerCount": {
+    "description": "Text label for the viewers count",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "format": "compact"
+      }
+    }
+  },
+  "streamPreviewMessage": "Hey there! Glad you like using stream preview but heads up it uses a lot of battery. Reading chat without it will extend your battery life.",
+  "@streamPreviewMessage": {
+    "description": "Notification shown when the user leaves the stream preview open for a long time"
+  },
+  "okay": "Okay",
+  "@okay": {
+    "description": "Okay button text"
+  },
+  "streamPreviewLoading": "Loading (or stream is offline)...",
+  "@streamPreviewLoading": {
+    "description": "Text label shown when the stream preview is loading"
+  },
+  "copiedToClipboard": "Copied to clipboard",
+  "@copiedToClipboard": {
+    "description": "Notification shown when a message is copied to the clipboard"
+  },
+  "audioSourcesRequirePermissions": "Audio sources require permissions",
+  "@audioSourcesRequirePermissions": {
+    "description": "Alert title prompting the user to grant permissions to use audio sources"
+  },
+  "audioSourcesRequirePermissionsMessage": "Approve RealtimeChat to draw over other apps to use audio sources.",
+  "@audioSourcesRequirePermissionsMessage": {
+    "description": "Alert message prompting the user to grant permissions to use audio sources"
+  },
+  "audioSourcesRemoveButton": "Remove audio sources",
+  "@audioSourcesRemoveButton": {
+    "description": "Button text for removing audio sources"
+  },
+  "audioSourcesOpenSettingsButton": "Open settings",
+  "@audioSourcesOpenSettingsButton": {
+    "description": "Button text for opening settings"
+  },
+  "flashOn": "Flash on",
+  "@flashOn": {
+    "description": "Text label for the camera flash enable button."
+  },
+  "flashOff": "Flash off",
+  "@flashOff": {
+    "description": "Text label for the camera flash disable button."
+  },
+  "durationOneSecond": "1 second",
+  "@durationOneSecond": {
+    "description": "Text label for a one second duration"
+  },
+  "durationOneMinute": "1 minute",
+  "@durationOneMinute": {
+    "description": "Text label for a one minute duration"
+  },
+  "durationTenMinutes": "10 minutes",
+  "@durationTenMinutes": {
+    "description": "Text label for a ten minute duration"
+  },
+  "durationOneHour": "1 hour",
+  "@durationOneHour": {
+    "description": "Text label for a one hour duration"
+  },
+  "durationSixHours": "6 hours",
+  "@durationSixHours": {
+    "description": "Text label for a six hour duration"
+  },
+  "durationOneDay": "1 day",
+  "@durationOneDay": {
+    "description": "Text label for a one day duration"
+  },
+  "durationTwoDays": "2 days",
+  "@durationTwoDays": {
+    "description": "Text label for a two day duration"
+  },
+  "durationOneWeek": "1 week",
+  "@durationOneWeek": {
+    "description": "Text label for a one week duration"
+  },
+  "durationTwoWeeks": "2 weeks",
+  "@durationTwoWeeks": {
+    "description": "Text label for a two week duration"
+  },
+  "durationOneSecondTimeoutPrompt": "Timeout for 1 second",
+  "@durationOneSecondTimeoutPrompt": {
+    "description": "Button label to timeout for a one second duration"
+  },
+  "durationOneMinuteTimeoutPrompt": "Timeout for 1 minute",
+  "@durationOneMinuteTimeoutPrompt": {
+    "description": "Button label to timeout for a one minute duration"
+  },
+  "durationTenMinutesTimeoutPrompt": "Timeout for 10 minutes",
+  "@durationTenMinutesTimeoutPrompt": {
+    "description": "Button label to timeout for a ten minute duration"
+  },
+  "durationOneHourTimeoutPrompt": "Timeout for 1 hour",
+  "@durationOneHourTimeoutPrompt": {
+    "description": "Button label to timeout for a one hour duration"
+  },
+  "durationSixHoursTimeoutPrompt": "Timeout for 6 hours",
+  "@durationSixHoursTimeoutPrompt": {
+    "description": "Button label to timeout for a six hour duration"
+  },
+  "durationOneDayTimeoutPrompt": "Timeout for 1 day",
+  "@durationOneDayTimeoutPrompt": {
+    "description": "Button label to timeout for a one day duration"
+  },
+  "durationTwoDaysTimeoutPrompt": "Timeout for 2 days",
+  "@durationTwoDaysTimeoutPrompt": {
+    "description": "Button label to timeout for a two day duration"
+  },
+  "durationOneWeekTimeoutPrompt": "Timeout for 1 week",
+  "@durationOneWeekTimeoutPrompt": {
+    "description": "Button label to timeout for a one week duration"
+  },
+  "durationTwoWeeksTimeoutPrompt": "Timeout for 2 weeks",
+  "@durationTwoWeeksTimeoutPrompt": {
+    "description": "Button label to timeout for a two week duration"
+  },
+  "errorFetchingViewerList": "We couldn't fetch the viewer list for this channel",
+  "@errorFetchingViewerList": {
+      "description": "Error message if unable to fetch list"
+  },
+  "eventsTitle": "Events",
+  "@eventsTitle": {
+    "description": "Title for the events settings screen"
+  },
+  "followEventConfigTitle": "Follow Event",
+  "@followEventConfigTitle": {
+    "description": "Title for the follow event configuration"
+  },
+  "customizeYourFollowEvent": "Customize your follow event",
+  "@customizeYourFollowEvent": {
+    "description": "Subtitle for the follow event configuration"
+  },
+  "subscribeEventConfigTitle": "Subscribe Event",
+  "@subscribeEventConfigTitle": {
+    "description": "Title for the subscribe event configuration"
+  },
+  "customizeYourSubscriptionEvent": "Customize your subscription event",
+  "@customizeYourSubscriptionEvent": {
+    "description": "Subtitle for the subscribe event configuration"
+  },
+  "cheerEventConfigTitle": "Cheer Event",
+  "@cheerEventConfigTitle": {
+    "description": "Title for the cheer event configuration"
+  },
+  "customizeYourCheerEvent": "Customize your cheer event",
+  "@customizeYourCheerEvent": {
+    "description": "Subtitle for the cheer event configuration"
+  },
+  "raidEventConfigTitle": "Raid Event",
+  "@raidEventConfigTitle": {
+    "description": "Title for the raid event configuration"
+  },
+  "customizeYourRaidEvent": "Customize your raid event",
+  "@customizeYourRaidEvent": {
+    "description": "Subtitle for the raid event configuration"
+  },
+  "hostEventConfigTitle": "Host Event",
+  "@hostEventConfigTitle": {
+    "description": "Title for the host event configuration"
+  },
+  "customizeYourHostEvent": "Customize your host event",
+  "@customizeYourHostEvent": {
+    "description": "Subtitle for the host event configuration"
+  },
+  "hypetrainEventConfigTitle": "Hype Train Event",
+  "@hypetrainEventConfigTitle": {
+    "description": "Title for the hypetrain event configuration"
+  },
+  "customizeYourHypetrainEvent": "Customize your hype train event",
+  "@customizeYourHypetrainEvent": {
+    "description": "Subtitle for the hypetrain event configuration"
+  },
+  "pollEventConfigTitle": "Poll Event",
+  "@pollEventConfigTitle": {
+    "description": "Title for the poll event configuration"
+  },
+  "customizeYourPollEvent": "Customize your poll event",
+  "@customizeYourPollEvent": {
+    "description": "Subtitle for the poll event configuration"
+  },
+  "predictionEventConfigTitle": "Prediction Event",
+  "@predictionEventConfigTitle": {
+    "description": "Title for the prediction event configuration"
+  },
+  "customizeYourPredictionEvent": "Customize your prediction event",
+  "@customizeYourPredictionEvent": {
+    "description": "Subtitle for the prediction event configuration"
+  },
+  "channelPointRedemptionEventConfigTitle": "Channel Point Redemption Event",
+  "@channelPointRedemptionEventConfigTitle": {
+    "description": "Title for the channel point redemption event configuration"
+  },
+  "customizeYourChannelPointRedemptionEvent": "Customize your channel point redemption event",
+  "@customizeYourChannelPointRedemptionEvent": {
+    "description": "Subtitle for the channel point redemption event configuration"
+  },
+  "outgoingRaidEventConfigTitle": "Outgoing Raid Event",
+  "@outgoingRaidEventConfigTitle": {
+    "description": "Title for the outgoing raid event configuration"
+  },
+  "customizeYourOutgoingRaidEvent": "Customize your outgoing raid event",
+  "@customizeYourOutgoingRaidEvent": {
+    "description": "Subtitle for the outgoing raid event configuration"
+  },
+  "raidEventMessage": "<b>{displayName}</b> is raiding with <b>{viewerCount}</b> viewers!",
+  "@raidEventMessage": {
+    "description": "Message displayed when a raid event occurs",
+    "placeholders": {
+      "displayName": {
+        "type": "String",
+        "example": "muxfd"
+      },
+      "viewerCount": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "shoutout": "Shoutout",
+  "@shoutout": {
+    "description": "Button text for the shoutout action in a raid event"
+  },
+  "raidingEventRaiding": "Raiding <b>{displayName}</b>...",
+  "@raidingEventRaiding": {
+    "description": "Message displayed when a raiding event is in progress",
+    "placeholders": {
+      "displayName": {
+        "type": "String",
+        "example": "muxfd"
+      }
+    }
+  },
+  "raidingEventTimeRemaining": "{seconds}s",
+  "@raidingEventTimeRemaining": {
+    "description": "Message displaying the time remaining for a raiding event",
+    "placeholders": {
+      "seconds": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "raidingEventRaided": "<b>{displayName}</b> has raided!",
+  "@raidingEventRaided": {
+    "description": "Message displayed when a raiding event has completed successfully",
+    "placeholders": {
+      "displayName": {
+        "type": "String",
+        "example": "muxfd"
+      }
+    }
+  },
+  "raidingEventJoin": "Join",
+  "@raidingEventJoin": {
+    "description": "Button text to join the raid in a raiding event"
+  },
+  "raidingEventCanceled": "<b>{displayName}</b>'s raid was canceled.",
+  "@raidingEventCanceled": {
+    "description": "Message displayed when a raiding event is canceled",
+    "placeholders": {
+      "displayName": {
+        "type": "String",
+        "example": "muxfd"
+      }
+    }
+  },
+  "subscriptionEvent": "<b>{subscriberUserName}</b> has subscribed at Tier {tier}!",
+  "@subscriptionEvent": {
+    "description": "Message displayed when a subscription event occurs",
+    "placeholders": {
+      "subscriberUserName": {
+        "type": "String",
+        "example": "muxfd"
+      },
+      "tier": {
+        "type": "String",
+        "example": "1"
+      }
+    }
+  },
+  "subscriptionGiftEvent": "<b>{gifterUserName}</b> has gifted {total} Tier {tier} subs, totaling {cumulativeTotal}!",
+  "@subscriptionGiftEvent": {
+    "description": "Message displayed when a subscription gift event occurs",
+    "placeholders": {
+      "gifterUserName": {
+        "type": "String",
+        "example": "muxfd"
+      },
+      "total": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "tier": {
+        "type": "String",
+        "example": "1"
+      },
+      "cumulativeTotal": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "subscriptionMessageEvent": "<b>{subscriberUserName}</b> has subscribed for {cumulativeMonths} months at Tier {tier}!",
+  "@subscriptionMessageEvent": {
+    "description": "Message displayed when a subscription message event occurs",
+    "placeholders": {
+      "subscriberUserName": {
+        "type": "String",
+        "example": "muxfd"
+      },
+      "cumulativeMonths": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "tier": {
+        "type": "String",
+        "example": "1"
+      }
+    }
+  },
+  "subscriptionMessageMultiMonthEvent": "<b>{subscriberUserName}</b> has subscribed at Tier {tier} for {durationMonths} months in advance, {cumulativeMonths} months in total!",
+  "@subscriptionMessageMultiMonthEvent": {
+    "description": "Message displayed when a subscriber pays for multiple months at once",
+    "placeholders": {
+      "subscriberUserName": {
+        "type": "String",
+        "example": "muxfd"
+      },
+      "tier": {
+        "type": "String",
+        "example": "1"
+      },
+      "durationMonths": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "cumulativeMonths": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "realtimeCashTipWithDonor": "<b>{donor}</b> tipped <b>{value} {currency}</b>.",
+  "@realtimeCashTipWithDonor": {
+    "description": "Message displayed when a RealtimeCash tip is made with a donor name",
+    "placeholders": {
+      "donor": {
+        "type": "String",
+        "example": "JohnDoe"
+      },
+      "value": {
+        "type": "String",
+        "example": "5"
+      },
+      "currency": {
+        "type": "String",
+        "example": "USD"
+      }
+    }
+  },
+  "realtimeCashTipAnonymous": "Anonymous tipped <b>{value} {currency}</b>.",
+  "@realtimeCashTipAnonymous": {
+    "description": "Message displayed when a RealtimeCash tip is made anonymously",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "5"
+      },
+      "currency": {
+        "type": "String",
+        "example": "USD"
+      }
+    }
+  },
+  "streamElementsTipEventMessage": "<b>{name}</b> tipped <b>{formattedAmount}</b> on StreamElements.",
+  "@streamElementsTipEventMessage": {
+    "description": "Message displayed when a StreamElements tip event occurs",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "JohnDoe"
+      },
+      "formattedAmount": {
+        "type": "String",
+        "example": "$5.00"
+      }
+    }
+  },
+  "streamlabsTipEventMessage": "<b>{name}</b> tipped <b>{formattedAmount}</b> on Streamlabs.",
+  "@streamlabsTipEventMessage": {
+    "description": "Message displayed when a Streamlabs tip event occurs",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "JohnDoe"
+      },
+      "formattedAmount": {
+        "type": "String",
+        "example": "$5.00"
+      }
+    }
+  },
+  "channelPointRedemptionWithUserInput": "<b>{redeemerUsername}</b> redeemed <b>{rewardName}</b> for <b>{rewardCost}</b> points. {userInput}",
+  "@channelPointRedemptionWithUserInput": {
+    "description": "Message displayed when a channel point redemption event occurs with user input",
+    "placeholders": {
+      "redeemerUsername": {
+        "type": "String",
+        "example": "JohnDoe"
+      },
+      "rewardName": {
+        "type": "String",
+        "example": "Highlight My Message"
+      },
+      "rewardCost": {
+        "type": "int",
+        "format": "decimalPattern",
+        "example": "100"
+      },
+      "userInput": {
+        "type": "String",
+        "example": "Hello World!"
+      }
+    }
+  },
+  "channelPointRedemptionWithoutUserInput": "<b>{redeemerUsername}</b> redeemed <b>{rewardName}</b> for <b>{rewardCost}</b> points.",
+  "@channelPointRedemptionWithoutUserInput": {
+    "description": "Message displayed when a channel point redemption event occurs without user input",
+    "placeholders": {
+      "redeemerUsername": {
+        "type": "String",
+        "example": "JohnDoe"
+      },
+      "rewardName": {
+        "type": "String",
+        "example": "Highlight My Message"
+      },
+      "rewardCost": {
+        "type": "int",
+        "format": "decimalPattern",
+        "example": "100"
+      }
+    }
+  },
+  "cheerEventMessage": "<b>{name}</b> cheered <b>{bits}</b> bits. {cheerMessage}",
+  "@cheerEventMessage": {
+    "description": "Message displayed when a cheer event occurs",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "JohnDoe"
+      },
+      "bits": {
+        "type": "int",
+        "format": "decimalPattern"
+      },
+      "cheerMessage": {
+        "type": "String",
+        "example": "Great stream!"
+      }
+    }
+  },
+  "anonymous": "Anonymous",
+  "@anonymous": {
+    "description": "Username of an anonymous user"
+  },
+  "hostEventMessage": "<b>{fromDisplayName}</b> is hosting with a party of <b>{viewers}</b>.",
+  "@hostEventMessage": {
+    "description": "Message displayed when a host event occurs",
+    "placeholders": {
+      "fromDisplayName": {
+        "type": "String",
+        "example": "JohnDoe"
+      },
+      "viewers": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "hypeTrainEventProgress": "Hype Train level <b>{level}</b> in progress! <b>{progressPercent}%</b> completed!",
+  "@hypeTrainEventProgress": {
+    "description": "Message displayed when a hype train event is in progress",
+    "placeholders": {
+      "level": {
+        "type": "String",
+        "example": "3"
+      },
+      "progressPercent": {
+        "type": "String",
+        "example": "75"
+      }
+    }
+  },
+  "hypeTrainEventEndedSuccessful": "Hype Train level <b>{level}</b> succeeded.",
+  "@hypeTrainEventEndedSuccessful": {
+    "description": "Message displayed when a hype train event ends successfully",
+    "placeholders": {
+      "level": {
+        "type": "int",
+        "format": "decimalPattern",
+        "example": "3"
+      }
+    }
+  },
+  "hypeTrainEventEndedUnsuccessful": "Hype Train level <b>{level}</b> failed.",
+  "@hypeTrainEventEndedUnsuccessful": {
+    "description": "Message displayed when a hype train event ends unsuccessfully",
+    "placeholders": {
+      "level": {
+        "type": "int",
+        "format": "decimalPattern",
+        "example": "3"
+      }
+    }
+  },
+  "sampleMessage": "This is a sample message for text to speech.",
+  "@sampleMessage": {
+    "description": "Sample message for text to speech"
+  },
+  "actionMessage": "{author} {text}",
+  "@actionMessage": {
+    "description": "Message for an action performed by the author",
+    "placeholders": {
+      "author": {
+        "type": "String",
+        "example": "JohnDoe"
+      },
+      "text": {
+        "type": "String",
+        "example": "is dancing"
+      }
+    }
+  },
+  "saidMessage": "{author} said: {text}",
+  "@saidMessage": {
+    "description": "Message for something said by the author",
+    "placeholders": {
+      "author": {
+        "type": "String",
+        "example": "JohnDoe"
+      },
+      "text": {
+        "type": "String",
+        "example": "Hello everyone!"
+      }
+    }
+  },
+  "textToSpeechEnabled": "Text to speech enabled",
+  "@textToSpeechEnabled": {
+      "description": "Message indicating that text to speech has been enabled"
+    },
+  "textToSpeechDisabled": "Text to speech disabled",
+  "@textToSpeechDisabled": {
+      "description": "Message indicating that text to speech has been disabled"
+  },
+  "alertsEnabled" : "Alerts only",
+  "@alertsEnabled" : {
+      "description": "Message indicating that alerts have been enabled"
+  },
+  "pinDuration": "Pin Duration",
+  "@pinDuration": {
+    "description": "Label for the slider controlling how long an event stays pinned"
+  },
+  "durationSeconds": "{seconds,plural, =1{1 second} other{{seconds} seconds}}",
+  "@durationSeconds": {
+    "description": "A duration in seconds",
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "durationMinutes": "{minutes,plural, =1{1 minute} other{{minutes} minutes}}",
+  "@durationMinutes": {
+    "description": "A duration in minutes",
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "enableEvent": "Enable event",
+  "@enableEvent": {
+    "description": "Title of the switch that enables an event type"
+  },
+  "showEventInChatHistory": "Show event in chat history",
+  "@showEventInChatHistory": {
+    "description": "Subtitle of the switch that enables an event type"
+  },
+  "enableShoutouts": "Enable shoutouts",
+  "@enableShoutouts": {
+    "description": "Title of the switch that enables the shoutout button on raids"
+  },
+  "enableShoutoutsSubtitle": "Send a link to the raiding channel to chat",
+  "@enableShoutoutsSubtitle": {
+    "description": "Subtitle of the switch that enables the shoutout button on raids"
+  },
+  "raidConfigurationTitle": "Raid Configuration",
+  "@raidConfigurationTitle": {
+    "description": "Title of the raid event settings screen"
+  },
+  "cheerConfigurationTitle": "Cheer Configuration",
+  "@cheerConfigurationTitle": {
+    "description": "Title of the cheer event settings screen"
+  },
+  "followConfigurationTitle": "Follow Configuration",
+  "@followConfigurationTitle": {
+    "description": "Title of the follow event settings screen"
+  },
+  "outgoingRaidConfigurationTitle": "Outgoing Raid Configuration",
+  "@outgoingRaidConfigurationTitle": {
+    "description": "Title of the outgoing raid event settings screen"
+  },
+  "hostConfigurationTitle": "Host Configuration",
+  "@hostConfigurationTitle": {
+    "description": "Title of the host event settings screen"
+  },
+  "channelPointConfigurationTitle": "Channel Point Configuration",
+  "@channelPointConfigurationTitle": {
+    "description": "Title of the channel point event settings screen"
+  },
+  "pollConfigurationTitle": "Poll Configuration",
+  "@pollConfigurationTitle": {
+    "description": "Title of the poll event settings screen"
+  },
+  "hypetrainConfigurationTitle": "Hypetrain Configuration",
+  "@hypetrainConfigurationTitle": {
+    "description": "Title of the hype train event settings screen"
+  },
+  "subscriptionConfigurationTitle": "Subscription Configuration",
+  "@subscriptionConfigurationTitle": {
+    "description": "Title of the subscription event settings screen"
+  },
+  "predictionConfigurationTitle": "Prediction Configuration",
+  "@predictionConfigurationTitle": {
+    "description": "Title of the prediction event settings screen"
+  },
+  "unfulfilledRewardsPinDuration": "Additional Pin Duration for Unfulfilled Rewards",
+  "@unfulfilledRewardsPinDuration": {
+    "description": "Label for the slider adding pin time to unfulfilled channel point rewards"
+  },
+  "pollPinDuration": "Pin duration after the result is finalized",
+  "@pollPinDuration": {
+    "description": "Label for the slider controlling how long a finished poll stays pinned"
+  },
+  "hypetrainPinDuration": "Pin duration after hypetrain is over",
+  "@hypetrainPinDuration": {
+    "description": "Label for the slider controlling how long a finished hype train stays pinned"
+  },
+  "enableGiftedSubscriptions": "Enable individual gifted subscriptions",
+  "@enableGiftedSubscriptions": {
+    "description": "Title of the switch that shows each gifted subscription"
+  },
+  "enableGiftedSubscriptionsSubtitle": "Show every subscription that is gifted",
+  "@enableGiftedSubscriptionsSubtitle": {
+    "description": "Subtitle of the switch that shows each gifted subscription"
+  },
+  "settingsBackupTitle": "Settings backup and restore",
+  "@settingsBackupTitle": {
+    "description": "Title of the settings backup screen"
+  },
+  "cloudBackup": "Cloud backup",
+  "@cloudBackup": {
+    "description": "Heading for cloud backup options"
+  },
+  "lastBackupNever": "Last backup: never",
+  "@lastBackupNever": {
+    "description": "Shown when no backup has been made"
+  },
+  "backUp": "Back up",
+  "@backUp": {
+    "description": "Button that backs up settings"
+  },
+  "restore": "Restore",
+  "@restore": {
+    "description": "Button that restores settings from a backup"
+  },
+  "localBackup": "Local backup",
+  "@localBackup": {
+    "description": "Heading for local backup options"
+  },
+  "exportSettings": "Export",
+  "@exportSettings": {
+    "description": "Button that exports settings to a file"
+  },
+  "importSettings": "Import",
+  "@importSettings": {
+    "description": "Button that imports settings from a file"
+  },
+  "showViewerAndFollowerCount": "Show viewer and follower count",
+  "@showViewerAndFollowerCount": {
+    "description": "Switch that shows viewer and follower counts in the header"
+  },
+  "screenOrientation": "Screen orientation",
+  "@screenOrientation": {
+    "description": "Heading for the screen orientation setting"
+  },
+  "appTheme": "App theme",
+  "@appTheme": {
+    "description": "Heading for the app theme setting"
+  },
+  "systemDefault": "System",
+  "@systemDefault": {
+    "description": "Option to follow the system setting"
+  },
+  "portrait": "Portrait",
+  "@portrait": {
+    "description": "Portrait screen orientation option"
+  },
+  "landscape": "Landscape",
+  "@landscape": {
+    "description": "Landscape screen orientation option"
+  },
+  "lightTheme": "Light",
+  "@lightTheme": {
+    "description": "Light theme option"
+  },
+  "darkTheme": "Dark",
+  "@darkTheme": {
+    "description": "Dark theme option"
+  },
+  "openSourceTitle": "RealtimeChat is open source",
+  "@openSourceTitle": {
+    "description": "Title of the link to the source code"
+  },
+  "openSourceSubtitle": "Find us on GitHub!",
+  "@openSourceSubtitle": {
+    "description": "Subtitle of the link to the source code"
+  },
+  "discordSubtitle": "Join the Muxable Discord!",
+  "@discordSubtitle": {
+    "description": "Subtitle of the link to the Discord server"
+  },
+  "earlyTestersThanks": "Thanks to all the early testers who sent bug reports!",
+  "@earlyTestersThanks": {
+    "description": "Heading above the list of early testers"
+  },
+  "discoModeEnabled": "🕺 Disco mode enabled! :D",
+  "@discoModeEnabled": {
+    "description": "Shown when the disco mode easter egg is enabled"
+  },
+  "discoModeDisabled": "🕺 Disco mode disabled D:",
+  "@discoModeDisabled": {
+    "description": "Shown when the disco mode easter egg is disabled"
+  },
+  "playSampleMessage": "Play sample message",
+  "@playSampleMessage": {
+    "description": "Button that plays a sample text to speech message"
+  },
+  "textToSpeechRate": "Text to Speech Rate",
+  "@textToSpeechRate": {
+    "description": "Label for the text to speech rate slider"
+  },
+  "textToSpeechPitch": "Text to Speech Pitch",
+  "@textToSpeechPitch": {
+    "description": "Label for the text to speech pitch slider"
+  },
+  "muteBots": "Mute text to speech for bots",
+  "@muteBots": {
+    "description": "Switch that skips messages from bots"
+  },
+  "muteEmotes": "Mute all emotes in text to speech",
+  "@muteEmotes": {
+    "description": "Switch that skips emotes"
+  },
+  "muteViewerNames": "Mute viewer names in text to speech",
+  "@muteViewerNames": {
+    "description": "Switch that skips reading viewer names"
+  },
+  "subscribersOnly": "Subscribers only",
+  "@subscribersOnly": {
+    "description": "Switch that only reads messages from subscribers"
+  },
+  "fontSize": "Font size",
+  "@fontSize": {
+    "description": "Label for the chat font size slider"
+  },
+  "usernameContrastBoost": "Username contrast boost",
+  "@usernameContrastBoost": {
+    "description": "Label for the slider that brightens username colors"
+  },
+  "twitchBadgeSettings": "Twitch badge settings",
+  "@twitchBadgeSettings": {
+    "description": "Title of the link to badge settings"
+  },
+  "twitchBadgeSettingsSubtitle": "Control which badges are visible",
+  "@twitchBadgeSettingsSubtitle": {
+    "description": "Subtitle of the link to badge settings"
+  },
+  "showDeletedMessages": "Show deleted messages",
+  "@showDeletedMessages": {
+    "description": "Switch that keeps deleted messages visible"
+  },
+  "deletedMessagesGreyedOut": "Deleted messages will be greyed out",
+  "@deletedMessagesGreyedOut": {
+    "description": "Subtitle when deleted messages are shown"
+  },
+  "deletedMessagesRemoved": "Deleted messages will be removed",
+  "@deletedMessagesRemoved": {
+    "description": "Subtitle when deleted messages are hidden"
+  },
+  "showLoginNames": "Show login names",
+  "@showLoginNames": {
+    "description": "Switch that shows login names next to display names"
+  },
+  "loginNamesShown": "Login names will be shown if they are different from the display name",
+  "@loginNamesShown": {
+    "description": "Subtitle when login names are shown"
+  },
+  "loginNamesHidden": "Login names will be hidden",
+  "@loginNamesHidden": {
+    "description": "Subtitle when login names are hidden"
+  },
+  "compactMessages": "Compact messages",
+  "@compactMessages": {
+    "description": "Heading for message compaction options"
+  },
+  "dontCompactMessages": "Don't compact messages",
+  "@dontCompactMessages": {
+    "description": "Option that leaves messages unchanged"
+  },
+  "dontCompactMessagesSubtitle": "Messages are shown unchanged",
+  "@dontCompactMessagesSubtitle": {
+    "description": "Subtitle of the option that leaves messages unchanged"
+  },
+  "compactIndividualMessages": "Compact individual messages",
+  "@compactIndividualMessages": {
+    "description": "Option that shortens repetitive text within a message"
+  },
+  "compactIndividualMessagesSubtitle": "Repetitive text in messages is shortened",
+  "@compactIndividualMessagesSubtitle": {
+    "description": "Subtitle of the option that shortens repetitive text"
+  },
+  "announcementPinDuration": "Announcement pin duration",
+  "@announcementPinDuration": {
+    "description": "Label for the slider controlling how long announcements stay pinned"
+  },
+  "idleMessageAlertDuration": "Idle message alert duration",
+  "@idleMessageAlertDuration": {
+    "description": "Heading for the idle chat alert setting"
+  },
+  "idleMessageAlertDurationSubtitle": "If there aren't any messages for this amount of time and a new one comes in, an alert sound will play.",
+  "@idleMessageAlertDurationSubtitle": {
+    "description": "Explanation of the idle chat alert setting"
+  },
+  "realtimeCashSubtitle": "Connect an ETH or MATIC wallet",
+  "@realtimeCashSubtitle": {
+    "description": "Subtitle of the RealtimeCash integration"
+  },
+  "walletAddress": "Wallet address",
+  "@walletAddress": {
+    "description": "Hint for the crypto wallet address field"
+  },
+  "streamlabsSubtitle": "See your Streamlabs donations",
+  "@streamlabsSubtitle": {
+    "description": "Subtitle of the Streamlabs integration"
+  },
+  "streamElementsSubtitle": "See your StreamElements donations",
+  "@streamElementsSubtitle": {
+    "description": "Subtitle of the StreamElements integration"
+  },
+  "thirdPartyAuthError": "Hmm, that didn't work. Try again, or ask on Discord?",
+  "@thirdPartyAuthError": {
+    "description": "Shown when connecting a third-party service fails"
+  },
+  "companionAuthBrowserTooOld": "Your browser is too old to support signing in directly. Scan this QR code with your phone to sign in on another device.",
+  "@companionAuthBrowserTooOld": {
+    "description": "Shown when the browser can't sign in directly"
+  },
+  "companionAuthScanQrCode": "Scan this QR code with your phone to sign in on another device.",
+  "@companionAuthScanQrCode": {
+    "description": "Instructions for signing in with a QR code"
+  },
+  "kickSubscriptionEvent": "<b>{subscriberName}</b> has subscribed!",
+  "@kickSubscriptionEvent": {
+    "description": "A new Kick subscription",
+    "placeholders": {
+      "subscriberName": {
+        "type": "String",
+        "example": "muxfd"
+      }
+    }
+  },
+  "kickResubscriptionEvent": "<b>{subscriberName}</b> has resubscribed for {months} months!",
+  "@kickResubscriptionEvent": {
+    "description": "A renewed Kick subscription",
+    "placeholders": {
+      "subscriberName": {
+        "type": "String",
+        "example": "muxfd"
+      },
+      "months": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "kickGiftedSubscriptionsEvent": "<b>{gifterName}</b> has gifted {count} subs!",
+  "@kickGiftedSubscriptionsEvent": {
+    "description": "Gifted Kick subscriptions",
+    "placeholders": {
+      "gifterName": {
+        "type": "String",
+        "example": "muxfd"
+      },
+      "count": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "kicksGiftedEvent": "<b>{senderName}</b> sent {amount} Kicks!",
+  "@kicksGiftedEvent": {
+    "description": "Kicks (Kick's virtual currency) sent to the streamer",
+    "placeholders": {
+      "senderName": {
+        "type": "String",
+        "example": "muxfd"
+      },
+      "amount": {
+        "type": "int",
+        "format": "decimalPattern"
+      }
+    }
+  },
+  "signInWithKick": "Sign in with Kick",
+  "@signInWithKick": {
+    "description": "Button to sign in with a Kick account"
+  },
+  "textToSpeechTooManyMessages": "There are too many messages. Text to speech disabled",
+  "@textToSpeechTooManyMessages": {
+    "description": "Spoken when text to speech turns itself off because too many messages are waiting to be read"
+  },
+  "turnOffTextToSpeech": "Turn off",
+  "@turnOffTextToSpeech": {
+    "description": "Button in the text to speech notification that turns text to speech off"
+  },
+  "addToChat": "Add to chat",
+  "@addToChat": {
+    "description": "Button on a channel search result that adds the channel to the channels shown in chat"
+  },
+  "inChat": "In chat",
+  "@inChat": {
+    "description": "Heading in the channel search sheet for the channels currently shown in chat"
+  },
+  "removeFromChat": "Remove from chat",
+  "@removeFromChat": {
+    "description": "Button that removes a channel from the channels shown in chat"
+  },
+  "cantChatWithAccount": "Your {provider} account can't chat here",
+  "@cantChatWithAccount": {
+    "description": "Hint in the disabled message input when none of the channels shown are on the platform of the signed-in account",
+    "placeholders": {
+      "provider": {
+        "type": "String",
+        "example": "Twitch"
+      }
+    }
+  },
+  "cantChatWithAccounts": "Your accounts can't chat here",
+  "@cantChatWithAccounts": {
+    "description": "Hint in the disabled message input when none of the channels shown are on the platform of any of the signed-in accounts"
+  },
+  "sendAMessageTo": "Send a message to {channel}...",
+  "@sendAMessageTo": {
+    "description": "Message input field placeholder text when there are several channels to send to, naming the one picked",
+    "placeholders": {
+      "channel": {
+        "type": "String",
+        "example": "muxfd"
+      }
+    }
+  },
+  "replaceChannel": "Replace {channel}",
+  "@replaceChannel": {
+    "description": "Shown while swiping a channel search result whose platform already has a channel in chat: adding it replaces that channel",
+    "placeholders": {
+      "channel": {
+        "type": "String",
+        "example": "xQc"
+      }
+    }
+  },
+  "voicePacks": "Voice packs",
+  "@voicePacks": {
+    "description": "Title of the screen that lists the neural voice packs that can be downloaded, and of the row in the text to speech settings that opens it"
+  },
+  "voicePacksDescription": "Voice packs read chat with natural-sounding voices that run on your device, offline once downloaded. The voices are machine-generated by AI, not recorded by a person.",
+  "@voicePacksDescription": {
+    "description": "Introduction at the top of the voice packs screen; it must say that the voices are generated by AI"
+  },
+  "voicePackDetails": "{voices, plural, =1{1 voice} other{{voices} voices}} · {size}",
+  "@voicePackDetails": {
+    "description": "Under a voice pack's name: how many voices it has and its size (the download size, or the space it takes once installed)",
+    "placeholders": {
+      "voices": {
+        "type": "int",
+        "example": "10"
+      },
+      "size": {
+        "type": "String",
+        "example": "401 MB"
+      }
+    }
+  },
+  "voicePackLanguages": "{count, plural, =1{1 language} other{{count} languages}}: {languages}",
+  "@voicePackLanguages": {
+    "description": "The languages a voice pack speaks: how many, then their names, separated by commas",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      },
+      "languages": {
+        "type": "String",
+        "example": "English, French, German"
+      }
+    }
+  },
+  "voicePackOpenRailNotice": "This model's license (OpenRAIL-M) forbids harmful uses, such as impersonating people or spreading disinformation, and these restrictions apply to you too.",
+  "@voicePackOpenRailNotice": {
+    "description": "Use restrictions of a voice pack's license, which must be passed on to users; keep OpenRAIL-M as is"
+  },
+  "voicePackDeleteConfirm": "Delete {pack}? This frees {size}.",
+  "@voicePackDeleteConfirm": {
+    "description": "Confirmation before deleting a voice pack",
+    "placeholders": {
+      "pack": {
+        "type": "String",
+        "example": "Supertonic 3"
+      },
+      "size": {
+        "type": "String",
+        "example": "401 MB"
+      }
+    }
+  },
+  "voicePackDownload": "Download",
+  "@voicePackDownload": {
+    "description": "Button that downloads and installs a voice pack, or tries again after a failed download"
+  },
+  "voicePackUpdate": "Update",
+  "@voicePackUpdate": {
+    "description": "Button that downloads a newer version of an installed voice pack"
+  },
+  "voicePackWaitingForWifi": "Waiting for Wi-Fi",
+  "@voicePackWaitingForWifi": {
+    "description": "A voice pack download waits for a Wi-Fi connection to start"
+  },
+  "voicePackUseMobileData": "Use mobile data",
+  "@voicePackUseMobileData": {
+    "description": "Button that downloads a voice pack over mobile data instead of waiting for Wi-Fi"
+  },
+  "voicePackDownloading": "Downloading: {downloaded} of {total}",
+  "@voicePackDownloading": {
+    "description": "Progress of a voice pack download",
+    "placeholders": {
+      "downloaded": {
+        "type": "String",
+        "example": "120 MB"
+      },
+      "total": {
+        "type": "String",
+        "example": "401 MB"
+      }
+    }
+  },
+  "voicePackInstalling": "Installing",
+  "@voicePackInstalling": {
+    "description": "A downloaded voice pack is being checked and installed"
+  },
+  "voicePackInstallFailed": "Couldn't install {pack}. Check your connection and try again.",
+  "@voicePackInstallFailed": {
+    "description": "A voice pack failed to download or install",
+    "placeholders": {
+      "pack": {
+        "type": "String",
+        "example": "Supertonic 3"
+      }
+    }
+  },
+  "voices": "Voices",
+  "@voices": {
+    "description": "Title of the screen that picks the neural voice for each language, and of the row in the text to speech settings that opens it"
+  },
+  "perViewerVoice": "Per-viewer voice",
+  "@perViewerVoice": {
+    "description": "Switch that gives each viewer in chat their own neural voice"
+  },
+  "perViewerVoiceSubtitle": "Each viewer gets their own voice. The voice you pick reads alerts, or everything when this is off.",
+  "@perViewerVoiceSubtitle": {
+    "description": "Explains the per-viewer voice switch and what the voice picked for a language reads"
+  },
+  "streamLanguage": "Stream language",
+  "@streamLanguage": {
+    "description": "Marks the language of the stream being watched in a list of languages"
+  },
+  "ttsEngineNeural": "Neural voice (on-device)",
+  "@ttsEngineNeural": {
+    "description": "In the text to speech settings: chat is read with a neural voice from a voice pack, which runs on the device"
+  },
+  "ttsEngineSystem": "System voice",
+  "@ttsEngineSystem": {
+    "description": "In the text to speech settings: chat is read with the device's own text to speech voice"
+  },
+  "languageUnsupported": "{language} isn't supported by your voice packs; the system voice will be used",
+  "@languageUnsupported": {
+    "description": "The installed voice packs don't speak the stream's language, so the device's own voice reads it",
+    "placeholders": {
+      "language": {
+        "type": "String",
+        "example": "Thai"
+      }
+    }
+  },
+  "neuralFallbackLowMemory": "This device doesn't have enough memory for neural voices, so chat is read with the system voice.",
+  "@neuralFallbackLowMemory": {
+    "description": "Shown once in the text to speech settings when a voice pack is installed but the device has too little memory to run it"
+  },
+  "neuralFallbackLoadFailed": "The neural voice couldn't load, so chat is read with the system voice.",
+  "@neuralFallbackLoadFailed": {
+    "description": "Shown once in the text to speech settings when the installed voice pack failed to load, e.g. for lack of memory"
+  },
+  "accounts": "Accounts",
+  "@accounts": {
+    "description": "Title of the settings page that lists the streaming accounts the app is signed in to"
+  },
+  "accountsSubtitle": "Sign in to each platform you stream on",
+  "@accountsSubtitle": {
+    "description": "Explains the accounts settings page: the app can be signed in to one account on each streaming platform at the same time"
+  },
+  "addProviderAccount": "Add {provider} account",
+  "@addProviderAccount": {
+    "description": "Button on the accounts page that signs in to an account on a platform the app isn't signed in to yet, alongside the accounts it is",
+    "placeholders": {
+      "provider": {
+        "type": "String",
+        "example": "Kick"
+      }
+    }
+  },
+  "signInWithProvider": "Sign in with {provider}",
+  "@signInWithProvider": {
+    "description": "Button to sign in with an account on a streaming platform",
+    "placeholders": {
+      "provider": {
+        "type": "String",
+        "example": "YouTube"
+      }
+    }
+  },
+  "signOutOfAccount": "Sign out of {channel} on {provider}?",
+  "@signOutOfAccount": {
+    "description": "Confirmation shown before signing out of one account; the others stay signed in",
+    "placeholders": {
+      "channel": {
+        "type": "String",
+        "example": "muxfd"
+      },
+      "provider": {
+        "type": "String",
+        "example": "Twitch"
+      }
+    }
+  },
+  "signOutOfAll": "Sign out of all accounts",
+  "@signOutOfAll": {
+    "description": "Button on the accounts page that signs out of every account at once"
+  }
+}

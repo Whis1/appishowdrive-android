@@ -1,0 +1,144 @@
+// APPISHOWDRIVE modification, 7 November 2026: community Android identity; see NOTICE-APPISHOWDRIVE.md.
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/material.dart';
+import 'package:rtchat/components/auth/twitch.dart';
+import 'package:rtchat/components/channel_search_bottom_sheet.dart';
+import 'package:rtchat/l10n/app_localizations.dart';
+import 'package:rtchat/models/channels.dart';
+import 'package:rtchat/themes.dart';
+
+final url = Uri.https('chat.rtirl.com', '/auth/twitch/redirect');
+
+class OnboardingScreen extends StatelessWidget {
+  final void Function(Channel) onChannelSelect;
+
+  const OnboardingScreen({super.key, required this.onChannelSelect});
+
+  @override
+  Widget build(BuildContext context) {
+    return Theme(
+      data: Themes.darkTheme,
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: Colors.black,
+        body: SafeArea(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(4),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Image(
+                    width: 96,
+                    image: AssetImage('assets/appishowdrive-original.png'),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 32),
+                    child: Text(
+                      "APPISHOWDRIVE",
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleLarge?.copyWith(color: Colors.white),
+                    ),
+                  ),
+                  LoginOptionsWidget(onChannelSelect: onChannelSelect),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class LoginOptionsWidget extends StatefulWidget {
+  final void Function(Channel) onChannelSelect;
+
+  const LoginOptionsWidget({super.key, required this.onChannelSelect});
+
+  @override
+  State<LoginOptionsWidget> createState() => _LoginOptionsWidgetState();
+}
+
+class _LoginOptionsWidgetState extends State<LoginOptionsWidget> {
+  var _isLoading = false;
+
+  void _onStart() {
+    if (!mounted) return;
+    setState(() => _isLoading = true);
+  }
+
+  void _onComplete() {
+    if (!mounted) return;
+    setState(() => _isLoading = false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const CircularProgressIndicator();
+    }
+    return Column(
+      children: [
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 400),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: SignInWithTwitch(onStart: _onStart, onComplete: _onComplete),
+          ),
+        ),
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 400),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: SignInWithKick(onStart: _onStart, onComplete: _onComplete),
+          ),
+        ),
+        Text(
+          AppLocalizations.of(context)!.or,
+          style: Theme.of(
+            context,
+          ).textTheme.titleMedium?.copyWith(color: Colors.white),
+        ),
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 400),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: ElevatedButton(
+              child: Text(
+                AppLocalizations.of(context)!.continueAsGuest,
+                textAlign: TextAlign.center,
+              ),
+              onPressed: () async {
+                FirebaseAnalytics.instance.logLogin(loginMethod: "anonymous");
+                showModalBottomSheet<void>(
+                  context: context,
+                  isScrollControlled: true,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(16),
+                    ),
+                  ),
+                  builder: (context) {
+                    return DraggableScrollableSheet(
+                      initialChildSize: 0.8,
+                      maxChildSize: 0.9,
+                      expand: false,
+                      builder: (context, controller) {
+                        return ChannelSearchBottomSheetWidget(
+                          onChannelSelect: widget.onChannelSelect,
+                          controller: controller,
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}

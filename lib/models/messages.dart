@@ -1,0 +1,518 @@
+import 'dart:async';
+import 'dart:core';
+
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:rtchat/api.dart';
+import 'package:rtchat/l10n/app_localizations.dart';
+import 'package:rtchat/main.dart';
+import 'package:rtchat/models/adapters/messages.dart';
+import 'package:rtchat/models/adapters/profiles.dart';
+import 'package:rtchat/models/channels.dart';
+import 'package:rtchat/models/messages/chat.dart';
+import 'package:rtchat/models/messages/message.dart';
+import 'package:rtchat/models/tts.dart';
+
+class MessagesModel extends ChangeNotifier {
+  final List<StreamSubscription<void>> _subscriptions = [];
+
+  /// The [Api] to call as the user on a provider, from `UserModel.apiOn`.
+  Api Function(String provider) apiOn =
+      (provider) => Api.forApp(Firebase.app());
+
+  @visibleForTesting
+  late Stream<DeltaEvent> Function(Channel channel) forChannel =
+      (channel) =>
+          MessagesAdapter.instance.forChannel(channel, apiOn(channel.provider));
+  List<ChannelEvent> _events = [];
+  List<MessageModel> _messages = [];
+  Set<int> _separators = {};
+  Function()? onMessagePing;
+  List<Channel> _channels = const [];
+  // channels whose initial history has loaded, so new events are live.
+  final Set<Channel> _liveChannels = {};
+  // channels whose history has been paged back to their first message.
+  final Set<Channel> _historyExhausted = {};
+  // where each channel's history paging continues from: the oldest message
+  // document loaded, which may be older than the oldest event if some
+  // documents aren't shown.
+  final Map<Channel, DateTime> _historyBefore = {};
+  // bumped when the channels change or messages are pruned, so a history
+  // load that was in flight is dropped.
+  var _generation = 0;
+  Future<void>? _pulling;
+  var _pullingGeneration = 0;
+
+  @visibleForTesting
+  late Future<HistoryPage> Function(Channel channel, DateTime from)
+  forChannelHistory =
+      (channel, from) => MessagesAdapter.instance.forChannelHistory(
+        channel,
+        from,
+        apiOn(channel.provider),
+      );
+
+  // it's a bit odd to have this here, but tts only cares about the delta events
+  // so it's easier to wire this way.
+  TtsModel? _tts;
+
+  set channel(Channel? channel) =>
+      channels = channel == null ? const [] : [channel];
+
+  /// The channels whose messages are merged into [messages].
+  set channels(List<Channel> channels) {
+    // ignore if no update
+    if (listEquals(channels, _channels)) {
+      return;
+    }
+    _channels = List.unmodifiable(channels);
+    _messages = [];
+    _separators = {};
+    _events = [];
+    _liveChannels.clear();
+    _historyExhausted.clear();
+    _historyBefore.clear();
+    _generation++;
+    if (_tts != null) {
+      final localizations = _getLocalizations();
+      if (localizations != null) {
+        _tts!.setMode(localizations, TtsMode.disabled);
+      } else {
+        debugPrint("Localizations not available");
+      }
+    }
+    notifyListeners();
+
+    for (final subscription in _subscriptions) {
+      subscription.cancel();
+    }
+    _subscriptions.clear();
+    for (final channel in _channels) {
+      _subscriptions.add(
+        forChannel(channel).listen((event) => _onEvent(channel, event)),
+      );
+    }
+  }
+
+  List<Channel> get channels => _channels;
+
+  /// Whether [channel] is streaming, which gates message alerts.
+  @visibleForTesting
+  Stream<bool> Function(Channel channel) isOnline =
+      (channel) =>
+          ProfilesAdapter.instance.getIsOnline(channelId: channel.toString());
+
+  @visibleForTesting
+  void addEvent(Channel channel, DeltaEvent event) => _onEvent(channel, event);
+
+  void _onEvent(Channel channel, DeltaEvent event) {
+    _events.add((channel: channel, event: event));
+    MessageModel? appended;
+    _messages = applyDeltaEvent(
+      _messages,
+      event,
+      channel: channel,
+      onAppend: (model) {
+        // only messages that arrive live are read out or pinged, not history.
+        // in a merged view a live message can land before a newer one that
+        // another channel already delivered, so where it lands doesn't matter.
+        if (!_liveChannels.contains(channel)) {
+          return;
+        }
+        // Pass localizations to the TTS say method
+        final localizations = _getLocalizations();
+        if (localizations != null) {
+          _tts?.say(localizations, model);
+        } else {
+          debugPrint("Localizations not available");
+        }
+        appended = model;
+      },
+      onUpdate: (event, previous, updated) {
+        // stop reading out messages as soon as they're deleted.
+        if (updated is ChatMessage && updated.deleted) {
+          _tts?.unsay(updated.messageId);
+        }
+      },
+    );
+    if (event is AppendDeltaEvent || event is ClearDeltaEvent) {
+      _separators = computeSeparators(_messages);
+    }
+    // decided once the message list includes [appended]. a message landing
+    // before a newer one doesn't end a quiet period, the newer message
+    // already did.
+    if (appended != null &&
+        identical(_messages.last, appended) &&
+        shouldPing()) {
+      isOnline(channel).first.then((value) {
+        if (value) {
+          onMessagePing?.call();
+        }
+      });
+    }
+    if (event is ClearDeltaEvent) {
+      // in a merged view only the cleared channel's messages are dropped.
+      if (_channels.length > 1) {
+        _tts?.stopChannel(channel);
+      } else {
+        _tts?.stop();
+      }
+    } else if (event is LiveStateDeltaEvent) {
+      _liveChannels.add(channel);
+    }
+    if (event is ClearDeltaEvent) {
+      // messages from before a clear are never shown.
+      _historyExhausted.add(channel);
+    }
+    notifyListeners();
+  }
+
+  bool _disposed = false;
+
+  @override
+  void dispose() {
+    // the listener would otherwise keep notifying (and holding on to) a
+    // disposed model.
+    _disposed = true;
+    for (final subscription in _subscriptions) {
+      subscription.cancel();
+    }
+    _subscriptions.clear();
+    super.dispose();
+  }
+
+  /// The merged messages of every channel.
+  List<MessageModel> get messages => _messages;
+
+  Set<int> get separators => _separators;
+
+  /// Whether every channel has loaded its history and is receiving new
+  /// messages.
+  bool get isLive =>
+      _channels.isNotEmpty && _channels.every(_liveChannels.contains);
+
+  Set<ChatUser> get authors {
+    return _messages
+        .whereType<ChatMessage>()
+        .map((model) => model.author)
+        .toSet();
+  }
+
+  // the live marker is stamped by the client, so it's no paging cursor.
+  DateTime? _oldestTimestamp(List<ChannelEvent> events, Channel channel) =>
+      events
+          .where(
+            (entry) =>
+                entry.channel == channel && entry.event is! LiveStateDeltaEvent,
+          )
+          .map((entry) => entry.event.timestamp)
+          .firstOrNull;
+
+  /// Whether some channel may have messages older than those loaded.
+  bool get canLoadMoreHistory => _channels.any(
+    (channel) =>
+        !_historyExhausted.contains(channel) &&
+        _oldestTimestamp(_events, channel) != null,
+  );
+
+  /// Loads older messages for every channel, each from before the oldest
+  /// document loaded from it. Only one load runs at a time: callers share
+  /// it. A load is dropped if the channels change or messages are pruned
+  /// while it's in flight.
+  Future<void> pullMoreMessages() {
+    final pulling = _pulling;
+    // a load for channels or messages that have since changed is dropped,
+    // so it can't be shared.
+    if (pulling != null && _pullingGeneration == _generation) {
+      return pulling;
+    }
+    _pullingGeneration = _generation;
+    late final Future<void> next;
+    next = _pullMoreMessages().whenComplete(() {
+      if (identical(_pulling, next)) {
+        _pulling = null;
+      }
+    });
+    return _pulling = next;
+  }
+
+  Future<void> _pullMoreMessages() async {
+    final generation = _generation;
+    final futureEvents = _events; // this prevents a race.
+    final history = <ChannelEvent>[];
+    final exhausted = <Channel>[];
+    final before = <Channel, DateTime>{};
+    for (final channel in _channels) {
+      if (_historyExhausted.contains(channel)) {
+        continue;
+      }
+      final oldest =
+          _historyBefore[channel] ?? _oldestTimestamp(futureEvents, channel);
+      if (oldest == null) {
+        continue;
+      }
+      final page = await forChannelHistory(channel, oldest);
+      if (_disposed || generation != _generation) {
+        return;
+      }
+      if (_historyExhausted.contains(channel)) {
+        // cleared while loading, so nothing before the clear is shown.
+        continue;
+      }
+      final pageOldest = page.oldest;
+      if (page.isLast ||
+          pageOldest == null ||
+          // messages from before a clear are never shown.
+          page.events.any((event) => event is ClearDeltaEvent)) {
+        exhausted.add(channel);
+      } else {
+        before[channel] = pageOldest;
+      }
+      history.addAll(
+        page.events.map((event) => (channel: channel, event: event)),
+      );
+    }
+    _historyExhausted.addAll(exhausted);
+    _historyBefore.addAll(before);
+    if (history.isEmpty) {
+      return;
+    }
+    _events = [...history, ...futureEvents];
+    _messages =
+        _channels.length > 1
+            ? replayEvents(_events)
+            : _events.fold(
+              [],
+              (messages, entry) => applyDeltaEvent(messages, entry.event),
+            );
+    _separators = computeSeparators(_messages);
+    notifyListeners();
+  }
+
+  void pruneMessages() {
+    // this doesn't need to notify because it has no impact on the UI
+    if (_messages.length > 1000) {
+      _messages.removeRange(0, _messages.length - 1000);
+      _events.removeWhere(
+        (entry) => entry.event.timestamp.isBefore(_messages.first.timestamp),
+      );
+      // paging back starts again from the oldest message kept, unless a
+      // clear hides everything before it.
+      _generation++;
+      _historyBefore.clear();
+      _historyExhausted.removeWhere(
+        (channel) =>
+            !_events.any(
+              (entry) =>
+                  entry.channel == channel && entry.event is ClearDeltaEvent,
+            ),
+      );
+      _separators = computeSeparators(_messages);
+    }
+  }
+
+  set tts(TtsModel? tts) {
+    // ignore if no update
+    if (tts == _tts) {
+      return;
+    }
+    _tts = tts;
+    if (_tts != null) {
+      final localizations = _getLocalizations();
+      if (localizations != null) {
+        _tts!.setMode(localizations, TtsMode.disabled);
+      } else {
+        debugPrint("Localizations not available");
+      }
+    }
+    notifyListeners();
+  }
+
+  TtsModel? get tts => _tts;
+
+  Duration _announcementPinDuration = const Duration(seconds: 10);
+
+  set announcementPinDuration(Duration duration) {
+    _announcementPinDuration = duration;
+    notifyListeners();
+  }
+
+  Duration get announcementPinDuration => _announcementPinDuration;
+
+  Duration _pingMinGapDuration = const Duration(days: 10000);
+
+  set pingMinGapDuration(Duration duration) {
+    _pingMinGapDuration = duration;
+    notifyListeners();
+  }
+
+  Duration get pingMinGapDuration => _pingMinGapDuration;
+
+  bool shouldPing() {
+    if (messages.isEmpty) {
+      return false;
+    }
+    if (messages.length == 1) {
+      return messages.last.timestamp.isAfter(
+        DateTime.now().subtract(const Duration(seconds: 1)),
+      );
+    }
+    final lastMessage = messages.last;
+    final secondLastMessage = messages[messages.length - 2];
+    final delta = lastMessage.timestamp.difference(secondLastMessage.timestamp);
+    return delta.compareTo(_pingMinGapDuration) > 0;
+  }
+
+  MessagesModel.fromJson(Map<String, dynamic> json) {
+    if (json['announcementPinDuration'] != null) {
+      _announcementPinDuration = Duration(
+        seconds: json['announcementPinDuration'].toInt(),
+      );
+    }
+    if (json['pingMinGapDuration'] != null) {
+      _pingMinGapDuration = Duration(
+        seconds: json['pingMinGapDuration'].toInt(),
+      );
+    }
+  }
+
+  Map<String, dynamic> toJson() => {
+    "announcementPinDuration": _announcementPinDuration.inSeconds.toInt(),
+    "pingMinGapDuration": _pingMinGapDuration.inSeconds.toInt(),
+  };
+
+  BuildContext? _getContext() {
+    return navigatorKey.currentContext;
+  }
+
+  AppLocalizations? _getLocalizations() {
+    final context = _getContext();
+    if (context != null) {
+      return AppLocalizations.of(context);
+    }
+    return null;
+  }
+}
+
+/// Applies [event] to [messages] in place and returns the resulting list, which
+/// is a new list if the event clears the chat.
+///
+/// [onAppend] is called for each message added by an [AppendDeltaEvent],
+/// whether it's appended to the end or inserted out of order. [onUpdate] is
+/// called for each message replaced by an [UpdateDeltaEvent] or
+/// [UpdateAllDeltaEvent].
+///
+/// When messages from several channels are merged, [channel] is the channel
+/// [event] came from: clearing chat and user-wide updates (bans) then only
+/// affect that channel's messages.
+@visibleForTesting
+List<MessageModel> applyDeltaEvent(
+  List<MessageModel> messages,
+  DeltaEvent event, {
+  Channel? channel,
+  void Function(MessageModel model)? onAppend,
+  void Function(DeltaEvent event, MessageModel previous, MessageModel updated)?
+  onUpdate,
+}) {
+  if (event is AppendDeltaEvent) {
+    _insert(messages, event.model);
+    onAppend?.call(event.model);
+  } else if (event is UpdateDeltaEvent) {
+    for (var i = 0; i < messages.length; i++) {
+      final message = messages[i];
+      if (message.messageId == event.messageId) {
+        final updated = event.update(message)..channel ??= message.channel;
+        messages[i] = updated;
+        onUpdate?.call(event, message, updated);
+        break;
+      }
+    }
+  } else if (event is UpdateAllDeltaEvent) {
+    for (var i = 0; i < messages.length; i++) {
+      final message = messages[i];
+      if (channel != null && message.channel != channel) {
+        continue;
+      }
+      final updated = event.update(message)..channel ??= message.channel;
+      onUpdate?.call(event, message, updated);
+      messages[i] = updated;
+    }
+  } else if (event is ClearDeltaEvent) {
+    final cleared = ChatClearedEventModel(
+      messageId: event.messageId,
+      timestamp: event.timestamp,
+    )..channel = channel;
+    if (channel == null) {
+      return [cleared];
+    }
+    // other channels' chat is unaffected.
+    final remaining =
+        messages.where((message) => message.channel != channel).toList();
+    _insert(remaining, cleared);
+    return remaining;
+  }
+  return messages;
+}
+
+/// Inserts [model] in timestamp order.
+void _insert(List<MessageModel> messages, MessageModel model) {
+  // check if this event comes after the last message
+  if (messages.isNotEmpty &&
+      model.timestamp.isBefore(messages.last.timestamp)) {
+    // this message is out of order, so we need to insert it in the right place
+    final index = messages.indexWhere(
+      (element) => element.timestamp.isAfter(model.timestamp),
+    );
+    messages.insert(index, model);
+  } else {
+    messages.add(model);
+  }
+}
+
+/// An event and the channel it was received on.
+typedef ChannelEvent = ({Channel channel, DeltaEvent event});
+
+/// Rebuilds the merged message list from [events], applied in timestamp order
+/// (keeping the received order for events with the same timestamp).
+@visibleForTesting
+List<MessageModel> replayEvents(List<ChannelEvent> events) {
+  final ordered =
+      events.indexed.toList()..sort((a, b) {
+        final byTime = a.$2.event.timestamp.compareTo(b.$2.event.timestamp);
+        return byTime != 0 ? byTime : a.$1.compareTo(b.$1);
+      });
+  var messages = <MessageModel>[];
+  for (final (_, entry) in ordered) {
+    messages = applyDeltaEvent(messages, entry.event, channel: entry.channel);
+  }
+  return messages;
+}
+
+/// Returns the indices of [messages] that should be preceded by a separator.
+///
+/// The first message always gets one; after that a separator is added at least
+/// every 50 messages (on a chat message) and wherever more than 5 minutes
+/// elapsed since the previous message. Recomputing from the list keeps indices
+/// correct after out-of-order inserts, history loads and pruning.
+@visibleForTesting
+Set<int> computeSeparators(List<MessageModel> messages) {
+  final separators = <int>{};
+  var last = 0;
+  for (var i = 0; i < messages.length; i++) {
+    if (i == 0) {
+      separators.add(0);
+      continue;
+    }
+    final model = messages[i];
+    if (i + 1 - last >= 50 && model is ChatMessage) {
+      separators.add(i);
+      last = i;
+    }
+    if (model.timestamp.difference(messages[i - 1].timestamp).inMinutes > 5) {
+      separators.add(i);
+      last = i;
+    }
+  }
+  return separators;
+}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- APPISHOWDRIVE modification, 7 November 2026: community Android edition; see NOTICE-APPISHOWDRIVE.md. -->
+<full-backup-content>
+    <exclude domain="file" path="updates/" />
+    <!-- Exclude the shared preferences file that contains the GCM registrationId -->
+    <exclude
+        domain="sharedpref"
+        path="com.google.firebase.crashlytics.xml" />
+    <exclude
+        domain="sharedpref"
+        path="audio_service_preferences.xml" />
+</full-backup-content>
