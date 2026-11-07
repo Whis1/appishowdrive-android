@@ -1,7 +1,9 @@
 <!-- APPISHOWDRIVE public source begins with a reviewed v2.11.2 snapshot; upstream Git history is not redistributed because older upstream commits contained service-account credentials. Original source and license remain attributed below. -->
 # APPISHOWDRIVE Android
 
-Community edition of [RealtimeChat](https://github.com/muxable/rtchat), based on stable v2.11.2. Original chat, emotes, moderation, audio sources, alerts, backups and TTS features are retained. This is an independent community build, not an official Muxable release.
+**[Download the signed Android APK](https://github.com/Whis1/appishowdrive-android/releases/latest/download/APPISHOWDRIVE-Android.apk)** · **[Guida italiana per lo streamer](GUIDA-STREAMER.md)** · [Verification](packaging/VERIFICA-ANDROID.md)
+
+Community edition of [RealtimeChat](https://github.com/muxable/rtchat), based on stable v2.11.2. Original chat, emotes, moderation, audio sources, alerts and TTS features are retained. This is an independent community build, not an official Muxable release.
 
 Android app identity: `com.ishowdrive.chat`. The launcher icon is the image supplied by the ISHOWDRIVE community. Twitch and Kick can be connected through Settings → Accounts; both chats are merged for TTS. Original provider services remain a dependency.
 

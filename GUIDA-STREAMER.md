@@ -1,5 +1,9 @@
 # APPISHOWDRIVE Android — guida rapida
 
+[Scarica l’APK Android firmato](https://github.com/Whis1/appishowdrive-android/releases/latest/download/APPISHOWDRIVE-Android.apk) · Versione 1.0.0 · Richiede Android 7 o successivo.
+
+Puoi inoltrare questo collegamento su Discord: evita di dover allegare l’APK da circa 195 MB.
+
 ## Installazione
 
 Scarica l'APK dal collegamento GitHub che ti viene fornito, aprilo sul telefono e conferma l'installazione Android. Se richiesto, autorizza una volta il browser o Discord a installare il file. L'icona è l'immagine ISHOWDRIVE fornita dalla community.
@@ -20,7 +24,9 @@ Se il browser non si apre o preferisci un altro dispositivo, nella schermata di 
 
 ## Voce
 
-In **Impostazioni → Testo in voce** scegli una voce italiana di sistema e regola volume e velocità. Per il normale TTS non serve scaricare un modello di intelligenza artificiale. Se mancano le voci italiane, aggiungile nelle impostazioni di sintesi vocale Android.
+In **Impostazioni → Testo in voce** regola velocità e tono, poi premi **Riproduci messaggio di esempio**. Il volume si regola con i tasti multimediali del telefono.
+
+Con la **Voce di sistema**, l’app usa le voci Android e legge ogni chat nella lingua dichiarata dal suo canale, quando disponibile. Per i canali italiani assicurati che la voce italiana sia installata nelle **impostazioni Android → Sintesi vocale**; il nome del menu varia secondo il telefono. Per il normale TTS di sistema non serve scaricare un modello di intelligenza artificiale. Le opzioni neurali originali restano disponibili separatamente.
 
 Il TTS va attivato dopo aver collegato i due account. Filtri, utenti silenziati, eventi e altre opzioni originali rimangono disponibili. Per l'ascolto con l'app in secondo piano, consenti la notifica del servizio TTS e gli eventuali permessi richiesti dalle funzioni originali.
 
