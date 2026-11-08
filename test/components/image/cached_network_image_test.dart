@@ -91,7 +91,7 @@ void main() {
     home: Material(
       child: Builder(
         builder: (context) {
-          final style = StyleModel.fromJson({});
+          final style = StyleModel.fromJson({'fontSize': 20.0, 'dashboardStyle': 1});
           final spans =
               renderToken(
                 context,

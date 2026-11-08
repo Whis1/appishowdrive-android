@@ -100,6 +100,27 @@ class TtsModel extends ChangeNotifier {
   // the neural voice chosen for each language, by voice id, keyed by the
   // normalized language tag.
   final Map<String, String> _neuralVoices = {};
+  final Map<String, String> _platformVoices = {};
+
+  /// Explicit Italian voice per chat platform; absent keeps the original routing.
+  String? platformVoice(String provider) => _platformVoices[provider];
+
+  void setPlatformVoice(String provider, String? voiceId) {
+    if (!Providers.all.contains(provider) ||
+        (voiceId != null &&
+            voiceId != 'system' &&
+            !RegExp(r'^[FM][1-5]$').hasMatch(voiceId))) {
+      throw ArgumentError('Voce o piattaforma non valida');
+    }
+    if (voiceId == null) {
+      _platformVoices.remove(provider);
+    } else {
+      _platformVoices[provider] = voiceId;
+      if (voiceId != 'system') preferredVoicePackId = 'supertonic-3';
+    }
+    notifyListeners();
+  }
+
   // neural engines that were replaced, disposed between utterances.
   final List<TtsEngine> _retiredEngines = [];
   final TtsErrorReporter _reportError;
@@ -725,18 +746,28 @@ class TtsModel extends ChangeNotifier {
     // a model being unloaded can't speak; the engine loads it again.
     await _releasing;
 
-    final language =
+    final selectedVoice =
         model is ChatMessage
+            ? platformVoice(model.channel?.provider ?? model.author.provider)
+            : null;
+    final language =
+        selectedVoice != null
+            ? 'it'
+            : model is ChatMessage
             ? languageFor(model).languageCode
             : localizations.localeName.replaceAll('_', '-');
     final route =
-        _neuralFallback == null ? await _router.route(language) : null;
+        _neuralFallback == null && selectedVoice != 'system'
+            ? await _router.route(language)
+            : null;
     if (route != null) {
       if (!shouldSpeak()) {
         return;
       }
       final voice =
-          model is ChatMessage && _isRandomVoiceEnabled
+          selectedVoice != null
+              ? route.voiceWithId(selectedVoice)
+              : model is ChatMessage && _isRandomVoiceEnabled
               ? route.voiceForKey(voiceKey(model.author))
               : route.voiceWithId(_chosenVoiceId(language, route.language));
       try {
@@ -764,7 +795,9 @@ class TtsModel extends ChangeNotifier {
       // the system voices read chat in its channel's language, when known;
       // otherwise, and for alerts, they keep their default.
       final systemLanguage =
-          model is ChatMessage
+          selectedVoice != null
+              ? 'it'
+              : model is ChatMessage
               ? _knownLanguageFor(model)?.languageCode
               : localizations.localeName.replaceAll('_', '-');
       await _systemEngine.speak(
@@ -957,6 +990,17 @@ class TtsModel extends ChangeNotifier {
     // the `voice` key of versions with cloud tts held cloud voice names
     // (e.g. fr-FR-Wavenet-A), which mean nothing to neural voices: it's
     // ignored, and dropped on the next save.
+    final platformVoices = json['platformVoices'];
+    if (platformVoices is Map) {
+      _platformVoices.clear();
+      for (final provider in Providers.all) {
+        final id = platformVoices[provider];
+        if (id is String &&
+            (id == 'system' || RegExp(r'^[FM][1-5]$').hasMatch(id))) {
+          _platformVoices[provider] = id;
+        }
+      }
+    }
     final voicesJson = json['neuralVoices'];
     if (voicesJson is Map) {
       // the saved map is a full snapshot, so it replaces the current one.
@@ -1024,6 +1068,7 @@ class TtsModel extends ChangeNotifier {
     "pitch": pitch,
     "speed": speed,
     "neuralVoices": Map.of(_neuralVoices),
+    if (_platformVoices.isNotEmpty) "platformVoices": Map.of(_platformVoices),
     if (_preferredVoicePackId != null) "voicePack": _preferredVoicePackId,
     'mutedUsers': _mutedUsers.map((e) => e.toJson()).toList(),
   };

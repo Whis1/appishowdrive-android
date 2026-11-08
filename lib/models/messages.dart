@@ -29,6 +29,7 @@ class MessagesModel extends ChangeNotifier {
   List<MessageModel> _messages = [];
   Set<int> _separators = {};
   Function()? onMessagePing;
+  void Function(Channel channel, MessageModel message)? onLiveMessage;
   List<Channel> _channels = const [];
   // channels whose initial history has loaded, so new events are live.
   final Set<Channel> _liveChannels = {};
@@ -128,6 +129,7 @@ class MessagesModel extends ChangeNotifier {
           debugPrint("Localizations not available");
         }
         appended = model;
+        onLiveMessage?.call(channel, model);
       },
       onUpdate: (event, previous, updated) {
         // stop reading out messages as soon as they're deleted.

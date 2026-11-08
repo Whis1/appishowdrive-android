@@ -204,6 +204,7 @@ void main() {
               channel,
             );
             await openModeration(tester);
+            await tester.scrollUntilVisible(find.text(action.key), 120, scrollable: find.descendant(of: find.byType(Dialog), matching: find.byType(Scrollable)).first);
             await tester.tap(find.text(action.key));
             await tester.pumpAndSettle();
             if (action.value == 'timeout') {
@@ -254,6 +255,7 @@ void main() {
           visible: visible,
         );
         await openModeration(tester);
+        await tester.scrollUntilVisible(find.text('Ban viewer'), 120, scrollable: find.descendant(of: find.byType(Dialog), matching: find.byType(Scrollable)).first);
         await tester.tap(find.text('Ban viewer'));
         await tester.pumpAndSettle();
         if (disposed) {
@@ -312,7 +314,8 @@ void main() {
         await pumpMessage(tester, userModel, kickMessage(), kickChannel);
         await openModeration(tester);
         if (timeout) {
-          await tester.tap(find.text('Timeout viewer'));
+          await tester.scrollUntilVisible(find.text('Timeout viewer'), 120, scrollable: find.descendant(of: find.byType(Dialog), matching: find.byType(Scrollable)).first);
+        await tester.tap(find.text('Timeout viewer'));
           await tester.pumpAndSettle();
         }
         await tester.tapAt(const Offset(1, 1));
@@ -326,6 +329,7 @@ void main() {
     testWidgets('a kick ban calls as the kick account', (tester) async {
       await pumpMessage(tester, userModel, kickMessage(), kickChannel);
       await openModeration(tester);
+      await tester.scrollUntilVisible(find.textContaining('Ban'), 120, scrollable: find.descendant(of: find.byType(Dialog), matching: find.byType(Scrollable)).first);
       await tester.tap(find.textContaining('Ban'));
       await tester.pumpAndSettle();
 
@@ -372,6 +376,7 @@ void main() {
     testWidgets('a twitch ban calls as the twitch account', (tester) async {
       await pumpMessage(tester, userModel, twitchMessage(), twitchChannel);
       await openModeration(tester);
+      await tester.scrollUntilVisible(find.textContaining('Ban'), 120, scrollable: find.descendant(of: find.byType(Dialog), matching: find.byType(Scrollable)).first);
       await tester.tap(find.textContaining('Ban'));
       await tester.pumpAndSettle();
 

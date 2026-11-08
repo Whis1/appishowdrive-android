@@ -3,7 +3,7 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 
 class StreamPreviewModel extends ChangeNotifier {
-  var _isHighDefinition = false;
+  var _isHighDefinition = true;
   var _volume = 0;
   var _showBatteryPrompt = true;
 
@@ -29,7 +29,7 @@ class StreamPreviewModel extends ChangeNotifier {
   }
 
   StreamPreviewModel.fromJson(Map<String, dynamic> json) {
-    if (json['isHighDefinition'] != null) {
+    if (json['communityHDProfile'] == 1 && json['isHighDefinition'] != null) {
       _isHighDefinition = json['isHighDefinition'];
     }
     if (json['volume'] != null) {
@@ -42,6 +42,7 @@ class StreamPreviewModel extends ChangeNotifier {
 
   Map<String, dynamic> toJson() => {
     'isHighDefinition': _isHighDefinition,
+    'communityHDProfile': 1,
     'volume': _volume,
     'showBatteryPrompt': _showBatteryPrompt,
   };

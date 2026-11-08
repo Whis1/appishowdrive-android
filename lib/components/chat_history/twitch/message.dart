@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rtchat/components/provider_icon.dart';
 import 'package:linkify/linkify.dart';
 import 'package:dchs_motion_sensors/dchs_motion_sensors.dart';
 import 'package:provider/provider.dart';
@@ -192,51 +193,54 @@ class TwitchMessageWidget extends StatelessWidget {
           opacity: model.deleted ? 0.6 : 1.0,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (model.reply != null)
+            child: PlatformChatRow(
+              provider: 'twitch',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (model.reply != null)
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          WidgetSpan(
+                            alignment: PlaceholderAlignment.middle,
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                left: styleModel.fontSize / 3,
+                                right: 5,
+                              ),
+                              child: Icon(
+                                Icons.shortcut_rounded,
+                                size: styleModel.fontSize,
+                                color: Theme.of(context).hintColor,
+                              ),
+                            ),
+                          ),
+                          TextSpan(
+                            text:
+                                '${model.reply?.author.displayName}: ${model.reply?.message}',
+                          ),
+                        ],
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.titleMedium?.apply(
+                        color: Theme.of(context).hintColor,
+                        fontSizeFactor: 0.75,
+                      ),
+                    ),
                   Text.rich(
                     TextSpan(
                       children: [
-                        WidgetSpan(
-                          alignment: PlaceholderAlignment.middle,
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              left: styleModel.fontSize / 3,
-                              right: 5,
-                            ),
-                            child: Icon(
-                              Icons.shortcut_rounded,
-                              size: styleModel.fontSize,
-                              color: Theme.of(context).hintColor,
-                            ),
-                          ),
-                        ),
-                        TextSpan(
-                          text:
-                              '${model.reply?.author.displayName}: ${model.reply?.message}',
-                        ),
+                        ...children,
+                        ...tokens.expand((token) {
+                          return renderToken(context, styleModel, token);
+                        }),
                       ],
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.titleMedium?.apply(
-                      color: Theme.of(context).hintColor,
-                      fontSizeFactor: 0.75,
-                    ),
                   ),
-                Text.rich(
-                  TextSpan(
-                    children: [
-                      ...children,
-                      ...tokens.expand((token) {
-                        return renderToken(context, styleModel, token);
-                      }),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );

@@ -349,6 +349,37 @@ class _StreamPreviewState extends State<StreamPreview> {
               ),
             ),
           ),
+        if (!Platform.isIOS && (_playerState == "Playing" || _playerState == "Paused"))
+          Positioned(
+            top: 6,
+            right: 8,
+            child: Consumer<StreamPreviewModel>(
+              builder:
+                  (context, model, _) => Material(
+                    color: Colors.black87,
+                    borderRadius: BorderRadius.circular(12),
+                    child: TextButton.icon(
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(60, 38),
+                      ),
+                      icon: Icon(
+                        model.isHighDefinition
+                            ? Icons.hd_rounded
+                            : Icons.sd_rounded,
+                        size: 21,
+                      ),
+                      label: Text(model.isHighDefinition ? 'HD Auto' : '360p'),
+                      onPressed: () async {
+                        model.isHighDefinition = !model.isHighDefinition;
+                        await _runJavaScript(
+                          "window.action(window.Actions.SetQuality, '${model.isHighDefinition ? 'auto' : '360p30'}')",
+                        );
+                      },
+                    ),
+                  ),
+            ),
+          ),
       ],
     );
   }

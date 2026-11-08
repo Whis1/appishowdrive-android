@@ -7,6 +7,17 @@ Community edition of [RealtimeChat](https://github.com/muxable/rtchat), based on
 
 Android app identity: `com.ishowdrive.chat`. The launcher icon is the image supplied by the ISHOWDRIVE community. Twitch and Kick can be connected through Settings → Accounts; both chats are merged for TTS. Original provider services remain a dependency.
 
+## Community update 1.1.0
+
+- Ten selectable interface color palettes, immediately applied and saved in Settings.
+- Larger, readable chat, dark dashboard theme, local Manrope/Space Grotesk fonts, compact Twitch/Kick icons at the right of each message. Original role/sub badges remain before the author.
+- Ten optional offline Italian AI voices (Supertonic 3), one verified download of about 383 MiB. Preview and select the same or different voice for Twitch and Kick. Engine code MIT; model weights OpenRAIL-M, with the full license included. No model is bundled into APK updates.
+- Aura Arena panel for Twitch, own-channel streamer actions and user commands. Command buttons show the real command names. Tournament controls appear in order: create → force choice → participation choice → start/end. Audience decisions and challenge accept/ignore controls are contextual.
+- User menu: immediate tagged !Processo/!Sanziona; quantity and confirmation for HP/Aura adjustments. Those five commands in the command panel only fill the chat draft for manual completion.
+- Launcher icon fills its Android mask. Preview defaults to HD Auto and retains a manual quality choice.
+
+This app does not capture or broadcast a microphone. It cannot filter the microphone of another Android app. Processing a phone feed in OBS requires identifying the actual phone-to-OBS audio source; keep it separate from alerts/TTS. The manual fighting arena is not included.
+
 Updates are distributed through this repository’s GitHub Releases. The app checks at launch, downloads new APKs with progress and verifies size, SHA256, package, increasing version and the installed app’s signing certificate. Android confirmation is required to install. APK installation restarts the app: install at the end of the live. User settings and accounts are preserved across updates to this app.
 
 The upstream Android native system-speech and speaker keep-alive mixing fixes are included. Controlled Android video/speech tests are provided in `integration_test/appishowdrive_audio_test.dart`; they do not use or trigger a streamer’s private Sound Alerts URL.

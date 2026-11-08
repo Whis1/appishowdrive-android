@@ -12,10 +12,12 @@ class ProviderIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     switch (provider) {
       case Providers.twitch:
-        return Image(
+        return Image.asset(
+          'assets/providers/twitch.png',
           width: size,
           height: size,
-          image: const AssetImage('assets/providers/twitch.png'),
+          cacheWidth: (size * MediaQuery.devicePixelRatioOf(context)).round(),
+          fit: BoxFit.contain,
         );
       case Providers.kick:
         return Container(
@@ -39,4 +41,44 @@ class ProviderIcon extends StatelessWidget {
     }
     return Icon(Icons.public, size: size);
   }
+}
+
+/// Compact platform logo; its name is available to screen readers only.
+class ChatPlatformBadge extends StatelessWidget {
+  final String provider;
+  const ChatPlatformBadge(this.provider, {super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      label: 'Messaggio da ${providerName(provider)}',
+      child: ExcludeSemantics(
+        child: Padding(
+          padding: const EdgeInsets.only(left: 6),
+          child: ProviderIcon(provider, size: 16),
+        ),
+      ),
+    );
+  }
+}
+
+/// Keeps provider identity at the right edge, separate from role/sub badges.
+class PlatformChatRow extends StatelessWidget {
+  final String provider;
+  final Widget child;
+  const PlatformChatRow({
+    super.key,
+    required this.provider,
+    required this.child,
+  });
+  @override
+  Widget build(BuildContext context) => Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Expanded(child: child),
+      Padding(
+        padding: const EdgeInsets.only(top: 7),
+        child: ChatPlatformBadge(provider),
+      ),
+    ],
+  );
 }

@@ -14,6 +14,7 @@ import 'package:rtchat/l10n/app_localizations.dart';
 import 'package:rtchat/models/adapters/messages.dart';
 import 'package:rtchat/models/channels.dart';
 import 'package:rtchat/models/messages.dart';
+import 'package:rtchat/models/messages/chat.dart';
 import 'package:rtchat/models/messages/message.dart';
 import 'package:rtchat/models/messages/twitch/channel_point_redemption_event.dart';
 import 'package:rtchat/models/messages/twitch/event.dart';
@@ -536,7 +537,7 @@ class _ChatPanelWidgetState extends State<ChatPanelWidget>
                                 );
                                 final Widget messageWidget =
                                     messagesModel.channels.length > 1 &&
-                                            source != null
+                                            source != null && message is! ChatMessage
                                         ? ChannelAttribution(
                                           provider: source.provider,
                                           child: chatMessage,

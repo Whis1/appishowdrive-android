@@ -3,6 +3,7 @@ import 'package:on_device_tts/on_device_tts.dart';
 import 'package:provider/provider.dart';
 import 'package:rtchat/l10n/app_localizations.dart';
 import 'package:rtchat/models/tts.dart';
+import 'package:rtchat/screens/settings/tts/italian_voices.dart';
 import 'package:rtchat/screens/settings/tts/labels.dart';
 import 'package:rtchat/screens/settings/tts/voice_packs.dart';
 import 'package:rtchat/screens/settings/tts/voices.dart';
@@ -21,6 +22,23 @@ class VoiceSettings extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        Card(
+          child: ListTile(
+            leading: const Icon(Icons.spatial_audio_off_rounded),
+            title: const Text(
+              'Voci italiane IA',
+              style: TextStyle(fontWeight: FontWeight.w800),
+            ),
+            subtitle: const Text('Scegli una voce per Twitch e una per Kick'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap:
+                () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const ItalianVoicesScreen(),
+                  ),
+                ),
+          ),
+        ),
         ListTile(
           leading: Icon(isNeural ? Icons.graphic_eq : Icons.record_voice_over),
           title: Text(isNeural ? l10n.ttsEngineNeural : l10n.ttsEngineSystem),

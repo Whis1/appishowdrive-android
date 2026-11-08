@@ -8,6 +8,8 @@ import 'package:rtchat/components/chat_history/auxiliary/realtimecash_donation.d
 import 'package:rtchat/components/chat_history/auxiliary/streamelements.dart';
 import 'package:rtchat/components/chat_history/auxiliary/streamlabs.dart';
 import 'package:rtchat/components/chat_history/chat_cleared_event.dart';
+import 'package:rtchat/components/aura_controls.dart';
+import 'package:rtchat/models/aura_arena.dart';
 import 'package:rtchat/components/chat_history/decorated_event.dart';
 import 'package:rtchat/components/chat_history/kick/events.dart';
 import 'package:rtchat/components/chat_history/kick/message.dart';
@@ -80,8 +82,27 @@ class ChatHistoryMessage extends StatelessWidget {
                     accentColor: announcement.color,
                     child: TwitchMessageWidget(m),
                   )
-                  : Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                  : Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 3,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 7,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.primary.withValues(alpha: .035),
+                      borderRadius: BorderRadius.circular(13),
+                      border: Border(
+                        left: BorderSide(
+                          color: const Color(0xffaa88ff).withValues(alpha: .55),
+                          width: 2,
+                        ),
+                      ),
+                    ),
                     child: TwitchMessageWidget(m),
                   );
           if (layoutModel.locked) {
@@ -243,8 +264,21 @@ class ChatHistoryMessage extends StatelessWidget {
     } else if (m is KickMessageModel) {
       return Consumer<LayoutModel>(
         builder: (context, layoutModel, child) {
-          final child = Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+          final child = Container(
+            margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+            decoration: BoxDecoration(
+              color: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: .035),
+              borderRadius: BorderRadius.circular(13),
+              border: Border(
+                left: BorderSide(
+                  color: const Color(0xff8ce758).withValues(alpha: .55),
+                  width: 2,
+                ),
+              ),
+            ),
             child: KickMessageWidget(m),
           );
           if (layoutModel.locked) {
@@ -312,6 +346,7 @@ class _ModerationActions extends StatelessWidget {
         onLongPress: () async {
           FocusManager.instance.primaryFocus?.unfocus();
           final messenger = ScaffoldMessenger.of(context);
+          final thisContext = context;
           final action = await showDialog<_ModerationAction>(
             context: context,
             builder: (context) {
@@ -321,6 +356,40 @@ class _ModerationActions extends StatelessWidget {
                   primary: false,
                   children: [
                     if (kDebugMode) Text("DEBUG: id=${m.messageId}"),
+                    if (channel.provider == Providers.twitch) ...[
+                      ListTile(
+                        leading: const Icon(Icons.shield_rounded),
+                        title: Text(
+                          'AURA ARENA · @${author.login}',
+                          style: const TextStyle(fontWeight: FontWeight.w800),
+                        ),
+                      ),
+                      for (final code in [
+                        '!Processo',
+                        '!Sanziona',
+                        '!HP',
+                        '!LevaHP',
+                        '!LevaPA',
+                      ])
+                        ListTile(
+                          title: Text(code == '!HP' ? '!AggiungiHP' : code),
+                          subtitle:
+                              code == '!HP' ? const Text('Aggiungi HP') : null,
+                          leading: const Icon(Icons.bolt_rounded),
+                          onTap: () {
+                            Navigator.pop(context);
+                            runAuraCommand(
+                              thisContext,
+                              channel,
+                              auraStreamerCommands.firstWhere(
+                                (c) => c.command == code,
+                              ),
+                              target: author.login,
+                            );
+                          },
+                        ),
+                      const Divider(),
+                    ],
                     ListTile(
                       leading: const Icon(Icons.timer, color: Colors.grey),
                       title: Text(formattedTimestamp),

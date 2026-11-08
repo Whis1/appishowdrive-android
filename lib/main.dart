@@ -61,6 +61,8 @@ import 'package:rtchat/screens/settings/third_party.dart';
 import 'package:rtchat/screens/settings/tts.dart';
 import 'package:rtchat/screens/settings/twitch/badges.dart';
 import 'package:rtchat/themes.dart';
+import 'package:rtchat/models/aura_arena.dart';
+import 'package:rtchat/models/channels.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -156,6 +158,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => AuraArenaModel()),
         ChangeNotifierProvider(
           create: (context) => AccountsModel.fromFirebase(),
         ),
@@ -287,6 +290,17 @@ class _AppState extends State<App> {
           update: (context, views, ttsModel, model) {
             model!.channels = views.channels;
             model.tts = ttsModel;
+            model.onLiveMessage =
+                (channel, message) => context.read<AuraArenaModel>().observe(
+                  channel,
+                  message,
+                  recipient:
+                      context
+                          .read<UserModel>()
+                          .accountOn(Providers.twitch)
+                          ?.channel
+                          .displayName,
+                );
             return model;
           },
           lazy: false,
@@ -433,8 +447,8 @@ class _AppState extends State<App> {
             builder:
                 (context, child) =>
                     AppUpdateHost(child: child ?? const SizedBox.shrink()),
-            theme: Themes.lightTheme,
-            darkTheme: Themes.darkTheme,
+            theme: Themes.lightFor(layoutModel.interfaceTheme),
+            darkTheme: Themes.darkFor(layoutModel.interfaceTheme),
             themeMode: layoutModel.themeMode,
             localizationsDelegates: const [
               ...AppLocalizations.localizationsDelegates,

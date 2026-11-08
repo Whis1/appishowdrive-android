@@ -8,6 +8,14 @@ void registerCommunityLicenses() {
       'RealtimeChat · Muxable',
     ], await rootBundle.loadString('assets/rtchat-LICENSE.txt'));
     yield LicenseEntryWithLineBreaks([
+      'Supertonic 3 · voci IA',
+    ], await rootBundle.loadString('assets/SUPERTONIC3-LICENSE.txt'));
+    for (final font in ['Manrope', 'SpaceGrotesk']) {
+      yield LicenseEntryWithLineBreaks([
+        font,
+      ], await rootBundle.loadString('assets/fonts/$font-OFL.txt'));
+    }
+    yield LicenseEntryWithLineBreaks([
       'APPISHOWDRIVE community edition',
     ], await rootBundle.loadString('assets/APPISHOWDRIVE-NOTICE.txt'));
   });

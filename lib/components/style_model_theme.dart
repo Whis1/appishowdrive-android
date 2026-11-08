@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rtchat/models/style.dart';
@@ -14,10 +12,7 @@ class StyleModelTheme extends StatelessWidget {
     return Consumer<StyleModel>(
       builder: (context, model, child) {
         final theme = Theme.of(context);
-        final fontFamily =
-            Platform.isIOS
-                ? Typography.whiteCupertino.bodyMedium!.fontFamily
-                : Typography.whiteMountainView.bodyMedium!.fontFamily;
+        const fontFamily = 'Manrope';
         final themeData = theme.copyWith(
           textTheme: theme.textTheme.apply(
             fontSizeDelta: model.fontSize - 14,

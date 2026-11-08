@@ -1,11 +1,11 @@
-# APPISHOWDRIVE Android 1.0.0
+# APPISHOWDRIVE Android 1.1.0
 
-Edizione della community basata su RealtimeChat2.11.2, con le funzioni originali: chat, emote, moderazione, avvisi, sorgenti audio e TTS.
+- Dieci temi colore nelle impostazioni: ciano, nero, blu, viola, verde, marrone, giallo, rosso, arancione e grigio, con anteprima e scelta salvata.
+- Nuovo tema scuro, chat più leggibile, icone Twitch/Kick sul lato destro dei messaggi; badge originali dell'utente davanti al nome.
+- Dieci voci italiane IA locali: anteprima, download unico facoltativo da circa 383 MiB, selezione indipendente per Twitch e Kick o stessa voce per entrambe. Le voci sono generate da IA. Pesi OpenRAIL-M, motore MIT, licenze incluse.
+- Pannello Comandi Aura accanto alle emote, sezioni Solo Streamer e Solo utenti, comandi reali. Torneo in tre passaggi dopo !Creatorneo: ForzaTorneo / Senza Forzare → Partecipa al Torneo / Non partecipare → Iniziatorneo / Terminatorneo.
+- Quattro decisioni durante le udienze e accettazione/ignora delle sfide. Menu utente con !Processo, !Sanziona e quantità HP/Aura. Nell'elenco i cinque comandi con destinatario precompilano soltanto il testo.
+- Icona Android senza cornice nera vuota e anteprima HD Auto con selettore qualità.
+- Mix delle voci neurali e audio video verificato sull'emulatore Android. Account, sorgenti audio, impostazioni e aggiornamenti conservati.
 
-- NomeAPPISHOWDRIVE e icona fornita dalla community; applicazione separata da RealtimeChat e dall'appWindows.
-- Accesso Twitch e Kick, chat unite e TTS per entrambe; istruzioni semplici nella sezione Account e accesso alternativo dal browser del telefono.
-- Incluse le correzioni upstream per riproduzione vocale Android senza sottrarre l'audio ai video e per il mantenimento degli altoparlanti con audio miscelato.
-- Controllo e download degli aggiornamenti da GitHub, avanzamento visibile e verifica di integrità, versione, applicazione e firma. Android chiede conferma per installare. Installa gli aggiornamenti al termine della live.
-- Licenze e attribuzione di RealtimeChat conservate. Gli accessi e le chat continuano a utilizzare i servizi originali.
-
-I test della convivenza fra voce e video usano contenuti controllati sull'emulatoreAndroid. Il linkSoundAlerts privato e il telefono dello streamer richiedono ancora una prova diretta: questa versione non garantisce la disponibilità dei servizi esterni o della connessione.
+Non è incluso un filtro microfono: l'app non acquisisce né trasmette il microfono. Telefono reale, account dello streamer e link Sound Alerts privato restano da provare. I combattimenti manuali non sono inclusi.

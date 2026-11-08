@@ -5,6 +5,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:rtchat/l10n/app_localizations.dart';
 import 'package:rtchat/models/layout.dart';
+import 'package:rtchat/screens/settings/interface_themes.dart';
 import 'package:rtchat/models/style.dart';
 import 'package:rtchat/urls.dart';
 
@@ -31,6 +32,17 @@ class SettingsScreen extends StatelessWidget {
         builder: (context, layoutModel, child) {
           return ListView(
             children: [
+              ListTile(
+                leading: const Icon(Icons.palette_outlined),
+                title: const Text('Colori dell’interfaccia'),
+                subtitle: const Text('10 temi con anteprima'),
+                onTap:
+                    () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const InterfaceThemesScreen(),
+                      ),
+                    ),
+              ),
               ListTile(
                 leading: const Icon(Icons.system_update_alt),
                 title: const Text('Aggiornamenti APPISHOWDRIVE'),

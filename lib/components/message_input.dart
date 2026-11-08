@@ -3,15 +3,19 @@ import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:provider/provider.dart';
 import 'package:rtchat/components/autocomplete.dart';
+import 'package:rtchat/components/aura_controls.dart';
+import 'package:rtchat/models/aura_arena.dart';
 import 'package:rtchat/components/emote_picker.dart';
 import 'package:rtchat/components/provider_icon.dart';
 import 'package:rtchat/l10n/app_localizations.dart';
 import 'package:rtchat/models/adapters/actions.dart';
 import 'package:rtchat/models/channels.dart';
 import 'package:rtchat/models/commands.dart';
+import 'package:rtchat/models/layout.dart';
 import 'package:rtchat/models/messages/tokens.dart';
 import 'package:rtchat/models/messages/twitch/emote.dart';
 import 'package:rtchat/models/style.dart';
@@ -163,28 +167,45 @@ class MessageInputWidget extends StatefulWidget {
   State<MessageInputWidget> createState() => _MessageInputWidgetState();
 }
 
-final _emotes = [
-  "https://static-cdn.jtvnw.net/emoticons/v2/425618/default/light/2.0",
-  "https://static-cdn.jtvnw.net/emoticons/v2/112291/default/light/2.0",
-  "https://static-cdn.jtvnw.net/emoticons/v2/81274/default/light/2.0",
-  "https://static-cdn.jtvnw.net/emoticons/v2/28087/default/light/2.0",
-  "https://static-cdn.jtvnw.net/emoticons/v2/305954156/default/light/2.0",
-];
-
-const _greyscale = ColorFilter.matrix([
-  0.2126, 0.7152, 0.0722, 0, 0, // red
-  0.2126, 0.7152, 0.0722, 0, 0, // green
-  0.2126, 0.7152, 0.0722, 0, 0, // blue
-  0, 0, 0, 1, 0, // alpha
-]);
-
 class _MessageInputWidgetState extends State<MessageInputWidget> {
   EmoteTextEditingController? _textEditingController;
   final _chatInputFocusNode = FocusNode();
   var _isEmotePickerVisible = false;
+  var _isAuraPickerVisible = false;
   var _isKeyboardVisible = false;
+
+  Future<void> _preparePanel() async {
+    // Let the field's tap/focus event settle before hiding the native keyboard.
+    await Future<void>.delayed(Duration.zero);
+    if (!mounted) return;
+    _chatInputFocusNode.unfocus();
+    await SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
+    final deadline = DateTime.now().add(const Duration(milliseconds: 600));
+    while (mounted &&
+        View.of(context).viewInsets.bottom > 0 &&
+        DateTime.now().isBefore(deadline)) {
+      await Future<void>.delayed(const Duration(milliseconds: 16));
+    }
+  }
+
+  double _emotePanelHeight(BuildContext context) {
+    final media = MediaQuery.of(context);
+    final preview =
+        media.orientation == Orientation.portrait &&
+                context.watch<LayoutModel>().isShowPreview
+            ? media.size.width * 9 / 16
+            : 0.0;
+    return (media.size.height -
+            View.of(context).viewInsets.bottom /
+                View.of(context).devicePixelRatio -
+            media.padding.vertical -
+            kToolbarHeight -
+            preview -
+            90)
+        .clamp(64.0, 288.0);
+  }
+
   late StreamSubscription keyboardSubscription;
-  var _emoteIndex = Random().nextInt(_emotes.length);
   final _textSeed = Random().nextDouble();
   final List<String> _pendingSend = [];
 
@@ -219,6 +240,7 @@ class _MessageInputWidgetState extends State<MessageInputWidget> {
   void didUpdateWidget(MessageInputWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     _useEmotesOf(widget.channel);
+    if (oldWidget.channel != widget.channel) _isAuraPickerVisible = false;
   }
 
   /// Starts loading [channel]'s emotes if they aren't already the ones
@@ -314,6 +336,8 @@ class _MessageInputWidgetState extends State<MessageInputWidget> {
           ).send(channel, value);
           if (error != null) {
             messenger.showSnackBar(SnackBar(content: Text(error)));
+          } else if (mounted && channel.provider == Providers.twitch) {
+            context.read<AuraArenaModel>().sent(channel, value);
           }
         } catch (e) {
           messenger.showSnackBar(SnackBar(content: Text(e.toString())));
@@ -344,11 +368,31 @@ class _MessageInputWidgetState extends State<MessageInputWidget> {
   Widget build(BuildContext context) {
     final channel = widget.channel;
     final l10n = AppLocalizations.of(context)!;
+    final invite =
+        channel?.provider == Providers.twitch
+            ? context.watch<AuraArenaModel>().invitation(
+              channel!,
+              recipient:
+                  context
+                      .watch<UserModel>()
+                      .accountOn(Providers.twitch)
+                      ?.channel
+                      .displayName,
+            )
+            : null;
+    final showAura = _isAuraPickerVisible && invite == null;
+    if (invite != null && _isAuraPickerVisible) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) setState(() => _isAuraPickerVisible = false);
+      });
+    }
     return Material(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (channel?.provider == Providers.twitch && !showAura)
+            AuraContextCards(channel: channel!),
           // render pending sends
           ..._pendingSend.map(
             (e) => Padding(
@@ -403,54 +447,60 @@ class _MessageInputWidgetState extends State<MessageInputWidget> {
                       minLines: 1,
                       textAlignVertical: TextAlignVertical.center,
                       decoration: InputDecoration(
-                        prefixIcon: IconButton(
-                          onPressed:
-                              channel == null
-                                  ? null
-                                  : () async {
-                                    if (_isEmotePickerVisible) {
-                                      setState(
-                                        () => _isEmotePickerVisible = false,
-                                      );
-                                      _chatInputFocusNode.requestFocus();
-                                      return;
-                                    }
-
-                                    _chatInputFocusNode.unfocus();
-
-                                    // Wait for the keyboard visibility change.
-                                    if (_isKeyboardVisible) {
-                                      await keyboardSubscription
-                                          .asFuture<void>()
-                                          .timeout(
-                                            const Duration(milliseconds: 300),
-                                            onTimeout: () {},
+                        prefixIcon: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (channel?.provider == Providers.twitch)
+                              IconButton(
+                                tooltip: 'Aura Arena',
+                                iconSize: 24,
+                                icon: Image.asset(
+                                  'assets/aura-arena.png',
+                                  width: 24,
+                                  height: 24,
+                                ),
+                                onPressed: () async {
+                                  await _preparePanel();
+                                  if (!mounted) return;
+                                  setState(() {
+                                    _isAuraPickerVisible =
+                                        !_isAuraPickerVisible;
+                                    _isEmotePickerVisible = false;
+                                  });
+                                },
+                              ),
+                            IconButton(
+                              tooltip: 'Emote',
+                              onPressed:
+                                  channel == null
+                                      ? null
+                                      : () async {
+                                        if (_isEmotePickerVisible) {
+                                          setState(
+                                            () => _isEmotePickerVisible = false,
                                           );
-                                    }
+                                          _chatInputFocusNode.requestFocus();
+                                          return;
+                                        }
 
-                                    if (!mounted) return;
+                                        await _preparePanel();
 
-                                    setState(() {
-                                      _isEmotePickerVisible = true;
-                                      _emoteIndex = Random().nextInt(
-                                        _emotes.length,
-                                      );
-                                    });
-                                  },
-                          splashRadius: 24,
-                          icon:
-                              _isEmotePickerVisible
-                                  ? const Icon(Icons.keyboard_rounded)
-                                  : ColorFiltered(
-                                    colorFilter: _greyscale,
-                                    child: Image(
-                                      width: 24,
-                                      height: 24,
-                                      image: CachedNetworkImageProvider(
-                                        _emotes[_emoteIndex],
+                                        if (!mounted) return;
+
+                                        setState(() {
+                                          _isEmotePickerVisible = true;
+                                          _isAuraPickerVisible = false;
+                                        });
+                                      },
+                              splashRadius: 24,
+                              icon:
+                                  _isEmotePickerVisible
+                                      ? const Icon(Icons.keyboard_rounded)
+                                      : const Icon(
+                                        Icons.emoji_emotions_outlined,
                                       ),
-                                    ),
-                                  ),
+                            ),
+                          ],
                         ),
                         suffixIcon: IconButton(
                           icon: const Icon(Icons.send_rounded),
@@ -513,7 +563,10 @@ class _MessageInputWidgetState extends State<MessageInputWidget> {
                       },
                       onSubmitted: sendMessage,
                       onTap: () {
-                        setState(() => _isEmotePickerVisible = false);
+                        setState(() {
+                          _isEmotePickerVisible = false;
+                          _isAuraPickerVisible = false;
+                        });
                         _chatInputFocusNode.requestFocus();
                       },
                     ),
@@ -522,24 +575,58 @@ class _MessageInputWidgetState extends State<MessageInputWidget> {
               ],
             ),
           ),
+          if (channel?.provider == Providers.twitch)
+            AnimatedSize(
+              duration:
+                  MediaQuery.of(context).disableAnimations
+                      ? Duration.zero
+                      : const Duration(milliseconds: 180),
+              curve: Curves.easeOutCubic,
+              child:
+                  showAura
+                      ? AuraCommandPanel(
+                        channel: channel!,
+                        onCompose: (text) {
+                          _textEditingController!.value = TextEditingValue(
+                            text: text,
+                            selection: TextSelection.collapsed(
+                              offset: text.length,
+                            ),
+                          );
+                          setState(() {
+                            _isAuraPickerVisible = false;
+                            _isEmotePickerVisible = false;
+                          });
+                          _chatInputFocusNode.requestFocus();
+                        },
+                        onTournament:
+                            () => setState(() => _isAuraPickerVisible = false),
+                      )
+                      : const SizedBox.shrink(),
+            ),
           _isEmotePickerVisible && channel != null
-              ? EmotePickerWidget(
-                channel: channel,
-                emotes: _loadedEmotes,
-                onEmoteSelected: (emote) {
-                  if (emote == null) {
-                    setState(() {
-                      _isEmotePickerVisible = false;
-                    });
-                    return;
-                  }
-                  if (_textEditingController?.text.isNotEmpty ?? false) {
-                    _textEditingController?.text =
-                        "${_textEditingController?.text} ${emote.code} ";
-                  } else {
-                    _textEditingController?.text = "${emote.code} ";
-                  }
-                },
+              ? ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: _emotePanelHeight(context),
+                ),
+                child: EmotePickerWidget(
+                  channel: channel,
+                  emotes: _loadedEmotes,
+                  onEmoteSelected: (emote) {
+                    if (emote == null) {
+                      setState(() {
+                        _isEmotePickerVisible = false;
+                      });
+                      return;
+                    }
+                    if (_textEditingController?.text.isNotEmpty ?? false) {
+                      _textEditingController?.text =
+                          "${_textEditingController?.text} ${emote.code} ";
+                    } else {
+                      _textEditingController?.text = "${emote.code} ";
+                    }
+                  },
+                ),
               )
               : Container(),
         ],

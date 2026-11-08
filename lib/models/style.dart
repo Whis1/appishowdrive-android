@@ -50,7 +50,7 @@ extension CompactMessagesJson on CompactMessages {
 }
 
 class StyleModel extends ChangeNotifier {
-  double _fontSize = 20;
+  double _fontSize = 24;
   double _lightnessBoost = 0.179;
   bool _isDeletedMessagesVisible = true;
   CompactMessages _compactMessages = CompactMessages.none;
@@ -125,6 +125,7 @@ class StyleModel extends ChangeNotifier {
   StyleModel.fromJson(Map<String, dynamic> json) {
     if (json['fontSize'] != null) {
       _fontSize = json['fontSize'];
+      if (json['dashboardStyle'] != 1 && _fontSize == 20) _fontSize = 24;
     }
     if (json['lightnessBoost'] != null) {
       _lightnessBoost = json['lightnessBoost'];
@@ -146,6 +147,7 @@ class StyleModel extends ChangeNotifier {
   Map<String, dynamic> toJson() => {
     "lightnessBoost": _lightnessBoost,
     "fontSize": _fontSize,
+    "dashboardStyle": 1,
     "isDeletedMessagesVisible": _isDeletedMessagesVisible,
     "compactMessages": _compactMessages.toJson(),
     "isDiscoModeEnabled": _isDiscoModeAvailable,

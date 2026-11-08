@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rtchat/components/provider_icon.dart';
 import 'package:provider/provider.dart';
 import 'package:rtchat/components/chat_history/tokens.dart';
 import 'package:rtchat/components/chat_history/twitch/message.dart' show colors;
@@ -71,55 +72,59 @@ class KickMessageWidget extends StatelessWidget {
           opacity: model.deleted ? 0.6 : 1.0,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (reply != null)
+            child: PlatformChatRow(
+              provider: 'kick',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (reply != null)
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          const WidgetSpan(
+                            alignment: PlaceholderAlignment.middle,
+                            child: Padding(
+                              padding: EdgeInsets.only(right: 4),
+                              child: Icon(Icons.reply, size: 14),
+                            ),
+                          ),
+                          TextSpan(
+                            text:
+                                "@${styleModel.getDisplayName(reply.author)}: ",
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                          TextSpan(
+                            text: reply.text,
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                        ],
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   Text.rich(
                     TextSpan(
                       children: [
-                        const WidgetSpan(
-                          alignment: PlaceholderAlignment.middle,
-                          child: Padding(
-                            padding: EdgeInsets.only(right: 4),
-                            child: Icon(Icons.reply, size: 14),
+                        for (final badge in model.author.badges)
+                          WidgetSpan(
+                            alignment: PlaceholderAlignment.middle,
+                            child: _badge(context, badge, styleModel.fontSize),
                           ),
-                        ),
                         TextSpan(
-                          text: "@${styleModel.getDisplayName(reply.author)}: ",
-                          style: Theme.of(context).textTheme.bodySmall,
+                          text: styleModel.getDisplayName(model.author),
+                          style: authorStyle,
                         ),
-                        TextSpan(
-                          text: reply.text,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
+                        const TextSpan(text: ": "),
+                        for (final token in tokens)
+                          ...renderToken(context, styleModel, token),
                       ],
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      fontSize: styleModel.fontSize,
+                    ),
                   ),
-                Text.rich(
-                  TextSpan(
-                    children: [
-                      for (final badge in model.author.badges)
-                        WidgetSpan(
-                          alignment: PlaceholderAlignment.middle,
-                          child: _badge(context, badge, styleModel.fontSize),
-                        ),
-                      TextSpan(
-                        text: styleModel.getDisplayName(model.author),
-                        style: authorStyle,
-                      ),
-                      const TextSpan(text: ": "),
-                      for (final token in tokens)
-                        ...renderToken(context, styleModel, token),
-                    ],
-                  ),
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    fontSize: styleModel.fontSize,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );

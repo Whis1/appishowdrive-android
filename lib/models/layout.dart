@@ -3,6 +3,19 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+enum InterfaceTheme {
+  ciano,
+  nero,
+  blu,
+  viola,
+  verde,
+  marrone,
+  giallo,
+  rosso,
+  arancione,
+  grigio,
+}
+
 enum PreferredOrientation { portrait, landscape, system }
 
 extension _OrientationPreferenceJson on PreferredOrientation {
@@ -64,7 +77,14 @@ class LayoutModel extends ChangeNotifier {
   PreferredOrientation _orientationPreference = PreferredOrientation.system;
   bool _isShowNotifications = false;
   bool _isShowPreview = false;
-  ThemeMode _themeMode = ThemeMode.system;
+  ThemeMode _themeMode = ThemeMode.dark;
+  InterfaceTheme _interfaceTheme = InterfaceTheme.ciano;
+  InterfaceTheme get interfaceTheme => _interfaceTheme;
+  set interfaceTheme(InterfaceTheme value) {
+    if (_interfaceTheme == value) return;
+    _interfaceTheme = value;
+    notifyListeners();
+  }
 
   void updatePanelHeight({required double dy}) {
     _panelHeight += dy;
@@ -163,6 +183,11 @@ class LayoutModel extends ChangeNotifier {
   }
 
   LayoutModel.fromJson(Map<String, dynamic> json) {
+    _interfaceTheme =
+        InterfaceTheme.values
+            .where((p) => p.name == json['interfaceTheme'])
+            .firstOrNull ??
+        InterfaceTheme.ciano;
     if (json['panelHeight'] != null) {
       _panelHeight = json['panelHeight'];
     }
@@ -201,5 +226,6 @@ class LayoutModel extends ChangeNotifier {
     "isShowNotifications": _isShowNotifications,
     "isShowPreview": _isShowPreview,
     "themeMode": _themeMode.toJson(),
+    "interfaceTheme": _interfaceTheme.name,
   };
 }

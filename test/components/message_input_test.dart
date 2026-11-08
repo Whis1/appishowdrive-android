@@ -4,6 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 import 'package:provider/provider.dart';
 import 'package:rtchat/api.dart';
+import 'package:rtchat/models/aura_arena.dart';
+import 'package:rtchat/models/layout.dart';
+import 'package:rtchat/models/commands.dart';
+import 'package:rtchat/components/aura_controls.dart';
 import 'package:rtchat/components/emote_picker.dart';
 import 'package:rtchat/components/message_input.dart';
 import 'package:rtchat/l10n/app_localizations.dart';
@@ -66,6 +70,9 @@ void main() {
   Widget app(Channel? channel, {Channel? account, List<Account>? accounts}) =>
       MultiProvider(
         providers: [
+          ChangeNotifierProvider(create: (_) => AuraArenaModel()),
+          ChangeNotifierProvider(create: (_) => CommandsModel.fromJson({})),
+          ChangeNotifierProvider(create: (_) => LayoutModel.fromJson({})),
           ChangeNotifierProvider<UserModel>(
             create:
                 (context) =>
@@ -98,6 +105,9 @@ void main() {
     Key key = const ValueKey('input'),
   }) => MultiProvider(
     providers: [
+      ChangeNotifierProvider(create: (_) => AuraArenaModel()),
+      ChangeNotifierProvider(create: (_) => CommandsModel.fromJson({})),
+      ChangeNotifierProvider(create: (_) => LayoutModel.fromJson({})),
       ChangeNotifierProvider<UserModel>(
         create: (context) => FakeUserModel(accounts: accounts),
       ),
@@ -128,10 +138,71 @@ void main() {
   );
 
   Future<EmotePickerWidget> openPicker(WidgetTester tester) async {
-    await tester.tap(find.byType(IconButton).first);
-    await tester.pump();
+    await tester.tap(find.byTooltip('Emote'));
+    await tester.pumpAndSettle();
     return tester.widget<EmotePickerWidget>(find.byType(EmotePickerWidget));
   }
+
+  testWidgets(
+    'Aura: i cinque comandi nel pannello preparano solo la bozza; invio esclusivamente dal campo chat',
+    (tester) async {
+      final account = fakeAccount(twitch, appName: 'aura-draft'),
+          api = fakeApiFor(account);
+      addTearDown(Api.debugReset);
+      await tester.pumpWidget(app(twitch, accounts: [account]));
+      await tester.pumpAndSettle();
+      for (final (label, command) in [
+        ('!Processo', '!Processo'),
+        ('!Sanziona', '!Sanziona'),
+        ('!HP', '!HP'),
+        ('!LevaHP', '!LevaHP'),
+        ('!LevaPA', '!LevaPA'),
+      ]) {
+        await tester.tap(find.byTooltip('Aura Arena'));
+        await tester.pumpAndSettle();
+        final grid =
+            find
+                .descendant(
+                  of: find.byType(AuraCommandPanel),
+                  matching: find.byType(Scrollable),
+                )
+                .first;
+        await tester.scrollUntilVisible(find.text(label), 90, scrollable: grid);
+        await tester.tap(find.text(label));
+        await tester.pumpAndSettle();
+        expect(
+          tester
+              .widget<TextField>(find.byType(TextField).first)
+              .controller!
+              .text,
+          '$command ',
+        );
+        expect(api.calls, isEmpty);
+        expect(find.byType(AlertDialog), findsNothing);
+      }
+      await tester.enterText(find.byType(TextField).first, '!LevaPA 50 @alice');
+      await tester.tap(find.byIcon(Icons.send_rounded));
+      await tester.pumpAndSettle();
+      expect(api.calls.single.data['message'], '!LevaPA 50 @alice');
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpWidget(const SizedBox());
+    },
+    experimentalLeakTesting: ignoreImages,
+  );
+
+  testWidgets(
+    'Twitch emote button remains visible beside Aura and opens the original picker',
+    (tester) async {
+      await tester.pumpWidget(app(twitch, account: twitch));
+      await tester.pumpAndSettle();
+      expect(find.byTooltip('Aura Arena'), findsOneWidget);
+      expect(find.byIcon(Icons.emoji_emotions_outlined), findsOneWidget);
+      await openPicker(tester);
+      expect(find.byType(EmotePickerWidget), findsOneWidget);
+      await tester.pumpWidget(const SizedBox());
+    },
+    experimentalLeakTesting: ignoreImages,
+  );
 
   group("emotes", () {
     testWidgets(

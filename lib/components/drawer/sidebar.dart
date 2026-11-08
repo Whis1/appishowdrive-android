@@ -2,6 +2,7 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rtchat/components/channel_search_bottom_sheet.dart';
+import 'package:rtchat/components/drive_brand.dart';
 import 'package:rtchat/components/drawer/quicklinks_listview.dart';
 import 'package:rtchat/components/in_chat_channels.dart';
 import 'package:rtchat/components/image/cross_fade_image.dart';
@@ -15,7 +16,6 @@ import 'package:rtchat/models/qr_code.dart';
 import 'package:rtchat/models/user.dart';
 import 'package:rtchat/models/views.dart';
 import 'package:rtchat/screens/settings/qr.dart';
-import 'package:rtchat/urls.dart';
 
 class _DrawerHeader extends StatelessWidget {
   const _DrawerHeader();
@@ -28,36 +28,7 @@ class _DrawerHeader extends StatelessWidget {
         padding: EdgeInsets.zero,
         child: Column(
           children: [
-            GestureDetector(
-              onTap: () => openUrl(Uri.parse("https://muxable.com")),
-              child: SizedBox(
-                height: 50,
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Consumer<LayoutModel>(
-                    builder: (context, value, child) {
-                      return ColorFiltered(
-                        colorFilter:
-                            value.themeMode == ThemeMode.light
-                                ? const ColorFilter.matrix(<double>[
-                                  -1.0, 0.0, 0.0, 0.0, 255.0, //
-                                  0.0, -1.0, 0.0, 0.0, 255.0, //
-                                  0.0, 0.0, -1.0, 0.0, 255.0, //
-                                  0.0, 0.0, 0.0, 1.0, 0.0, //
-                                ])
-                                : const ColorFilter.matrix(<double>[
-                                  1.0, 0.0, 0.0, 0.0, 0.0, //
-                                  0.0, 1.0, 0.0, 0.0, 0.0, //
-                                  0.0, 0.0, 1.0, 0.0, 0.0, //
-                                  0.0, 0.0, 0.0, 1.0, 0.0, //
-                                ]),
-                        child: Image.asset("assets/muxable.png"),
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ),
+            const DriveBrand(),
             Row(
               children: [
                 Expanded(

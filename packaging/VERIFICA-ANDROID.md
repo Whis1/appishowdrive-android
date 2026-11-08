@@ -1,3 +1,24 @@
+# Verifica APPISHOWDRIVE Android 1.1.0/build11
+
+Verifiche dell'8 novembre 2026:
+
+- Dieci temi colore con scelta salvata; contrasto di testo e pulsanti verificato per tutte le20combinazioni chiare/scure.
+- 619 test Flutter dell'app e 94 del motore vocale superati; analyzer senza segnalazioni.
+- 41 test JVM superati; un controllo opzionale di parità resta escluso perché richiede tensori di riferimento esterni. Tre controlli del collegamento al lettore Twitch superati.
+- Voci italiane reali Supertonic 3 su emulatore Android15/API35: quattro timbri sintetizzati, sei messaggi riprodotti con il video attivo, nessuna pausa né ricarica della sorgente.
+- Cattura indipendente del mix Android: segnale del video presente in tutte le 894 finestre da20ms durante la lettura neurale; nessun intervallo senza segnale video rilevato. Voce presente nello stesso mix; pausa/resume intenzionale successiva come controllo.
+- UI Android con widget di produzione e account/messaggi di prova: comandi canonici, icone piattaforma solo sulla destra, sequenza torneo, udienze con quattro decisioni, invito e selezioni voci. I messaggi di prova non sono stati inviati in live.
+- Il codice della barra originale Home, dei suoi controlli TTS/anteprima/notifiche/spettatori e del pannello emote originale è conservato. Il pulsante per aprire le emote ora usa una faccina locale sempre disponibile.
+- Modello opzionale:16file,401.276.744byte, SHA256 e dimensioni verificati; peso esterno all'APK, dieci voci in un solo pacchetto. Licenza completa OpenRAIL-M inclusa, motoreMIT e fontOFL attribuiti.
+
+La cattura è un'app di QA separata, esclusa dalla release. Nessuna nuova autorizzazione di acquisizione microfono nell'app. Telefono fisico, account reali e sorgente Sound Alerts privata dello streamer non sono stati provati. Il microfono in OBS richiede di identificare la sorgente reale inviata dal telefono.
+
+Download pubblico e aggiornamento1.0.0→1.1.0 vengono verificati dopo la creazione della release; i risultati definitivi sono riportati nel report di consegna.
+
+---
+
+## Storico1.0.0
+
 # Verifica APPISHOWDRIVE Android 1.0.0
 
 Verifiche del 7 novembre 2026:
