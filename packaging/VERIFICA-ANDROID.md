@@ -13,7 +13,9 @@ Verifiche dell'8 novembre 2026:
 
 La cattura è un'app di QA separata, esclusa dalla release. Nessuna nuova autorizzazione di acquisizione microfono nell'app. Telefono fisico, account reali e sorgente Sound Alerts privata dello streamer non sono stati provati. Il microfono in OBS richiede di identificare la sorgente reale inviata dal telefono.
 
-Download pubblico e aggiornamento1.0.0→1.1.0 vengono verificati dopo la creazione della release; i risultati definitivi sono riportati nel report di consegna.
+Release1.1.0/build11 pubblicata e verificata: APK196.549.930byte, SHA256 `049bbc96c2c7d2e5c3885b28518f93af53155c50eb220960098333af0a5aed54`, stesso certificato permanente della1.0.0. Download pubblico completo e feed controllati. Aggiornamento reale1.0.0/build10→1.1.0/build11 tramite download nativo dal feedGitHub e normale installerAndroid, con autorizzazione della sorgente e conferma dell'utente; preferenzeTTS della configurazioneQA conservate. Nessun account reale usato.
+
+Controlli GitHub del codice rilasciato superati: https://github.com/Whis1/appishowdrive-android/actions/runs/42505553654 .
 
 ---
 
