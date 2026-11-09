@@ -302,13 +302,16 @@ class AuraCommandPanel extends StatelessWidget {
     itemCount: commands.length,
     itemBuilder: (context, i) {
       final command = commands[i];
-      final composeOnly = [
-        '!Processo',
-        '!Sanziona',
-        '!HP',
-        '!LevaHP',
-        '!LevaPA',
-      ].contains(command.command);
+      final composeOnly =
+          [
+            '!Processo',
+            '!Sanziona',
+            '!HP',
+            '!LevaHP',
+            '!LevaPA',
+          ].contains(command.command) ||
+          command.argument == AuraArgument.user ||
+          command.argument == AuraArgument.userNumber;
       return OutlinedButton(
         onPressed:
             busy

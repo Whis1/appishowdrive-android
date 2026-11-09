@@ -38,18 +38,18 @@ void main() {
   }
 
   testWidgets(
-    'Italian voices cannot select an unavailable model; Android remains usable',
+    'Bundled Italian profiles need no downloaded pack; Android remains usable',
     (tester) async {
       await open(tester, installed: false);
-      await tester.scrollUntilVisible(find.text('Voce femminile 1'), 300);
+      await tester.scrollUntilVisible(find.text('Sara · femminile 1'), 300);
       final row = find.ancestor(
-        of: find.text('Voce femminile 1'),
+        of: find.text('Sara · femminile 1'),
         matching: find.byType(Card),
       );
       for (final chip in tester.widgetList<FilterChip>(
         find.descendant(of: row, matching: find.byType(FilterChip)),
       )) {
-        expect(chip.onSelected, isNull);
+        expect(chip.onSelected, isNotNull);
       }
       await tester.pumpWidget(const SizedBox());
     },
@@ -58,9 +58,9 @@ void main() {
     'Italian voice row independently selects Twitch and Kick with platform icons',
     (tester) async {
       final tts = await open(tester, installed: true);
-      await tester.scrollUntilVisible(find.text('Voce femminile 1'), 300);
+      await tester.scrollUntilVisible(find.text('Sara · femminile 1'), 300);
       final row = find.ancestor(
-        of: find.text('Voce femminile 1'),
+        of: find.text('Sara · femminile 1'),
         matching: find.byType(Card),
       );
       expect(

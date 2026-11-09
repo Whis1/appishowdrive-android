@@ -1,0 +1,25 @@
+Kokoro-82M, trained by @rzvzn / hexgrad — Apache License 2.0.
+Model: https://huggingface.co/hexgrad/Kokoro-82M
+LiteRT conversion and self-contained text frontends:
+https://huggingface.co/litert-community/Kokoro-82M
+Runtime: Google MediaPipe Tasks Audio 1.2.2 and LiteRT-LM — Apache License 2.0.
+
+APPISHOWDRIVE modifications, 9 November 2026:
+Italian voice profiles derived deterministically from the pinned conversion
+33ad69fec6c4d9eb10a547aaf9a8c63e7c446a56/kokoro_int8_fp16.litertlm.
+Original SHA256: e7b931ee5d4b7104012a838c9eee240d19ea69cb3ca269041a3274f83dbb7fa1
+Derived SHA256: 9cffd6930329144d76f35d5bf1c6f411752e48a294e6618ca903987aacb75fe5
+Sara (if_sara) and Nicola (im_nicola) are unchanged original styles.
+Eight additional profiles blend 60% of Sara/Nicola with 40% of the following
+same-gender speaker embeddings: af_heart, bf_emma, ef_dora, pf_dora;
+am_adam, bm_george, em_alex, pm_alex. Their derived style-bank identifiers
+are if_heart, if_emma, if_dora, if_luna, im_adam, im_george, im_alex, im_luca.
+They use the original Italian normalization/phonemization frontend. Acoustic
+and vocoder model weights are unchanged. These are derived profiles, not ten
+separately recorded native Italian actors or voice clones of the streamer.
+Reproducible conversion: packaging/prepare-embedded-speech.mjs.
+
+Bundled lexicons in the upstream multilingual file:
+English Misaki (Apache-2.0); Japanese unidic-lite (BSD);
+Chinese jieba and pypinyin (MIT). The app exposes Italian profiles only.
+Upstream model card: https://huggingface.co/litert-community/Kokoro-82M

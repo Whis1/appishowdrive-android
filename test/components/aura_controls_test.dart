@@ -186,6 +186,38 @@ void main() {
     expect(find.text('Iniziatorneo'), findsNothing);
     await tester.pumpWidget(const SizedBox());
   });
+  testWidgets(
+    'Aura recipient commands prefill the composer and never send incomplete messages',
+    (tester) async {
+      final model = AuraArenaModel(),
+          user = FakeUserModel(userChannel: channel);
+      addTearDown(model.dispose);
+      addTearDown(user.dispose);
+      final api = fakeApiFor(user.accounts.single), composed = <String>[];
+      await tester.pumpWidget(
+        app(
+          model,
+          user,
+          AuraCommandPanel(channel: channel, onCompose: composed.add),
+        ),
+      );
+      await tester.tap(find.text('Solo utenti'));
+      await tester.pumpAndSettle();
+      for (final command in ['!Sfida', '!Puntiaura', '!Vincites']) {
+        await tester.scrollUntilVisible(
+          find.text(command),
+          180,
+          scrollable: find.byType(Scrollable).last,
+        );
+        await tester.tap(find.text(command));
+        await tester.pumpAndSettle();
+        expect(composed.last, '$command ');
+        expect(find.byType(AlertDialog), findsNothing);
+        expect(api.calls, isEmpty);
+      }
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
   testWidgets('Aura: percorso ForzaTorneo, Partecipa, Iniziatorneo in ordine', (
     tester,
   ) async {

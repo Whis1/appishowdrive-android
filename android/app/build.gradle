@@ -42,6 +42,7 @@ android {
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
+    packaging { jniLibs { excludes += ['**/libonnxruntime.so', '**/libonnxruntime4j_jni.so'] } }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -68,6 +69,7 @@ android {
     buildTypes {
         release {
             signingConfig = signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             // This community build must not upload its mappings to upstream.
             firebaseCrashlytics {
                 mappingFileUploadEnabled false
@@ -88,6 +90,7 @@ flutter {
 }
 
 dependencies {
+    implementation 'com.google.mediapipe:tasks-audio:1.2.2'
     testImplementation 'junit:junit:4.13.2'
     implementation "androidx.media:media:1.7.1"
     implementation 'com.google.android.play:app-update:2.1.0'

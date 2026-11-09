@@ -55,7 +55,18 @@ class StyleModel extends ChangeNotifier {
   bool _isDeletedMessagesVisible = true;
   CompactMessages _compactMessages = CompactMessages.none;
   bool _isDiscoModeAvailable = false;
-  bool _isLoginShown = true;
+  bool _isLoginShown = false;
+  final Set<String> _hiddenBadgeProviders = {};
+  bool badgesVisible(String provider) =>
+      !_hiddenBadgeProviders.contains(provider);
+  void hideBadges(String provider, bool hidden) {
+    if (hidden) {
+      _hiddenBadgeProviders.add(provider);
+    } else {
+      _hiddenBadgeProviders.remove(provider);
+    }
+    notifyListeners();
+  }
 
   double get fontSize {
     return _fontSize;
@@ -74,12 +85,50 @@ class StyleModel extends ChangeNotifier {
   }
 
   Color applyLightnessBoost(BuildContext context, Color color) {
-    switch (Theme.of(context).brightness) {
-      case Brightness.dark:
-        return lighten(color, lightnessBoost);
-      case Brightness.light:
-        return darken(color, lightnessBoost);
+    final theme = Theme.of(context), dark = theme.brightness == Brightness.dark;
+    // Preserve the existing treatment of every colour except pure Twitch black.
+    if ((color.toARGB32() & 0x00ffffff) != 0 || !dark) {
+      return dark
+          ? lighten(color, lightnessBoost)
+          : darken(color, lightnessBoost);
     }
+    final backgrounds = [
+      theme.scaffoldBackgroundColor,
+      theme.colorScheme.surface,
+      Color.alphaBlend(
+        theme.colorScheme.primary.withValues(alpha: .035),
+        theme.colorScheme.surface,
+      ),
+    ];
+    double contrast(Color a, Color b) {
+      final x = a.computeLuminance(), y = b.computeLuminance();
+      return ((x > y ? x : y) + .05) / ((x < y ? x : y) + .05);
+    }
+
+    final hsl = HSLColor.fromColor(theme.colorScheme.onSurface);
+    var candidate = hsl.toColor();
+    if (backgrounds.every((b) => contrast(candidate, b) >= 4.5)) {
+      return candidate;
+    }
+    final target = dark ? 1.0 : 0.0;
+    var low = 0.0, high = 1.0;
+    for (var i = 0; i < 18; i++) {
+      final fraction = (low + high) / 2;
+      candidate =
+          hsl
+              .withLightness(
+                hsl.lightness + (target - hsl.lightness) * fraction,
+              )
+              .toColor();
+      if (backgrounds.every((b) => contrast(candidate, b) >= 4.5)) {
+        high = fraction;
+      } else {
+        low = fraction;
+      }
+    }
+    return hsl
+        .withLightness(hsl.lightness + (target - hsl.lightness) * high)
+        .toColor();
   }
 
   set isDeletedMessagesVisible(bool isDeletedMessagesVisible) {
@@ -109,20 +158,21 @@ class StyleModel extends ChangeNotifier {
   }
 
   String getDisplayName(ChatUser user) {
-    final author = user.displayName ?? user.login;
-    // kick slugs swap underscores for dashes, which isn't worth showing.
-    if (author.toLowerCase().replaceAll('_', '-') !=
-            user.login.replaceAll('_', '-') &&
-        isLoginShown) {
-      // this is an internationalized name.
-      return "${user.displayName} (${user.login})";
-    }
-    return author;
+    if (isLoginShown) return user.login;
+    final displayName = user.displayName?.trim();
+    return displayName == null || displayName.isEmpty
+        ? user.login
+        : displayName;
   }
 
   bool get isDiscoModeAvailable => _isDiscoModeAvailable;
 
   StyleModel.fromJson(Map<String, dynamic> json) {
+    if (json['hiddenBadgeProviders'] is List) {
+      _hiddenBadgeProviders.addAll(
+        (json['hiddenBadgeProviders'] as List).whereType<String>(),
+      );
+    }
     if (json['fontSize'] != null) {
       _fontSize = json['fontSize'];
       if (json['dashboardStyle'] != 1 && _fontSize == 20) _fontSize = 24;
@@ -139,12 +189,14 @@ class StyleModel extends ChangeNotifier {
     if (json['isDiscoModeEnabled'] != null) {
       _isDiscoModeAvailable = json['isDiscoModeEnabled'];
     }
-    if (json['isLoginShown'] != null) {
+    if (json['singleUsername'] == 1 && json['isLoginShown'] != null) {
       _isLoginShown = json['isLoginShown'];
     }
   }
 
   Map<String, dynamic> toJson() => {
+    'singleUsername': 1,
+    "hiddenBadgeProviders": _hiddenBadgeProviders.toList(),
     "lightnessBoost": _lightnessBoost,
     "fontSize": _fontSize,
     "dashboardStyle": 1,

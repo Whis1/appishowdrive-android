@@ -57,7 +57,12 @@ const auraUserCommands = [
   ),
   AuraCommand('!Accetta', 'Accetta sfida', streamer: false),
   AuraCommand('!Classificaura', 'Classifica Aura', streamer: false),
-  AuraCommand('!Puntiaura', 'I miei Punti Aura', streamer: false),
+  AuraCommand(
+    '!Puntiaura',
+    'I miei Punti Aura',
+    streamer: false,
+    argument: AuraArgument.user,
+  ),
   AuraCommand('!Livello', 'Il mio livello', streamer: false),
   AuraCommand('!Bonus', 'Bonus sfide', streamer: false),
   AuraCommand('!Sceglipg', 'Scegli personaggio', streamer: false),
@@ -71,7 +76,12 @@ const auraUserCommands = [
   AuraCommand('!Sistemalivelli', 'Sistema livelli', streamer: false),
   AuraCommand('!Proposteapprovate', 'Proposte approvate', streamer: false),
   AuraCommand('!Ruotas', 'Gira la ruota', streamer: false),
-  AuraCommand('!Vincites', 'Ultima vincita', streamer: false),
+  AuraCommand(
+    '!Vincites',
+    'Ultima vincita',
+    streamer: false,
+    argument: AuraArgument.user,
+  ),
 ];
 String auraEncode(AuraCommand command, {String? target, String? amount}) {
   final needsUser = [

@@ -7,16 +7,18 @@ Community edition of [RealtimeChat](https://github.com/muxable/rtchat), based on
 
 Android app identity: `com.ishowdrive.chat`. The launcher icon is the image supplied by the ISHOWDRIVE community. Twitch and Kick can be connected through Settings → Accounts; both chats are merged for TTS. Original provider services remain a dependency.
 
-## Community update 1.1.0
+## Community update 1.1.1
 
 - Ten selectable interface color palettes, immediately applied and saved in Settings.
 - Larger, readable chat, dark dashboard theme, local Manrope/Space Grotesk fonts, compact Twitch/Kick icons at the right of each message. Original role/sub badges remain before the author.
-- Ten optional offline Italian AI voices (Supertonic 3), one verified download of about 383 MiB. Preview and select the same or different voice for Twitch and Kick. Engine code MIT; model weights OpenRAIL-M, with the full license included. No model is bundled into APK updates.
+- Ten bundled Italian reading profiles (five female, five male), including Sara and Nicola and eight derived timbres. No voice-pack download or subscription. The model runs in a separate Android process, with a system-voice fallback if it cannot run. Android 8+ and sufficient available memory are required for the bundled engine; the Android system voice remains available on the app's other supported devices. Apache-2.0 model/runtime and reproducible derivation are documented in assets/KOKORO-NOTICE.txt. Supertonic 2/3 downloads and activation are retired.
+- Twitch badges enabled by default; public FrankerFaceZ, BetterTTV, Chatterino badges, selected Twitch pronouns and active 7TV nickname paints. History settings include per-service and all-on/off controls. One display name only, with the selected 7TV paint applied to that name. Only pure black nicknames receive the stronger contrast treatment; other colours retain their previous treatment.
+- The supplied emperor welcomes signed-in users once per cold launch, with audio-aligned lips and a closed-lip smile after speech. The touch-through mascot stays at the lower left, holds for two seconds and fades. It can be disabled in Settings and does not replay on browser/page resumes.
 - Aura Arena panel for Twitch, own-channel streamer actions and user commands. Command buttons show the real command names. Tournament controls appear in order: create → force choice → participation choice → start/end. Audience decisions and challenge accept/ignore controls are contextual.
-- User menu: immediate tagged !Processo/!Sanziona; quantity and confirmation for HP/Aura adjustments. Those five commands in the command panel only fill the chat draft for manual completion.
+- User menu: immediate tagged !Processo/!Sanziona; quantity and confirmation for HP/Aura adjustments. Recipient commands in the panel, including !Sfida and !Vincites, fill the chat draft for manual completion and sending.
 - Launcher icon fills its Android mask. Preview defaults to HD Auto and retains a manual quality choice.
 
-This app does not capture or broadcast a microphone. It cannot filter the microphone of another Android app. Processing a phone feed in OBS requires identifying the actual phone-to-OBS audio source; keep it separate from alerts/TTS. The manual fighting arena is not included.
+The app cannot filter the microphone captured by another Android app. An optional [OBS Windows companion](https://github.com/Whis1/appishowdrive-android/releases/latest/download/APPISHOWDRIVE-Voce-OBS.zip) applies adaptive voice/noise processing to the selected dedicated mic source on the receiving PC. It restores ambience between speech, and must not be applied to mixed music/alerts/TTS. Installation and source selection on the streamer's PC are required; its private phone-to-OBS feed has not been tested. Companion code is GPL-2.0-or-later with BSD-licensed RNNoise, separate from the Android APK. The manual fighting arena is not included.
 
 Updates are distributed through this repository’s GitHub Releases. The app checks at launch, downloads new APKs with progress and verifies size, SHA256, package, increasing version and the installed app’s signing certificate. Android confirmation is required to install. APK installation restarts the app: install at the end of the live. User settings and accounts are preserved across updates to this app.
 

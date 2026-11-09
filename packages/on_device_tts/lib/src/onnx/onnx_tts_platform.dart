@@ -245,6 +245,18 @@ class OnnxTtsPlatform {
 
   /// How much memory the device has, or null where the platform doesn't
   /// say.
+  Future<void> resetNeuralRecovery() async {
+    try {
+      await _methods.invokeMethod<void>('resetNeuralRecovery');
+    } on MissingPluginException {
+      /* No guard on other platforms. */
+    }
+  }
+
+  Future<Map<Object?, Object?>> speechDiagnostics() async =>
+      await _methods.invokeMapMethod<Object?, Object?>('speechDiagnostics') ??
+      {};
+
   Future<DeviceMemory?> deviceMemory() async {
     try {
       final map = await _methods.invokeMapMethod<Object?, Object?>(

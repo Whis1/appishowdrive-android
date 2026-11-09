@@ -12,9 +12,15 @@ class TwitchBadgeModel extends ChangeNotifier {
   List<TwitchBadgeInfo> localBadgeSets = [];
   List<TwitchBadgeInfo> globalBadgeSets = [];
   Set<String> _enabled = {};
-  bool _isAllEnabled = false;
+  bool _isAllEnabled = true;
+  Channel? _channel;
+  var _generation = 0;
+  bool _disposed = false;
 
   set channel(Channel? channel) {
+    if (_channel == channel && _globalBadgeSubscription != null) return;
+    _channel = channel;
+    final generation = ++_generation;
     localBadgeSets.clear();
     globalBadgeSets.clear();
     _globalBadgeSubscription?.cancel();
@@ -24,9 +30,10 @@ class TwitchBadgeModel extends ChangeNotifier {
         .getTwitchBadges()
         .asStream()
         .listen((badgeSets) {
+          if (_disposed || generation != _generation) return;
           globalBadgeSets = badgeSets;
           notifyListeners();
-        });
+        }, onError: (Object _) {});
     if (channel != null) {
       if (channel.provider != Providers.twitch) {
         return;
@@ -35,14 +42,23 @@ class TwitchBadgeModel extends ChangeNotifier {
           .getTwitchBadges(channelId: channel.channelId)
           .asStream()
           .listen((badgeSets) {
+            if (_disposed || generation != _generation) return;
             localBadgeSets = badgeSets;
             notifyListeners();
-          });
+          }, onError: (Object _) {});
     }
   }
 
+  @override
+  void dispose() {
+    _disposed = true;
+    _globalBadgeSubscription?.cancel();
+    _localBadgeSubscription?.cancel();
+    super.dispose();
+  }
+
   List<TwitchBadgeInfo> get badgeSets {
-    return [...globalBadgeSets, ...localBadgeSets];
+    return [...localBadgeSets, ...globalBadgeSets];
   }
 
   void setAllEnabled(bool enabled) {
@@ -58,12 +74,13 @@ class TwitchBadgeModel extends ChangeNotifier {
   }
 
   void setEnabled(String key, bool enabled) {
+    if (_isAllEnabled) _enabled = badgeSets.map((e) => e.setId).toSet();
     if (enabled) {
       _enabled.add(key);
     } else {
       _enabled.remove(key);
     }
-    if (_enabled.length == badgeSets.length) {
+    if (_enabled.length == badgeCount && badgeCount > 0) {
       _isAllEnabled = true;
     } else {
       _isAllEnabled = false;
@@ -80,17 +97,25 @@ class TwitchBadgeModel extends ChangeNotifier {
     return globalKeys.union(localKeys).length;
   }
 
-  int get enabledCount => _enabled.length;
+  int get enabledCount => _isAllEnabled ? badgeCount : _enabled.length;
 
   TwitchBadgeModel.fromJson(Map<String, dynamic> json) {
     final badges = json['enabled'];
-    if (badges != null) {
-      for (dynamic badge in badges) {
+    _isAllEnabled =
+        json['schema'] == 2
+            ? json['allEnabled'] == true
+            : badges is! List || badges.isEmpty;
+    if (badges is List) {
+      for (final badge in badges.whereType<String>()) {
         _enabled.add(badge);
       }
       notifyListeners();
     }
   }
 
-  Map<String, dynamic> toJson() => {"enabled": _enabled.toList()};
+  Map<String, dynamic> toJson() => {
+    "enabled": _enabled.toList(),
+    "allEnabled": _isAllEnabled,
+    "schema": 2,
+  };
 }

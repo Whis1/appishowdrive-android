@@ -69,6 +69,13 @@ extension _ThemeModeJson on ThemeMode {
 }
 
 class LayoutModel extends ChangeNotifier {
+  bool _welcomeMascot = true;
+  bool get welcomeMascot => _welcomeMascot;
+  set welcomeMascot(bool value) {
+    if (_welcomeMascot == value) return;
+    _welcomeMascot = value;
+    notifyListeners();
+  }
   double _panelHeight = 300.0;
   double _panelWidth = 300.0;
   bool _isStatsVisible = true;
@@ -183,6 +190,7 @@ class LayoutModel extends ChangeNotifier {
   }
 
   LayoutModel.fromJson(Map<String, dynamic> json) {
+    _welcomeMascot = json['welcomeMascot'] != false;
     _interfaceTheme =
         InterfaceTheme.values
             .where((p) => p.name == json['interfaceTheme'])
@@ -218,6 +226,7 @@ class LayoutModel extends ChangeNotifier {
   }
 
   Map<String, dynamic> toJson() => {
+    'welcomeMascot': _welcomeMascot,
     "panelHeight": _panelHeight,
     "panelWidth": _panelWidth,
     "locked": _locked,

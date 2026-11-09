@@ -64,9 +64,11 @@ void main() {
     expect(find.text('System voice'), findsOneWidget);
     expect(find.text('Voices'), findsNothing);
 
-    await tester.tap(find.text('Voice packs'));
+    expect(find.text('Voice packs'), findsNothing);
+    await tester.tap(find.text('Voci italiane IA'));
     await tester.pumpAndSettle();
-    expect(find.text('Supertonic 3'), findsOneWidget);
+    expect(find.text('Supertonic 3'), findsNothing);
+    expect(find.text('Voce Android'), findsOneWidget);
   });
 
   testWidgets('reads with the neural voice once a pack is installed', (

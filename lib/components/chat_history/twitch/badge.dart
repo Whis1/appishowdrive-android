@@ -30,7 +30,7 @@ class TwitchBadgeWidget extends StatelessWidget {
             if (version.id != this.version) {
               continue;
             }
-            final url = Uri.tryParse(version.imageUrl1x);
+            final url = Uri.tryParse(version.imageUrl4x);
             if (url == null) {
               return const SizedBox();
             }
@@ -39,6 +39,8 @@ class TwitchBadgeWidget extends StatelessWidget {
               child: Image(
                 image: CachedNetworkImageProvider(url.toString()),
                 height: height,
+                width: height,
+                errorBuilder: (_, _, _) => const SizedBox.shrink(),
               ),
             );
           }

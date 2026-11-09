@@ -1,0 +1,35 @@
+APPISHOWDRIVE · Voce e ambiente — componente per OBS Windows 64 bit
+
+Questo componente filtra in OBS la voce che arriva dal telefono. Non intercetta
+il microfono usato da altre app Android. Occorre selezionare una volta la sorgente
+che trasporta SOLO il microfono. Il PC continua poi a filtrarla automaticamente.
+
+1. Sul PC dello streamer, chiudi OBS ed estrai tutto questo ZIP nella stessa cartella.
+2. Apri Installazione-Voce-OBS.exe e conferma la normale richiesta di Windows.
+3. Riapri OBS. Sulla sorgente del MICROFONO del telefono: Filtri → + →
+   APPISHOWDRIVE · Voce e ambiente. Lascia inizialmente i valori proposti.
+4. Prova una breve registrazione prima della live. Parlando, il rumore si riduce
+   e la voce viene rinforzata di 3 dB. Dopo la frase, l'ambiente torna gradualmente.
+
+Non aggiungere questo filtro a Sound Alerts, Desktop Audio o alle sorgenti TTS:
+devono continuare a sentirsi sempre. Se telefono, musica e TTS arrivano già
+mescolati in una sola sorgente, la voce deve essere separata nel programma di
+trasmissione prima di usare il filtro. Un filtro sulla miscela completa tratterebbe
+anche i cantanti come una voce; non può riconoscere l'identità dello streamer.
+Evita che gli altoparlanti rientrino fisicamente nel microfono; usa cuffie/auricolari.
+
+Il componente non modifica scene, account, credenziali, suoni o altre sorgenti.
+L'installazione copia soltanto i propri file in:
+%PROGRAMDATA%/obs-studio/plugins/appishowdrive-voice
+Non interrompe o chiude automaticamente OBS. Per disattivarlo basta la spunta
+del filtro in OBS; per rimuoverlo, chiudi OBS ed elimina soltanto quella cartella.
+
+Compatibilità: Windows 64 bit, API OBS 30.2.3 e successive; caricamento e creazione
+del filtro verificati su OBS 33.0.0. Audio mono/stereo a 44,1 e 48 kHz verificato.
+È un rilevatore vocale RNNoise: non è un riconoscitore biometrico e non garantisce
+la soppressione di ogni rumore. Voce reale e rumore sintetico sono stati provati;
+il collegamento privato telefono → OBS dello streamer richiede la prova sul suo PC.
+
+Codice del componente: GPL-2.0-or-later. RNNoise: BSD-3-Clause.
+Sorgenti e istruzioni riproducibili nella cartella source e nel repository:
+https://github.com/Whis1/appishowdrive-android/tree/main/companion/obs

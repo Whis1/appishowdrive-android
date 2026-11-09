@@ -19,3 +19,7 @@ in source-file notices and the Git commit history.
 ## Community changes — 8 November 2026, version 1.1.0
 
 Ten selectable interface palettes, dashboard theme, community icon sizing, per-message platform icons, offline Italian voice selection per platform, Twitch Aura controls and contextual tournament/audience/challenge flow. Manrope and Space Grotesk fonts retain their SIL Open Font License in assets/fonts/. Supertonic 3 model weights are optional downloads under OpenRAIL-M; complete license in assets/SUPERTONIC3-LICENSE.txt. No voice cloning or microphone capture is introduced.
+
+## Community changes — 9 November 2026, version 1.1.1
+
+Supertonic 2/3 are removed from the app flow. A bundled Kokoro/MediaPipe engine in a separate Android process provides Italian reading profiles with Android-system fallback. Original and derived model notices, pinned hashes and reproducible blending are in assets/KOKORO-NOTICE.txt and packaging/prepare-embedded-speech.mjs. Public badges, self-selected pronouns and 7TV paints, per-source visibility, one author name, targeted black-name contrast, recipient-command drafting and a supplied audio-synchronized welcome mascot are added. The separate OBS companion in companion/obs is GPL-2.0-or-later and uses BSD-3-Clause RNNoise. It acts on a dedicated microphone source, does not identify a specific speaker and requires setup on the receiving PC. The Android app does not capture another application's microphone.

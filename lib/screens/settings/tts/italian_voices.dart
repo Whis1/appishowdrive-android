@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:on_device_tts/on_device_tts.dart';
 import 'package:provider/provider.dart';
 import 'package:rtchat/components/provider_icon.dart';
 import 'package:rtchat/models/channels.dart';
 import 'package:rtchat/models/tts.dart';
-import 'package:rtchat/models/tts/voice_packs.dart';
+import 'package:rtchat/models/tts/embedded_engine.dart';
+import 'package:rtchat/screens/settings/tts/speech_diagnostics.dart';
 
-/// Italian voices share one offline model, with independent platform choices.
 class ItalianVoicesScreen extends StatefulWidget {
   const ItalianVoicesScreen({super.key});
   @override
@@ -16,140 +15,36 @@ class ItalianVoicesScreen extends StatefulWidget {
 class _ItalianVoicesScreenState extends State<ItalianVoicesScreen> {
   bool _previewing = false;
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) context.read<VoicePacksModel>().load();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final packs = context.watch<VoicePacksModel>();
     final tts = context.watch<TtsModel>();
-    final pack = bundledVoicePacks.firstWhere((p) => p.id == 'supertonic-3');
-    final ready = packs.installed.containsKey(pack.id);
-    final task = packs.task(pack.id);
-    final available =
-        ready && tts.neuralEngine != null && tts.neuralFallback == null;
     return Scaffold(
-      appBar: AppBar(title: const Text('Voci italiane IA')),
+      appBar: AppBar(title: const Text('Voci italiane')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           const Text(
-            'Una voce per ogni chat',
+            'Voci già incluse nell’app',
             style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800),
           ),
           const SizedBox(height: 8),
           const Text(
-            'Scegli la stessa voce per Twitch e Kick oppure due voci diverse. Sono voci generate da IA: dopo il download funzionano anche offline, senza abbonamenti.',
-          ),
-          const SizedBox(height: 16),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Text(
-                    'PACCHETTO ITALIANO · 10 VOCI',
-                    style: TextStyle(fontWeight: FontWeight.w800),
-                  ),
-                  Text(
-                    'Supertonic 3 · ${(pack.downloadSize / 1048576).round()} MB · un solo download per tutte le voci',
-                  ),
-                  if (ready)
-                    const Padding(
-                      padding: EdgeInsets.only(top: 8),
-                      child: Text('✓ Voci installate sul telefono'),
-                    ),
-                  if (tts.neuralFallback != null)
-                    const Text(
-                      'Il motore IA non è disponibile su questo dispositivo. È attiva la voce Android; le selezioni rimangono salvate.',
-                    ),
-                  if (task != null) ...[
-                    const SizedBox(height: 12),
-                    StreamBuilder<VoicePackProgress>(
-                      stream: task.progress,
-                      builder: (context, snapshot) {
-                        final p = snapshot.data;
-                        return Column(
-                          children: [
-                            LinearProgressIndicator(
-                              value:
-                                  p == null || p.totalBytes == 0
-                                      ? null
-                                      : p.downloadedBytes / p.totalBytes,
-                            ),
-                            Text(
-                              packs.waitsForWifi(pack.id)
-                                  ? 'In attesa del Wi-Fi'
-                                  : 'Download delle voci in corso…',
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                    TextButton(
-                      onPressed: () => packs.cancel(pack.id),
-                      child: const Text('Annulla download'),
-                    ),
-                    if (packs.waitsForWifi(pack.id))
-                      TextButton(
-                        onPressed: () => packs.installOverMobileData(pack),
-                        child: const Text('Usa dati mobili'),
-                      ),
-                  ] else if (!ready)
-                    FilledButton.icon(
-                      onPressed:
-                          packs.isSupported
-                              ? () {
-                                tts.preferredVoicePackId = 'supertonic-3';
-                                tts.speed = .5;
-                                packs.install(pack);
-                              }
-                              : null,
-                      icon: const Icon(Icons.download_rounded),
-                      label: const Text('Scarica le voci italiane'),
-                    ),
-                  if (packs.error(pack.id) != null)
-                    const Text(
-                      'Download non riuscito. Puoi riprovare: le voci già installate sono conservate.',
-                    ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Modello gratuito OpenRAIL-M · codice del motore MIT. Licenza e attribuzione nei pacchetti vocali.',
-                    style: TextStyle(fontSize: 12),
-                  ),
-                ],
-              ),
-            ),
+            'Cinque profili femminili e cinque maschili leggono in italiano, anche offline. Sara e Nicola sono le voci originali; gli altri timbri sono derivati da queste voci italiane. Ascolta un’anteprima e scegli separatamente per Twitch e Kick.',
           ),
           const SizedBox(height: 8),
-          _voiceRow(
-            context,
-            'Voce Android',
-            'system',
-            Icons.phone_android,
-            true,
+          const Text(
+            'Le voci integrate richiedono Android 8 o successivo a 64 bit e memoria sufficiente. Se il motore non è disponibile, la lettura continua con la voce Android.',
           ),
-          for (final speaker in pack.speakers)
-            _voiceRow(
-              context,
-              '${speaker.gender == 'female' ? 'Voce femminile' : 'Voce maschile'} ${speaker.name.substring(1)}',
-              speaker.name,
-              Icons.graphic_eq_rounded,
-              available,
-            ),
-          const SizedBox(height: 16),
+          _row('system', 'Voce Android'),
+          for (final voice in EmbeddedItalianEngine.names.entries)
+            _row(voice.key, voice.value),
+          const SpeechDiagnosticsTile(),
           Text(
             'Velocità di lettura',
             style: Theme.of(context).textTheme.titleMedium,
           ),
           Slider(
-            value: tts.speed.clamp(0.1, 1.0),
-            min: 0.1,
+            value: tts.speed.clamp(.1, 1),
+            min: .1,
             max: 1,
             divisions: 18,
             label: '${(tts.speed * 2).toStringAsFixed(1)}×',
@@ -164,13 +59,7 @@ class _ItalianVoicesScreenState extends State<ItalianVoicesScreen> {
     );
   }
 
-  Widget _voiceRow(
-    BuildContext context,
-    String title,
-    String id,
-    IconData icon,
-    bool available,
-  ) {
+  Widget _row(String id, String title) {
     final tts = context.watch<TtsModel>();
     return Card(
       child: Padding(
@@ -180,7 +69,10 @@ class _ItalianVoicesScreenState extends State<ItalianVoicesScreen> {
           children: [
             Row(
               children: [
-                Icon(icon, color: Theme.of(context).colorScheme.primary),
+                Icon(
+                  id == 'system' ? Icons.phone_android : Icons.graphic_eq,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
@@ -191,28 +83,37 @@ class _ItalianVoicesScreenState extends State<ItalianVoicesScreen> {
                     ),
                   ),
                 ),
-                if (id != 'system')
-                  IconButton(
-                    tooltip: 'Ascolta $title',
-                    onPressed:
-                        !available || _previewing
-                            ? null
-                            : () async {
-                              setState(() => _previewing = true);
-                              try {
-                                await tts.previewVoice(
-                                  'it',
-                                  id,
-                                  'Ciao, benvenuti su Ishowdrive! Leggerò i vostri messaggi di Twitch e Kick durante il viaggio.',
+                IconButton(
+                  tooltip: 'Ascolta $title',
+                  onPressed:
+                      _previewing
+                          ? null
+                          : () async {
+                            setState(() => _previewing = true);
+                            try {
+                              if (id != 'system') tts.retryNeuralVoices();
+                              await tts.previewVoice(
+                                'it',
+                                id,
+                                'Ciao, benvenuti su Ishowdrive! Leggerò i vostri messaggi di Twitch e Kick durante il viaggio.',
+                              );
+                              if (mounted &&
+                                  tts.neuralFallback != null &&
+                                  id != 'system') {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'La voce integrata non è disponibile. Hai ascoltato la voce Android. Consulta Diagnostica voci.',
+                                    ),
+                                  ),
                                 );
-                              } finally {
-                                if (mounted) {
-                                  setState(() => _previewing = false);
-                                }
                               }
-                            },
-                    icon: const Icon(Icons.play_circle_outline_rounded),
-                  ),
+                            } finally {
+                              if (mounted) setState(() => _previewing = false);
+                            }
+                          },
+                  icon: const Icon(Icons.play_circle_outline_rounded),
+                ),
               ],
             ),
             Wrap(
@@ -223,13 +124,7 @@ class _ItalianVoicesScreenState extends State<ItalianVoicesScreen> {
                     avatar: ProviderIcon(provider, size: 18),
                     label: Text('Usa per ${providerName(provider)}'),
                     selected: tts.platformVoice(provider) == id,
-                    onSelected:
-                        !available
-                            ? null
-                            : (_) => tts.setPlatformVoice(
-                              provider,
-                              tts.platformVoice(provider) == id ? null : id,
-                            ),
+                    onSelected: (_) => tts.setPlatformVoice(provider, id),
                   ),
               ],
             ),

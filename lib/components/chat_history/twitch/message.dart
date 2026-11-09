@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rtchat/components/provider_icon.dart';
+import 'package:rtchat/components/chat_history/twitch/user_adornments.dart';
 import 'package:linkify/linkify.dart';
 import 'package:dchs_motion_sensors/dchs_motion_sensors.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +10,8 @@ import 'package:rtchat/models/messages/tokens.dart';
 import 'package:rtchat/models/messages/twitch/message.dart';
 import 'package:rtchat/models/messages/twitch/user.dart';
 import 'package:rtchat/models/style.dart';
+import 'package:rtchat/models/chat_paints.dart';
+import 'package:rtchat/components/chat_history/twitch/nickname_paint.dart';
 
 const colors = [
   Color(0xFFFF0000),
@@ -122,34 +125,66 @@ class TwitchMessageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<StyleModel>(
-      builder: (context, styleModel, child) {
+    return Consumer2<StyleModel, ChatPaintModel?>(
+      builder: (context, styleModel, paints, child) {
         if (!styleModel.isDeletedMessagesVisible && model.deleted) {
           return const SizedBox();
         }
         final authorStyle = Theme.of(context).textTheme.titleSmall!.copyWith(
           color: styleModel.applyLightnessBoost(context, color),
+          fontWeight: (color.toARGB32() & 0x00ffffff) == 0 ? FontWeight.w800 : null,
         );
+        if (styleModel.badgesVisible('7tv')) {
+          paints?.ensure(model.author.userId);
+        }
+        final paint =
+            styleModel.badgesVisible('7tv')
+                ? paints?.paintFor(model.author.userId)
+                : null;
 
         final List<InlineSpan> children = [];
 
         // add badges.
-        children.addAll(
-          model.badges.map(
-            (badge) => WidgetSpan(
-              alignment: PlaceholderAlignment.middle,
-              child: TwitchBadgeWidget(
-                badgeSetId: badge.key,
-                version: badge.version,
-                height: styleModel.fontSize,
+        if (styleModel.badgesVisible('twitch')) {
+          children.addAll(
+            model.badges.map(
+              (badge) => WidgetSpan(
+                alignment: PlaceholderAlignment.middle,
+                child: TwitchBadgeWidget(
+                  badgeSetId: badge.key,
+                  version: badge.version,
+                  height: styleModel.fontSize,
+                ),
               ),
+            ),
+          );
+        }
+
+        children.add(
+          WidgetSpan(
+            alignment: PlaceholderAlignment.middle,
+            child: UserAdornments(
+              userId: model.author.userId,
+              login: model.author.login,
+              size: styleModel.fontSize,
             ),
           ),
         );
-
         // add author.
         // add a party hat if first time chatter.
-        if (model.annotations.isFirstTimeChatter) {
+        if (paint != null) {
+          children.add(
+            WidgetSpan(
+              alignment: PlaceholderAlignment.baseline,
+              baseline: TextBaseline.alphabetic,
+              child: NicknamePaint(
+                text: styleModel.getDisplayName(model.author),
+                style: authorStyle,
+                paint: paint,
+              ),
+            ),
+          );
+        } else if (model.annotations.isFirstTimeChatter) {
           children.add(
             WidgetSpan(
               child: Stack(

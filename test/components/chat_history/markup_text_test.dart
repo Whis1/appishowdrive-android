@@ -150,7 +150,7 @@ void main() {
     );
     expect(tester.takeException(), isNull);
     expect(
-      findRichText('$donor (viewer) redeemed $reward for 100 points. $input'),
+        findRichText('$donor redeemed $reward for 100 points. $input'),
       findsOneWidget,
     );
   });

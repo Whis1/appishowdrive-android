@@ -1,8 +1,8 @@
 # APPISHOWDRIVE Android — guida rapida
 
-[Scarica l’APK Android firmato](https://github.com/Whis1/appishowdrive-android/releases/latest/download/APPISHOWDRIVE-Android.apk) · Versione 1.1.0 · Richiede Android 7 o successivo.
+[Scarica l’APK Android firmato](https://github.com/Whis1/appishowdrive-android/releases/latest/download/APPISHOWDRIVE-Android.apk) · Versione 1.1.1 · App: Android 7 o successivo. Voci integrate: Android 8+ a 64 bit e memoria sufficiente.
 
-Puoi inoltrare questo collegamento su Discord: evita di dover allegare l’APK da circa 195 MB.
+Puoi inoltrare questo collegamento su Discord. Il modello delle nuove voci è già nell’APK: il file è più grande e non richiede un altro pacchetto da scaricare.
 
 ## Installazione
 
@@ -24,11 +24,21 @@ Se il browser non si apre o preferisci un altro dispositivo, nella schermata di 
 
 ## Voci italiane IA
 
-In **Impostazioni → Testo in voce → Voci italiane IA**, premi **Scarica le voci italiane**. È un unico download facoltativo da circa 383 MiB per dieci voci, preferibilmente con Wi-Fi. Non viene riscaricato a ogni aggiornamento dell'app. Le voci sono generate da IA e la sintesi avviene sul telefono.
+In **Impostazioni → Testo in voce → Voci italiane IA** trovi dieci profili già inclusi: cinque femminili e cinque maschili. Nessun download vocale separato. Sara e Nicola sono le voci originali; gli altri otto timbri sono derivati da queste voci italiane. La sintesi avviene sul telefono, anche offline. Supertonic 2 e 3 sono rimossi dall’uso e i vecchi pacchetti vengono eliminati.
 
 Ascolta il pulsante di anteprima accanto a una voce. Seleziona **Usa per Twitch**, **Usa per Kick**, oppure entrambe le spunte sulla stessa voce. Puoi scegliere due voci diverse. **Usa velocità naturale** imposta il ritmo di partenza; il cursore consente di regolarlo. Attiva il TTS dalla barra della chat come spiegato sopra.
 
-La riga **Voce Android** permette di tornare alla voce di sistema per una o entrambe le piattaforme. Le opzioni avanzate originali, i filtri e gli utenti silenziati rimangono disponibili. Le prestazioni dipendono dal telefono; se il motore IA non è disponibile l'app conserva la selezione e ripiega sulla voce Android.
+La riga **Voce Android** permette di tornare alla voce di sistema per una o entrambe le piattaforme e ha un pulsante di anteprima. Le opzioni avanzate originali, i filtri e gli utenti silenziati rimangono disponibili. Dopo l’aggiornamento la voce Android resta selezionata finché scegli uno dei nuovi profili. Il nuovo motore è separato dalla chat; se non può funzionare, la lettura ripiega sulla voce Android. Le prestazioni dipendono dal telefono: non tutte le voci IA possono funzionare su ogni modello Android. In caso di difficoltà usa **Diagnostica voci** per copiare le informazioni del telefono.
+
+## Badge, pronomi e nomi
+
+In **Impostazioni → Cronologia chat** scegli cosa mostrare: Twitch, FrankerFaceZ, BetterTTV, Chatterino, i pronomi scelti dagli utenti e i temi/effetti 7TV del nickname. Tutti sono attivi inizialmente; puoi disattivarli singolarmente o con **Disattiva tutto**, e riattivarli con **Attiva tutto**. Rimane disponibile la scelta dei singoli badge Twitch. I dati delle estensioni dipendono dai loro servizi pubblici; un errore di rete non deve fermare la chat.
+
+Compare un solo nome, quello visualizzato sulla piattaforma, senza login tra parentesi. Il tema 7TV si applica a quel nome. L’opzione **Usa il nome di accesso** mostra soltanto il login in alternativa, mai due nomi. I nickname neri diventano chiari e leggibili sul tema scuro; gli altri colori mantengono il trattamento precedente.
+
+## Mascotte di benvenuto
+
+Dopo il login l’Imperatore saluta in basso a sinistra, con il tuo audio e il labiale sincronizzato. Alla fine mantiene un lieve sorriso a labbra chiuse per due secondi e durante la dissolvenza. I tocchi passano attraverso la figura: puoi continuare a usare chat e impostazioni. Si avvia una volta per apertura completa; tornare dal browser o da un’altra pagina non lo fa ripartire. La spunta **Impostazioni → Mascotte di benvenuto** lo disattiva.
 
 ## Colori dell'interfaccia
 
@@ -50,7 +60,11 @@ I badge di abbonamento/ruolo restano davanti al nome; la sola icona Twitch o Kic
 
 ## Microfono e OBS
 
-APPISHOWDRIVE gestisce chat, ascolto e anteprima: non acquisisce né trasmette il microfono. Il rumore del camion va trattato sulla sorgente reale che porta il telefono a OBS sul PC di casa. Per configurarlo serve sapere quale app invia quel segnale e se la voce arriva separata da TTS e Sound Alerts. Non applicare filtri all'uscita audio generale della live: altererebbero anche musica e avvisi.
+Android non consente ad APPISHOWDRIVE di filtrare il microfono catturato da un’altra app. Per questo il componente [APPISHOWDRIVE Voce OBS](https://github.com/Whis1/appishowdrive-android/releases/latest/download/APPISHOWDRIVE-Voce-OBS.zip) lavora sul PC che riceve la voce del telefono.
+
+Dal PC: scarica ed estrai lo ZIP, chiudi OBS e apri **Installazione-Voce-OBS.exe**. Poi riapri OBS e aggiungi il filtro **APPISHOWDRIVE · Voce e ambiente** alla sola sorgente del microfono del telefono. Durante la voce riduce il rumore e rinforza il parlato; dopo la frase fa tornare l’ambiente. Lascia i valori iniziali e prova una breve registrazione. Nelle impostazioni dell’app trovi la stessa guida in **Voce e rumori della live**.
+
+TTS, Sound Alerts e video devono avere sorgenti separate dal microfono. Se il telefono invia già tutto insieme, occorre prima separare la voce nel programma di trasmissione. Il filtro rileva il parlato, ma non identifica biometricamente lo streamer e non può garantire di distinguere un cantante se la canzone rientra nel microfono. Cuffie/auricolari evitano questo rientro. Il collegamento privato dello streamer richiede ancora una prova sul suo PC.
 
 ## Sound Alerts e video YouTube
 

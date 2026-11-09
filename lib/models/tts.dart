@@ -104,6 +104,9 @@ class TtsModel extends ChangeNotifier {
 
   /// Explicit Italian voice per chat platform; absent keeps the original routing.
   String? platformVoice(String provider) => _platformVoices[provider];
+  String? get defaultPlatformVoice =>
+      platformVoice(_primaryChannel?.provider ?? Providers.twitch) ??
+      _platformVoices.values.firstOrNull;
 
   void setPlatformVoice(String provider, String? voiceId) {
     if (!Providers.all.contains(provider) ||
@@ -116,7 +119,7 @@ class TtsModel extends ChangeNotifier {
       _platformVoices.remove(provider);
     } else {
       _platformVoices[provider] = voiceId;
-      if (voiceId != 'system') preferredVoicePackId = 'supertonic-3';
+      if (voiceId != 'system') retryNeuralVoices();
     }
     notifyListeners();
   }
@@ -134,6 +137,34 @@ class TtsModel extends ChangeNotifier {
   Completer<void>? _releaseAfterUtterance;
   NeuralTtsFallback? _neuralFallback;
   var _isNeuralFallbackNoticePending = false;
+  bool _neuralRecoveryNeeded = false;
+  void blockNeuralAfterInterruptedRun() {
+    _neuralRecoveryNeeded = true;
+    fallBackToSystemVoices(NeuralTtsFallback.loadFailed);
+  }
+
+  void retryNeuralVoices() {
+    _neuralRecoveryNeeded = false;
+    _neuralFallback = null;
+    _isNeuralFallbackNoticePending = false;
+    notifyListeners();
+  }
+
+  /// Installation alone never switches either chat from the Android voice.
+  static Map<String, dynamic> migrateCommunitySettings(
+    Map<String, dynamic> json,
+  ) => {
+    ...json,
+    'speechEngine': 'kokoro-v1',
+    'voicePack': null,
+    'neuralVoices': json['speechEngine'] == 'kokoro-v1' ? json['neuralVoices'] : {},
+    'platformVoices': {
+      'twitch': 'system',
+      'kick': 'system',
+      if (json['speechEngine'] == 'kokoro-v1' && json['platformVoices'] is Map)
+        ...Map<String, dynamic>.from(json['platformVoices']),
+    },
+  };
 
   Future<void> _previousUtterance = Future.value();
   // the messages waiting to be read out, and the channel they came from.
@@ -581,7 +612,7 @@ class TtsModel extends ChangeNotifier {
     final spokenLanguage = language ?? readingLanguage.languageCode;
     return previewVoice(
       spokenLanguage,
-      voiceId,
+      voiceId ?? defaultPlatformVoice,
       ttsSampleMessage(spokenLanguage),
     );
   }
@@ -596,25 +627,34 @@ class TtsModel extends ChangeNotifier {
         await _releasing;
         if (_isDisposed) return;
         final route =
-            _neuralFallback == null ? await _router.route(language) : null;
+            _neuralFallback == null && voiceId != 'system'
+                ? await _router.route(language)
+                : null;
         if (route != null) {
-          await route.engine.speak(
-            text,
-            voice: route.voiceWithId(
-              voiceId ?? _chosenVoiceId(language, route.language),
-            ),
-            rate: _speed,
-            pitch: _pitch,
-            language: route.language,
-          );
-        } else {
-          await _systemEngine.speak(
-            text,
-            rate: _speed,
-            pitch: _pitch,
-            language: language,
-          );
+          try {
+            await route.engine.speak(
+              text,
+              voice: route.voiceWithId(
+                voiceId ?? _chosenVoiceId(language, route.language),
+              ),
+              rate: _speed,
+              pitch: _pitch,
+              language: route.language,
+            );
+            return;
+          } catch (e, st) {
+            _reportError(e, st);
+            if (e is NeuralTtsLoadException) {
+              fallBackToSystemVoices(NeuralTtsFallback.loadFailed);
+            }
+          }
         }
+        await _systemEngine.speak(
+          text,
+          rate: _speed,
+          pitch: _pitch,
+          language: language,
+        );
       } catch (e, st) {
         _reportError(e, st);
       } finally {
@@ -749,7 +789,7 @@ class TtsModel extends ChangeNotifier {
     final selectedVoice =
         model is ChatMessage
             ? platformVoice(model.channel?.provider ?? model.author.provider)
-            : null;
+            : defaultPlatformVoice;
     final language =
         selectedVoice != null
             ? 'it'
@@ -839,7 +879,8 @@ class TtsModel extends ChangeNotifier {
             ? VoiceRouter.empty
             : VoiceRouter([engine], onError: _reportError);
     // another pack may load where the old one didn't.
-    if (_neuralFallback == NeuralTtsFallback.loadFailed) {
+    if (_neuralFallback == NeuralTtsFallback.loadFailed &&
+        !_neuralRecoveryNeeded) {
       _neuralFallback = null;
       _isNeuralFallbackNoticePending = false;
     }
@@ -1067,6 +1108,7 @@ class TtsModel extends ChangeNotifier {
     "language": language.languageCode,
     "pitch": pitch,
     "speed": speed,
+      'speechEngine': 'kokoro-v1',
     "neuralVoices": Map.of(_neuralVoices),
     if (_platformVoices.isNotEmpty) "platformVoices": Map.of(_platformVoices),
     if (_preferredVoicePackId != null) "voicePack": _preferredVoicePackId,

@@ -81,3 +81,5 @@ node_modules/
 .DS_Store
 **/.DS_Store
 android/app/.cxx/
+android/app/src/main/assets/speech/*.litertlm
+android/app/src/main/assets/speech/*.partial

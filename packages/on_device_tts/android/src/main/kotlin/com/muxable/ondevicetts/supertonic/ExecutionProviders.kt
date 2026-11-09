@@ -40,6 +40,9 @@ internal object ExecutionProviders {
         val options = OrtSession.SessionOptions()
         try {
             val threads = settings.numThreads.coerceAtLeast(1)
+            // Short, variable-length chat must not retain the largest audio tensor arena.
+            options.setCPUArenaAllocator(false)
+            options.setMemoryPatternOptimization(false)
             // By default the intra-op threads busy-wait for more work after
             // each parallel section, and for a while after a run ends. Chat
             // comes a message at a time with idle gaps, so spinning burns the

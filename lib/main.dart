@@ -2,6 +2,7 @@
 import 'dart:async';
 import 'package:rtchat/appishowdrive_updates.dart';
 import 'package:rtchat/appishowdrive_licenses.dart';
+import 'package:rtchat/components/welcome_mascot.dart';
 import 'dart:convert';
 import 'dart:io';
 
@@ -33,7 +34,7 @@ import 'package:rtchat/models/quick_links.dart';
 import 'package:rtchat/models/stream_preview.dart';
 import 'package:rtchat/models/style.dart';
 import 'package:rtchat/models/tts.dart';
-import 'package:rtchat/models/tts/neural_engine_selector.dart';
+import 'package:rtchat/models/tts/embedded_engine.dart';
 import 'package:rtchat/models/tts/voice_packs.dart';
 import 'package:rtchat/models/user.dart';
 import 'package:rtchat/models/views.dart';
@@ -62,6 +63,8 @@ import 'package:rtchat/screens/settings/tts.dart';
 import 'package:rtchat/screens/settings/twitch/badges.dart';
 import 'package:rtchat/themes.dart';
 import 'package:rtchat/models/aura_arena.dart';
+import 'package:rtchat/models/chat_identity.dart';
+import 'package:rtchat/models/chat_paints.dart';
 import 'package:rtchat/models/channels.dart';
 import 'package:streaming_shared_preferences/streaming_shared_preferences.dart';
 
@@ -84,6 +87,13 @@ void main() async {
       '${(await getApplicationSupportDirectory()).path}/voice_packs',
     ),
   );
+  // Retire only the two packs explicitly removed by the user. They are never
+  // loaded by this release; ordinary TTS/audio preferences are kept.
+  for (final id in ['supertonic-2', 'supertonic-3']) {
+    try { await voicePacks.delete(id); } catch (error) {
+      debugPrint('Rimozione del vecchio pacchetto vocale non riuscita: $error');
+    }
+  }
 
   if (!kDebugMode) {
     FlutterError.onError =
@@ -144,12 +154,10 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   bool _isDiscoModeRunning = false;
   Timer? _discoModeTimer;
-  NeuralEngineSelector? _neuralEngineSelector;
   MemoryPressureMonitor? _memoryPressureMonitor;
 
   @override
   void dispose() {
-    _neuralEngineSelector?.dispose();
     _memoryPressureMonitor?.dispose();
     super.dispose();
   }
@@ -159,6 +167,8 @@ class _AppState extends State<App> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuraArenaModel()),
+        ChangeNotifierProvider(create: (_) => ChatIdentityModel()),
+        ChangeNotifierProvider(create: (_) => ChatPaintModel()),
         ChangeNotifierProvider(
           create: (context) => AccountsModel.fromFirebase(),
         ),
@@ -215,19 +225,14 @@ class _AppState extends State<App> {
         ChangeNotifierProxyProvider<ViewsModel, TtsModel>(
           create: (context) {
             final model = TtsModel.fromJson(
-              jsonDecode(
-                widget.prefs.getString("tts", defaultValue: '{}').getValue(),
+              TtsModel.migrateCommunitySettings(
+                jsonDecode(
+                  widget.prefs.getString("tts", defaultValue: '{}').getValue(),
+                ),
               ),
             );
-            final voicePacks = widget.voicePacks;
-            if (voicePacks != null) {
-              _neuralEngineSelector = NeuralEngineSelector(
-                repository: voicePacks,
-                tts: model,
-                reportError:
-                    (error, stack) =>
-                        FirebaseCrashlytics.instance.recordError(error, stack),
-              )..start();
+            if (Platform.isAndroid) {
+              model.neuralEngine = EmbeddedItalianEngine();
               // a neural model takes hundreds of megabytes: free it when the
               // system runs short, and load it again for the next message.
               _memoryPressureMonitor = MemoryPressureMonitor(
@@ -445,8 +450,9 @@ class _AppState extends State<App> {
             navigatorKey: navigatorKey,
             title: 'APPISHOWDRIVE',
             builder:
-                (context, child) =>
-                    AppUpdateHost(child: child ?? const SizedBox.shrink()),
+                (context, child) => WelcomeMascotHost(
+                  child: AppUpdateHost(child: child ?? const SizedBox.shrink()),
+                ),
             theme: Themes.lightFor(layoutModel.interfaceTheme),
             darkTheme: Themes.darkFor(layoutModel.interfaceTheme),
             themeMode: layoutModel.themeMode,

@@ -146,12 +146,12 @@ List<BadgeData> parseBadges(String badges) {
   if (badges.isEmpty) {
     return [];
   }
-  return badges.split(",").map((block) {
-    final tokens = block.split('/');
-    final key = tokens[0];
-    final version = tokens[1];
-    return BadgeData(key, version);
-  }).toList();
+  return [
+    for (final block in badges.split(','))
+      if (block.split('/').length == 2 &&
+          block.split('/').every((v) => v.isNotEmpty))
+        BadgeData(block.split('/')[0], block.split('/')[1]),
+  ];
 }
 
 Iterable<MessageToken> rootEmoteTokenizer(String message, String emotes) sync* {
@@ -264,8 +264,22 @@ class TwitchMessageModel extends MessageModel implements ChatMessage {
     required this.channelId,
   });
 
-  List<BadgeData> get badges =>
-      _badges ??= parseBadges(tags['badges-raw'] ?? "");
+  List<BadgeData> get badges => _badges ??= _readBadges();
+  List<BadgeData> _readBadges() {
+    final raw = tags['badges-raw'];
+    if (raw is String && raw.isNotEmpty) return parseBadges(raw);
+    final badges = tags['badges'];
+    if (badges is Map) {
+      return [
+        for (final entry in badges.entries)
+          if (entry.key is String && entry.value != null)
+            BadgeData(entry.key as String, entry.value.toString()),
+      ];
+    }
+    if (badges is String) return parseBadges(badges);
+    return [];
+  }
+
   List<BadgeData>? _badges;
 
   @override
@@ -275,21 +289,11 @@ class TwitchMessageModel extends MessageModel implements ChatMessage {
   bool get isCommand => !isAction && message.startsWith("!");
 
   @override
-  bool get isSubscriber => tags['badges']?['subscriber'] != null;
-
-  bool get isVip {
-    if (tags['badges'] == null) {
-      return false;
-    }
-    return tags['badges']['vip'] != null;
-  }
-
-  bool get isModerator {
-    if (tags['badges'] == null) {
-      return false;
-    }
-    return tags['badges']['moderator'] != null;
-  }
+  bool get isSubscriber =>
+      badges.any((b) => b.key == 'subscriber' || b.key == 'founder');
+  bool get isVip => badges.any((b) => b.key == 'vip');
+  bool get isModerator =>
+      badges.any((b) => b.key == 'moderator' || b.key == 'lead_moderator');
 
   @override
   List<MessageToken> get tokenized => _tokenized ??= tokenize();

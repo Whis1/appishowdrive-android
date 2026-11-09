@@ -11,17 +11,20 @@ class DeviceMemory {
   /// Whether the platform calls this a low-RAM device (Android's
   /// `ActivityManager.isLowRamDevice()`, e.g. Android Go phones).
   final bool isLowRamDevice;
+  final bool neuralRecoveryNeeded;
 
   const DeviceMemory({
     required this.totalBytes,
     this.availableBytes,
     this.isLowRamDevice = false,
+    this.neuralRecoveryNeeded = false,
   });
 
   factory DeviceMemory.fromMap(Map<Object?, Object?> map) => DeviceMemory(
     totalBytes: (map['totalBytes'] as num).toInt(),
     availableBytes: (map['availableBytes'] as num?)?.toInt(),
     isLowRamDevice: map['lowRamDevice'] as bool? ?? false,
+    neuralRecoveryNeeded: map['neuralRecoveryNeeded'] as bool? ?? false,
   );
 
   /// Below this much total memory, neural voices don't load.

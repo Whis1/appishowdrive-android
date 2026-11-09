@@ -9,6 +9,7 @@ import 'package:rtchat/models/messages/twitch/emote.dart';
 import 'package:rtchat/models/messages/twitch/message.dart';
 import 'package:rtchat/models/messages/twitch/user.dart';
 import 'package:rtchat/models/style.dart';
+import 'package:rtchat/screens/settings/badge_settings.dart';
 
 final message1 = TwitchMessageModel(
   messageId: "placeholder1",
@@ -139,16 +140,7 @@ class ChatHistoryScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              ListTile(
-                title: Text(AppLocalizations.of(context)!.twitchBadgeSettings),
-                subtitle: Text(
-                  AppLocalizations.of(context)!.twitchBadgeSettingsSubtitle,
-                ),
-                trailing: const Icon(Icons.arrow_forward_ios),
-                onTap: () {
-                  Navigator.pushNamed(context, "/settings/badges");
-                },
-              ),
+              const ChatIdentitySettings(),
               SwitchListTile.adaptive(
                 title: Text(AppLocalizations.of(context)!.showDeletedMessages),
                 subtitle:
@@ -167,11 +159,12 @@ class ChatHistoryScreen extends StatelessWidget {
                 },
               ),
               SwitchListTile.adaptive(
-                title: Text(AppLocalizations.of(context)!.showLoginNames),
-                subtitle:
-                    styleModel.isLoginShown
-                        ? Text(AppLocalizations.of(context)!.loginNamesShown)
-                        : Text(AppLocalizations.of(context)!.loginNamesHidden),
+                title: const Text('Usa il nome di accesso'),
+                subtitle: Text(
+                  styleModel.isLoginShown
+                      ? 'Mostra soltanto il nome di accesso, senza doppioni.'
+                      : 'Mostra soltanto il nome visualizzato su Twitch o Kick.',
+                ),
                 value: styleModel.isLoginShown,
                 onChanged: (value) {
                   styleModel.isLoginShown = value;

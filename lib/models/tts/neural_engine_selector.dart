@@ -53,6 +53,9 @@ class NeuralEngineSelector {
   Future<void> _checkDeviceMemory() async {
     try {
       final memory = await _deviceMemory();
+      if (!_isDisposed && memory?.neuralRecoveryNeeded == true) {
+        tts.blockNeuralAfterInterruptedRun();
+      }
       if (!_isDisposed && memory != null && memory.isTooSmallForNeuralTts) {
         tts.fallBackToSystemVoices(NeuralTtsFallback.lowMemoryDevice);
       }

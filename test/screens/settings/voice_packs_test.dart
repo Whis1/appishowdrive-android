@@ -99,11 +99,13 @@ void main() {
     expect(find.text('10 voices · 402 MB'), findsOneWidget);
   });
 
-  testWidgets('the text to speech settings open it', (tester) async {
+  testWidgets('the text to speech settings no longer offer Supertonic downloads', (tester) async {
     await open(tester, home: const TextToSpeechScreen());
-    await tester.tap(find.text('Voice packs'));
+    expect(find.text('Voice packs'), findsNothing);
+    await tester.tap(find.text('Voci italiane IA'));
     await tester.pumpAndSettle();
-    expect(find.text('Supertonic 3'), findsOneWidget);
+    expect(find.text('Supertonic 3'), findsNothing);
+    expect(find.text('Voce Android'), findsOneWidget);
   });
 
   testWidgets('hidden where neural voices are unsupported', (tester) async {

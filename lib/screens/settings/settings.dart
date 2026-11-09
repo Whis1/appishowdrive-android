@@ -7,6 +7,8 @@ import 'package:rtchat/l10n/app_localizations.dart';
 import 'package:rtchat/models/layout.dart';
 import 'package:rtchat/screens/settings/interface_themes.dart';
 import 'package:rtchat/models/style.dart';
+import 'package:rtchat/screens/settings/badge_settings.dart';
+import 'package:rtchat/screens/settings/live_voice.dart';
 import 'package:rtchat/urls.dart';
 
 Widget _iconWithText(IconData icon, String text) {
@@ -32,6 +34,38 @@ class SettingsScreen extends StatelessWidget {
         builder: (context, layoutModel, child) {
           return ListView(
             children: [
+              ListTile(
+                leading: const Icon(Icons.mic_external_on),
+                title: const Text('Voce e rumori della live'),
+                subtitle: const Text('Configura il microfono sul PC con OBS'),
+                onTap:
+                    () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const LiveVoiceScreen(),
+                      ),
+                    ),
+              ),
+              SwitchListTile.adaptive(
+                title: const Text('Mascotte di benvenuto'),
+                subtitle: const Text(
+                  'L’Imperatore ti saluta dopo il login, una volta per apertura dell’app.',
+                ),
+                value: layoutModel.welcomeMascot,
+                onChanged: (value) => layoutModel.welcomeMascot = value,
+              ),
+              ListTile(
+                leading: const Icon(Icons.verified_outlined),
+                title: const Text('Badge e pronomi'),
+                subtitle: const Text(
+                  'Twitch, BetterTTV, FrankerFaceZ e Chatterino',
+                ),
+                onTap:
+                    () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const BadgeSettingsScreen(),
+                      ),
+                    ),
+              ),
               ListTile(
                 leading: const Icon(Icons.palette_outlined),
                 title: const Text('Colori dell’interfaccia'),

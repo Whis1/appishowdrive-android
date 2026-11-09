@@ -3,7 +3,7 @@ name: rtchat
 description: APPISHOWDRIVE, a community edition of RealtimeChat
 publish_to: "none"
 
-version: 1.1.0+11
+version: 1.1.1+12
 
 environment:
   sdk: ">=3.7.0 <4.0.0"
@@ -47,6 +47,7 @@ dependencies:
   uuid: ^4.6.0
   flutter_markdown_plus: ^1.0.12
   cached_network_image: ^4.0.6
+  flutter_svg: ^2.3.2
 
 dev_dependencies:
   webview_flutter_platform_interface: ^2.15.1
@@ -76,3 +77,4 @@ flutter:
     - assets/
     - assets/providers/
     - assets/fonts/
+    - assets/welcome/

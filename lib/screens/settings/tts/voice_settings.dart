@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:rtchat/screens/settings/tts/speech_diagnostics.dart';
 import 'package:on_device_tts/on_device_tts.dart';
 import 'package:provider/provider.dart';
 import 'package:rtchat/l10n/app_localizations.dart';
 import 'package:rtchat/models/tts.dart';
 import 'package:rtchat/screens/settings/tts/italian_voices.dart';
 import 'package:rtchat/screens/settings/tts/labels.dart';
-import 'package:rtchat/screens/settings/tts/voice_packs.dart';
 import 'package:rtchat/screens/settings/tts/voices.dart';
 
 /// The voice that reads chat: the neural voice or the system's, why, and
@@ -18,7 +18,10 @@ class VoiceSettings extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final tts = context.watch<TtsModel>();
     final fallback = tts.neuralFallback;
-    final isNeural = tts.neuralEngine != null && fallback == null;
+    final isNeural =
+        tts.neuralEngine != null &&
+        tts.defaultPlatformVoice != 'system' &&
+        fallback == null;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -66,17 +69,6 @@ class VoiceSettings extends StatelessWidget {
               );
             },
           ),
-        ListTile(
-          leading: const Icon(Icons.download_for_offline_outlined),
-          title: Text(l10n.voicePacks),
-          trailing: const Icon(Icons.chevron_right),
-          onTap:
-              () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const VoicePacksScreen(),
-                ),
-              ),
-        ),
         if (isNeural)
           ListTile(
             leading: const Icon(Icons.person_outline),
@@ -89,6 +81,7 @@ class VoiceSettings extends StatelessWidget {
                   ),
                 ),
           ),
+        const SpeechDiagnosticsTile(),
         const Divider(),
       ],
     );

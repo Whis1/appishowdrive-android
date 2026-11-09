@@ -15,6 +15,8 @@ $env:KEY_ALIAS = $androidSigning.alias
 $env:KEY_PASSWORD = $androidSigning.password
 Push-Location $androidProject
 try {
+  & node packaging/prepare-embedded-speech.mjs
+  if ($LASTEXITCODE -ne 0) { throw 'Modello vocale integrato non verificato.' }
   if (-not $SkipChecks) {
     & $androidFlutter analyze
     if ($LASTEXITCODE -ne 0) { throw 'Analisi non superata.' }
@@ -23,8 +25,10 @@ try {
     & $androidFlutter test packages/on_device_tts/test
     if ($LASTEXITCODE -ne 0) { throw 'Test del motore vocale non superati.' }
   }
-  & $androidFlutter build apk --release --target-platform android-arm,android-arm64,android-x64
+  & $androidFlutter build apk --release --target lib/main.dart --target-platform android-arm,android-arm64,android-x64
   if ($LASTEXITCODE -ne 0) { throw 'Compilazione APK non riuscita.' }
+  $productionApk=Join-Path $androidProject 'build/app/outputs/flutter-apk/app-release.apk'
+  @{ target='lib/main.dart'; apkSha256=(Get-FileHash -LiteralPath $productionApk -Algorithm SHA256).Hash.ToLowerInvariant(); builtAtUtc=[DateTime]::UtcNow.ToString('o') } | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $androidProject 'build/production-entrypoint.json') -Encoding utf8
 } finally {
   Remove-Item Env:STORE_PASSWORD,Env:KEY_PASSWORD -ErrorAction SilentlyContinue
   Pop-Location

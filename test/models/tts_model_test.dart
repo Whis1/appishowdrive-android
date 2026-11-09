@@ -358,6 +358,7 @@ void main() {
 
     test('round trip', () {
       final json = {
+        'speechEngine': 'kokoro-v1',
         'isBotMuted': true,
         'isEmoteMuted': true,
         'isPreludeMuted': true,

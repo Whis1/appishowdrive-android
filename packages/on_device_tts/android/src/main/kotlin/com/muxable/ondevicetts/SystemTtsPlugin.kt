@@ -115,9 +115,7 @@ class SystemTtsPlugin : MethodCallHandler, FlutterPlugin {
                         invokeMethod("speak.onStart", true)
                     }
                 }
-                if (Build.VERSION.SDK_INT < 26) {
-                    onProgress(utteranceId, 0, utterances[utteranceId]!!.length)
-                }
+                SpeechProgress.legacyLength(Build.VERSION.SDK_INT, utteranceId.startsWith(SYNTHESIZE_TO_FILE_PREFIX), utterances[utteranceId])?.let { onProgress(utteranceId, 0, it) }
             }
 
             override fun onDone(utteranceId: String) {
@@ -157,12 +155,13 @@ class SystemTtsPlugin : MethodCallHandler, FlutterPlugin {
 
             private fun onProgress(utteranceId: String?, startAt: Int, endAt: Int) {
                 if (utteranceId != null && !utteranceId.startsWith(SYNTHESIZE_TO_FILE_PREFIX)) {
-                    val text = utterances[utteranceId]
+                    val text = utterances[utteranceId] ?: return
+                    val (safeStart, safeEnd) = SpeechProgress.bounds(text, startAt, endAt) ?: return
                     val data = HashMap<String, String?>()
                     data["text"] = text
-                    data["start"] = startAt.toString()
-                    data["end"] = endAt.toString()
-                    data["word"] = text!!.substring(startAt, endAt)
+                    data["start"] = safeStart.toString()
+                    data["end"] = safeEnd.toString()
+                    data["word"] = text.substring(safeStart, safeEnd)
                     invokeMethod("speak.onProgress", data)
                 }
             }
@@ -738,13 +737,14 @@ class SystemTtsPlugin : MethodCallHandler, FlutterPlugin {
             )
             player.setOnPreparedListener {
                 if (filePlayer === player) {
-                    handler!!.removeCallbacks(preparationStalled)
-                    player.start()
-                    val duration = player.duration.toLong()
-                    handler!!.postDelayed(
-                        playbackStalled,
-                        (if (duration > 0) duration else UNKNOWN_DURATION_MS) + STALL_TIMEOUT_MS,
-                    )
+                    handler?.removeCallbacks(preparationStalled)
+                    try {
+                        player.start()
+                        val duration = player.duration.toLong()
+                        handler?.postDelayed(playbackStalled, (if (duration > 0) duration else UNKNOWN_DURATION_MS) + STALL_TIMEOUT_MS)
+                    } catch (e: RuntimeException) {
+                        finishPlayback(null, "Audio output unavailable: ${e.message}")
+                    }
                 }
             }
             player.setOnCompletionListener {
@@ -770,9 +770,9 @@ class SystemTtsPlugin : MethodCallHandler, FlutterPlugin {
         val result = playResult
         filePlayer = null
         playResult = null
-        handler!!.removeCallbacks(preparationStalled)
-        handler!!.removeCallbacks(playbackStalled)
-        player.release()
+        handler?.removeCallbacks(preparationStalled)
+        handler?.removeCallbacks(playbackStalled)
+        runCatching { player.release() }
         if (success != null) {
             result?.success(success)
         } else {

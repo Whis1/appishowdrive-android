@@ -27,11 +27,8 @@ void main() {
       );
     });
 
-    test("shows the login when it differs from the display name", () {
-      expect(
-        model.getDisplayName(kick("Someone", "someone-else")),
-        "Someone (someone-else)",
-      );
+    test("shows one display name even when the login differs", () {
+      expect(model.getDisplayName(kick("Someone", "someone-else")), "Someone");
     });
   });
 }
