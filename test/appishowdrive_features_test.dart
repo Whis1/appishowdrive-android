@@ -1,14 +1,8 @@
-import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:on_device_tts/on_device_tts.dart';
-import 'package:rtchat/l10n/app_localizations.dart';
 import 'package:rtchat/models/aura_arena.dart';
 import 'package:rtchat/models/channels.dart';
-import 'package:rtchat/models/messages/message.dart';
-import 'package:rtchat/models/tts.dart';
 import 'fakes/fake_chat.dart';
-import 'fakes/fake_tts_engine.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -31,6 +25,10 @@ void main() {
       expect(
         auraEncode(c('!LevaPA'), target: 'Bob', amount: '200'),
         '!LevaPA 200 @bob',
+      );
+      expect(
+        auraEncode(c('!AggiungiPA'), target: 'Bob', amount: '200'),
+        '!AggiungiPA 200 @bob',
       );
       expect(auraEncode(c('!Processo'), target: 'Alice'), '!Processo @alice');
       expect(auraEncode(c('!Sanziona'), target: 'Bob'), '!Sanziona @bob');
@@ -134,98 +132,4 @@ void main() {
     },
   );
 
-  test(
-    'TTS: voci diverse Twitch/Kick, italiano esplicito e preferenze conservate',
-    () async {
-      final system = FakeTtsEngine(),
-          neural = FakeTtsEngine(
-            availableVoices: const [
-              TtsVoice(id: 'F1', name: 'F1', locale: 'it'),
-              TtsVoice(id: 'M1', name: 'M1', locale: 'it'),
-            ],
-          );
-      final tts = TtsModel.fromJson(
-        {'language': 'en', 'isPreludeMuted': true},
-        engine: system,
-        reportError: (e, _) => fail('$e'),
-      )..neuralEngine = neural;
-      addTearDown(tts.dispose);
-      tts.setPlatformVoice('twitch', 'F1');
-      tts.setPlatformVoice('kick', 'M1');
-      final l10n = lookupAppLocalizations(const Locale('it'));
-      tts.setMode(l10n, TtsMode.enabled);
-      await pumpEventQueue();
-      neural.utterances.clear();
-      system.utterances.clear();
-      for (final c in [channel, kick]) {
-        final m = FakeChatMessage(
-          messageId: c.provider,
-          timestamp: DateTime.now(),
-          author: FakeChatUser(
-            provider: c.provider,
-            userId: 'u',
-            login: 'utente',
-          ),
-          message: 'Ciao, come state?',
-        )..channel = c;
-        tts.say(l10n, m);
-      }
-      await pumpEventQueue();
-      expect(neural.utterances.map((u) => u.voice?.id), ['F1', 'M1']);
-      expect(neural.utterances.every((u) => u.language == 'it'), isTrue);
-      expect(system.spoken, isEmpty);
-      final restored = TtsModel.fromJson(tts.toJson(), engine: FakeTtsEngine());
-      addTearDown(restored.dispose);
-      expect(restored.platformVoice('twitch'), 'F1');
-      expect(restored.platformVoice('kick'), 'M1');
-      tts.setPlatformVoice('kick', 'F1');
-      expect(tts.platformVoice('kick'), tts.platformVoice('twitch'));
-      expect(() => tts.setPlatformVoice('bad', 'F1'), throwsArgumentError);
-      expect(
-        () => tts.setPlatformVoice('kick', 'unknown'),
-        throwsArgumentError,
-      );
-    },
-  );
-  test(
-    'TTS: voce Android per una piattaforma, IA per l’altra, senza cambiare la lingua delle altre chat',
-    () async {
-      final system = FakeTtsEngine(),
-          neural = FakeTtsEngine(
-            availableVoices: const [
-              TtsVoice(id: 'F1', name: 'F1', locale: 'it'),
-            ],
-          );
-      final tts = TtsModel.fromJson(
-        {
-          'language': 'en',
-          'isPreludeMuted': true,
-          'platformVoices': {'twitch': 'F1', 'kick': 'system'},
-        },
-        engine: system,
-        reportError: (e, _) => fail('$e'),
-      )..neuralEngine = neural;
-      addTearDown(tts.dispose);
-      final l10n = lookupAppLocalizations(const Locale('it'));
-      tts.setMode(l10n, TtsMode.enabled);
-      await pumpEventQueue();
-      system.utterances.clear();
-      neural.utterances.clear();
-      final m = FakeChatMessage(
-        messageId: 'kick',
-        timestamp: DateTime.now(),
-        author: const FakeChatUser(
-          provider: 'kick',
-          userId: 'u',
-          login: 'utente',
-        ),
-        message: 'Ciao Kick',
-      )..channel = kick;
-      tts.say(l10n, m);
-      await pumpEventQueue();
-      expect(system.utterances.single.language, 'it');
-      expect(neural.spoken, isEmpty);
-      expect(tts.platformVoice('twitch'), 'F1');
-    },
-  );
 }

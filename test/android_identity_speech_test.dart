@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:on_device_tts/on_device_tts.dart';
 import 'package:provider/provider.dart';
 import 'package:rtchat/components/welcome_mascot.dart';
 import 'package:rtchat/components/chat_history/twitch/nickname_paint.dart';
@@ -12,7 +11,6 @@ import 'package:rtchat/models/messages/twitch/badge.dart';
 import 'package:rtchat/models/messages/twitch/user.dart';
 import 'package:rtchat/models/adapters/chat_state.dart';
 import 'package:rtchat/models/tts.dart';
-import 'package:rtchat/models/tts/embedded_engine.dart';
 import 'package:rtchat/screens/settings/badge_settings.dart';
 import 'package:rtchat/themes.dart';
 import 'fakes/fake_tts_engine.dart';
@@ -275,7 +273,7 @@ void main() {
     },
   );
   test(
-    'Supertonic settings migrate to Android without changing speed, pitch or mutes',
+    'old neural voice selections migrate to the Android system voice without losing controls',
     () {
       final migrated = TtsModel.migrateCommunitySettings({
         'platformVoices': {'twitch': 'F1'},
@@ -284,11 +282,10 @@ void main() {
         'pitch': .8,
         'mutedUsers': [],
       });
-      expect(migrated['platformVoices'], {
-        'twitch': 'system',
-        'kick': 'system',
-      });
+      expect(migrated['platformVoices'], isEmpty);
+      expect(migrated['neuralVoices'], isEmpty);
       expect(migrated['voicePack'], isNull);
+      expect(migrated['speechEngine'], 'system');
       expect(migrated['speed'], .65);
       expect(migrated['pitch'], .8);
       expect(
@@ -296,43 +293,32 @@ void main() {
           ...migrated,
           'platformVoices': {'twitch': 'M2'},
         })['platformVoices'],
-        {'twitch': 'M2', 'kick': 'system'},
+        isEmpty,
       );
     },
   );
   test(
-    'Android previews never enter the neural engine; failed neural preview recovers to Android',
+    'legacy voice IDs and preview requests use only the system engine',
     () async {
-      final system = FakeTtsEngine(),
-          neural = FakeTtsEngine(
-            availableVoices: const [
-              TtsVoice(id: 'F1', name: 'Sara', locale: 'it'),
-            ],
-          );
+      final system = FakeTtsEngine();
       final model = TtsModel.fromJson(
-        TtsModel.migrateCommunitySettings({}),
+        TtsModel.migrateCommunitySettings({
+          'platformVoices': {'twitch': 'F1'},
+          'neuralVoices': {'it': 'M2'},
+          'voicePack': 'kokoro-v1',
+        }),
         engine: system,
         reportError: (_, _) {},
-      )..neuralEngine = neural;
+      );
       addTearDown(model.dispose);
       await model.previewSample(language: 'it');
       expect(system.spoken.length, 1);
-      expect(neural.spoken, isEmpty);
       await model.previewVoice('it', 'system', 'Android');
       expect(system.spoken.last, 'Android');
       await model.previewVoice('it', 'F1', 'Sara');
-      expect(neural.spoken.last, 'Sara');
-      neural.failNext = StateError('worker stopped');
-      await model.previewVoice('it', 'F1', 'Ripiego');
-      expect(system.spoken.last, 'Ripiego');
+      expect(system.spoken.last, 'Sara');
+      expect(model.toJson()['speechEngine'], 'system');
+      expect(model.toJson().containsKey('neuralVoices'), isFalse);
     },
   );
-  test('Bundled catalog offers ten distinct selectable profiles', () async {
-    final engine = EmbeddedItalianEngine();
-    final voices = await engine.voices(language: 'it');
-    expect(voices.map((v) => v.id).toSet().length, 10);
-    expect(voices.where((v) => v.id.startsWith('F')).length, 5);
-    expect(voices.where((v) => v.id.startsWith('M')).length, 5);
-    expect(await engine.voices(language: 'fr'), isEmpty);
-  });
 }

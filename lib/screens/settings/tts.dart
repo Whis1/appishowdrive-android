@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rtchat/l10n/app_localizations.dart';
 import 'package:rtchat/models/tts.dart';
-import 'package:rtchat/models/tts/voice_packs.dart';
-import 'package:rtchat/screens/settings/tts/voice_settings.dart';
 
 class TextToSpeechScreen extends StatelessWidget {
   const TextToSpeechScreen({super.key});
@@ -24,8 +22,10 @@ class TextToSpeechScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              if (context.watch<VoicePacksModel>().isSupported)
-                const VoiceSettings(),
+              ListTile(
+                leading: const Icon(Icons.record_voice_over),
+                title: Text(AppLocalizations.of(context)!.ttsEngineSystem),
+              ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(

@@ -40,7 +40,7 @@ void main() {
     final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 0);
     final video = base64Decode(audioMixVideoBase64),
         samples = <Map<String, dynamic>>[];
-    var pageLoads = 0, videoLoads = 0;
+    var alertPageLoads = 0, videoFileRequests = 0;
     var pauseControl = false;
     server.listen((req) async {
       if (req.uri.path == '/tick') {
@@ -55,11 +55,11 @@ void main() {
         req.response.headers.contentType = ContentType.json;
         req.response.write(jsonEncode({'pause': pauseControl}));
       } else if (req.uri.path == '/clip.mp4') {
-        videoLoads++;
+        videoFileRequests++;
         req.response.headers.contentType = ContentType('video', 'mp4');
         req.response.add(video);
       } else if (req.uri.path == '/') {
-        pageLoads++;
+        alertPageLoads++;
         req.response.headers.contentType = ContentType.html;
         req.response.write(
           r'''<!doctype html><html><body style="background:black;color:white"><video id="video" autoplay loop playsinline src="/clip.mp4" width="128" height="72"></video><script>
@@ -99,20 +99,13 @@ let command=false;setInterval(()=>fetch('/control').then(r=>r.json()).then(c=>{i
       isNotEmpty,
       reason: 'The fixture must really be playing, not merely loaded.',
     );
-    final voices = await engine.voices().timeout(const Duration(seconds: 30));
-    expect(voices, isNotEmpty);
-    final english = voices.where((v) => v.speaks('en')).toList();
-    final voice = english.isNotEmpty ? english.first : voices.first;
     final speechStart = DateTime.now().millisecondsSinceEpoch;
     for (var n = 0; n < 6; n++) {
-      // Repeating source synchronization must not reload the Sound Alerts page.
+      // Repeating source synchronization must not reload the alert page.
       await AudioChannel.set(['http://127.0.0.1:${server.port}/']);
       await keepAlive.ping();
       await engine
-          .speak(
-            'Message number ${n + 1}. The video must keep playing.',
-            voice: voice,
-          )
+          .speak('Message number ${n + 1}. The video must keep playing.')
           .timeout(const Duration(seconds: 45));
     }
     final speechEnd = DateTime.now().millisecondsSinceEpoch;
@@ -136,7 +129,7 @@ let command=false;setInterval(()=>fetch('/control').then(r=>r.json()).then(c=>{i
       greaterThan(15),
       reason: 'Video time froze while speech played.',
     );
-    expect(pageLoads, 1, reason: 'TTS/source sync reloaded the alert page.');
+    expect(alertPageLoads, 1, reason: 'TTS/source sync reloaded the alert page.');
     expect(keepAliveErrors, isEmpty);
     final silenceStart = DateTime.now().millisecondsSinceEpoch;
     pauseControl = true;
@@ -156,8 +149,8 @@ let command=false;setInterval(()=>fetch('/control').then(r=>r.json()).then(c=>{i
       'speechSeconds': (speechEnd - speechStart) / 1000,
       'videoSamplesDuringSpeech': during.length,
       'videoPausedDuringSpeech': false,
-      'sourcePageLoads': pageLoads,
-      'videoFileRequests': videoLoads,
+      'alertPageLoads': alertPageLoads,
+      'videoFileRequests': videoFileRequests,
       'privateSoundAlertsUrlTested': false,
     };
     debugPrint('APPISHOWDRIVE_AUDIO_REPORT ${jsonEncode(report)}');

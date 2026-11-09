@@ -358,7 +358,6 @@ void main() {
 
     test('round trip', () {
       final json = {
-        'speechEngine': 'kokoro-v1',
         'isBotMuted': true,
         'isEmoteMuted': true,
         'isPreludeMuted': true,
@@ -366,7 +365,7 @@ void main() {
         'language': 'fr',
         'pitch': 1.5,
         'speed': 0.6,
-        'neuralVoices': {'pt-br': 'M1'},
+        'speechEngine': 'system',
         'mutedUsers': [
           {
             'provider': 'kick',
@@ -379,6 +378,20 @@ void main() {
       final roundTripped = TtsModel.fromJson(json, engine: engine).toJson();
       expect(roundTripped, json);
       expect(TtsModel.fromJson(roundTripped, engine: engine).toJson(), json);
+    });
+
+    test('legacy neural voice settings are discarded', () {
+      final restored = TtsModel.fromJson({
+        'speechEngine': 'system',
+        'voicePack': 'supertonic-3',
+        'neuralVoices': {'it': 'F1'},
+        'platformVoices': {'twitch': 'M2'},
+      }, engine: engine);
+
+      expect(restored.toJson()['speechEngine'], 'system');
+      expect(restored.toJson().keys, isNot(contains('voicePack')));
+      expect(restored.toJson().keys, isNot(contains('neuralVoices')));
+      expect(restored.toJson().keys, isNot(contains('platformVoices')));
     });
 
     test('muted users saved before providers existed are twitch users', () {

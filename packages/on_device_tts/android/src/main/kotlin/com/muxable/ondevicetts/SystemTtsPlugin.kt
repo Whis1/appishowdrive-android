@@ -5,8 +5,6 @@ package com.muxable.ondevicetts
 
 import android.content.Context
 import android.media.AudioAttributes
-import android.media.AudioFocusRequest
-import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
@@ -58,8 +56,6 @@ class SystemTtsPlugin : MethodCallHandler, FlutterPlugin {
     private var ttsStatus: Int? = null
     private var selectedEngine: String? = null
     private var engineResult: Result? = null
-    private var audioManager: AudioManager? = null
-    private var audioFocusRequest: AudioFocusRequest? = null
     private var filePlayer: MediaPlayer? = null
     private var playResult: Result? = null
     private val preparationStalled = Runnable {
@@ -134,7 +130,6 @@ class SystemTtsPlugin : MethodCallHandler, FlutterPlugin {
                 lastProgress = 0
                 pauseText = null
                 utterances.remove(utteranceId)
-                releaseAudioFocus()
             }
 
             override fun onStop(utteranceId: String, interrupted: Boolean) {
@@ -150,7 +145,6 @@ class SystemTtsPlugin : MethodCallHandler, FlutterPlugin {
                 } else {
                     invokeMethod("speak.onCancel", true)
                 }
-                releaseAudioFocus()
             }
 
             private fun onProgress(utteranceId: String?, startAt: Int, endAt: Int) {
@@ -186,7 +180,6 @@ class SystemTtsPlugin : MethodCallHandler, FlutterPlugin {
                     }
                     invokeMethod("speak.onError", "Error from TextToSpeech (speak)")
                 }
-                releaseAudioFocus()
             }
 
             override fun onError(utteranceId: String, errorCode: Int) {
@@ -304,7 +297,6 @@ class SystemTtsPlugin : MethodCallHandler, FlutterPlugin {
         when (call.method) {
             "speak" -> {
                 var text: String = call.argument("text")!!
-                val focus: Boolean = call.argument("focus")!!
                 if (pauseText == null) {
                     pauseText = text
                     currentText = pauseText!!
@@ -326,7 +318,7 @@ class SystemTtsPlugin : MethodCallHandler, FlutterPlugin {
                         return
                     }
                 }
-                val b = speak(text, focus)
+                val b = speak(text)
                 if (!b) {
                     synchronized(this@SystemTtsPlugin) {
                         val suspendedCall = Runnable { onMethodCall(call, result) }
@@ -682,14 +674,10 @@ class SystemTtsPlugin : MethodCallHandler, FlutterPlugin {
         result.success(data)
     }
 
-    private fun speak(text: String, focus: Boolean): Boolean {
+    private fun speak(text: String): Boolean {
         val uuid: String = UUID.randomUUID().toString()
         utterances[uuid] = text
         return if (ismServiceConnectionUsable(tts)) {
-            if(focus){
-                requestAudioFocus()
-            }
-
             if (silencems > 0) {
                 tts!!.playSilentUtterance(
                     silencems.toLong(),
@@ -840,27 +828,4 @@ class SystemTtsPlugin : MethodCallHandler, FlutterPlugin {
         }
     }
 
-    private fun requestAudioFocus() {
-        audioManager = context?.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
-                .setOnAudioFocusChangeListener { /* opcional para monitorar mudanças de foco */ }
-                .build()
-            audioManager?.requestAudioFocus(audioFocusRequest!!)
-        } else {
-            // minSdk is 24; AudioFocusRequest needs API 26.
-            @Suppress("DEPRECATION")
-            audioManager?.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
-        }
-    }
-
-    private fun releaseAudioFocus() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            audioFocusRequest?.let { audioManager?.abandonAudioFocusRequest(it) }
-        } else {
-            @Suppress("DEPRECATION")
-            audioManager?.abandonAudioFocus(null)
-        }
-    }
 }

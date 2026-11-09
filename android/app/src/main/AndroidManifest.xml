@@ -36,8 +36,6 @@
         android:label="APPISHOWDRIVE"
         android:enableOnBackInvokedCallback="true"
         android:usesCleartextTraffic="true">
-        <service android:name="com.rtirl.chat.EmbeddedSpeechService"
-            android:exported="false" android:process=":embedded_speech" />
         <activity
             android:name="com.rtirl.chat.MainActivity"
             android:exported="true"

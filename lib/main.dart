@@ -15,7 +15,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localized_locales/flutter_localized_locales.dart';
-import 'package:on_device_tts/on_device_tts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:rtchat/firebase_options.dart';
@@ -34,8 +33,7 @@ import 'package:rtchat/models/quick_links.dart';
 import 'package:rtchat/models/stream_preview.dart';
 import 'package:rtchat/models/style.dart';
 import 'package:rtchat/models/tts.dart';
-import 'package:rtchat/models/tts/embedded_engine.dart';
-import 'package:rtchat/models/tts/voice_packs.dart';
+import 'package:rtchat/migrations/legacy_voice_cleanup.dart';
 import 'package:rtchat/models/user.dart';
 import 'package:rtchat/models/views.dart';
 import 'package:rtchat/screens/home.dart';
@@ -82,16 +80,11 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await AccountsModel.initializeApps();
   final prefs = await StreamingSharedPreferences.instance;
-  final voicePacks = VoicePackRepository(
-    directory: Directory(
-      '${(await getApplicationSupportDirectory()).path}/voice_packs',
-    ),
-  );
-  // Retire only the two packs explicitly removed by the user. They are never
-  // loaded by this release; ordinary TTS/audio preferences are kept.
-  for (final id in ['supertonic-2', 'supertonic-3']) {
-    try { await voicePacks.delete(id); } catch (error) {
-      debugPrint('Rimozione del vecchio pacchetto vocale non riuscita: $error');
+  if (Platform.isAndroid) {
+    try {
+      await clearLegacyVoiceModelData(await getApplicationSupportDirectory());
+    } catch (error, stack) {
+      debugPrint('Rimozione dei vecchi modelli vocali non riuscita: $error\n$stack');
     }
   }
 
@@ -131,21 +124,17 @@ void main() async {
       iOS: AudioContextIOS(category: AVAudioSessionCategory.playback),
     ),
   );
-  runApp(App(prefs: prefs, voicePacks: voicePacks));
+  runApp(App(prefs: prefs));
 }
 
 class App extends StatefulWidget {
   final StreamingSharedPreferences prefs;
 
-  /// The installed neural voice packs: with one installed, chat is read with
-  /// its voice. Without a repository, only with the system voices.
-  final VoicePackRepository? voicePacks;
-
   static final observer = FirebaseAnalyticsObserver(
     analytics: FirebaseAnalytics.instance,
   );
 
-  const App({super.key, required this.prefs, this.voicePacks});
+  const App({super.key, required this.prefs});
 
   @override
   State<App> createState() => _AppState();
@@ -154,11 +143,9 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   bool _isDiscoModeRunning = false;
   Timer? _discoModeTimer;
-  MemoryPressureMonitor? _memoryPressureMonitor;
 
   @override
   void dispose() {
-    _memoryPressureMonitor?.dispose();
     super.dispose();
   }
 
@@ -219,9 +206,6 @@ class _AppState extends State<App> {
           },
           update: (context, userModel, model) => model!..update(userModel),
         ),
-        ChangeNotifierProvider<VoicePacksModel>(
-          create: (context) => VoicePacksModel(widget.voicePacks),
-        ),
         ChangeNotifierProxyProvider<ViewsModel, TtsModel>(
           create: (context) {
             final model = TtsModel.fromJson(
@@ -231,14 +215,6 @@ class _AppState extends State<App> {
                 ),
               ),
             );
-            if (Platform.isAndroid) {
-              model.neuralEngine = EmbeddedItalianEngine();
-              // a neural model takes hundreds of megabytes: free it when the
-              // system runs short, and load it again for the next message.
-              _memoryPressureMonitor = MemoryPressureMonitor(
-                model.releaseNeuralModels,
-              )..start();
-            }
             return model..addListener(() {
               widget.prefs.setString('tts', jsonEncode(model.toJson()));
             });

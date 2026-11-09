@@ -1,4 +1,11 @@
-# APPISHOWDRIVE Android 1.1.1
+# APPISHOWDRIVE Android 1.1.2
+
+- Rimossi il modello vocale integrato da circa 295 MB e tutti i pacchetti vocali TTS aggiuntivi; resta il motore predefinito configurato su Android. Restano le preferenze di velocità, tono e lettura.
+- La migrazione al primo avvio elimina dal telefono solo le cartelle dei vecchi modelli vocali dell'app. Account, chat, impostazioni, sorgenti audio e aggiornamenti restano conservati.
+- La sintesi vocale Android non richiede audio focus e non invia comandi di pausa alle sorgenti WebView audio/video. Il mix è stato verificato con una pagina locale di test nell'emulatore; l'overlay privato Sound Alerts/StreamElements e il telefono One UI 9 / Android 17 non erano disponibili per la prova diretta.
+- Il comando streamer `!AggiungiPA N @utente` compare nel pannello Aura Arena e nel menu aperto tenendo premuto un messaggio. Il pannello prepara la bozza; il menu usa il login Twitch selezionato e chiede la quantità.
+
+## 1.1.1
 
 - Twitch, FrankerFaceZ, BetterTTV, Chatterino, pronomi scelti dagli utenti e nickname 7TV: controlli globali e singoli in Cronologia chat, attivi inizialmente. Un solo nome senza parentesi; tema 7TV applicato a quel nome. Correzione mirata al solo nero.
 - Supertonic 2 e 3 rimossi dall’uso. Dieci profili di lettura italiana incorporati nell’APK, cinque femminili e cinque maschili, con anteprima e scelta indipendente Twitch/Kick. Sara/Nicola originali e otto timbri derivati. Motore in processo separato; ripiego Android quando non disponibile. Le voci integrate richiedono Android 8+ a 64 bit e memoria sufficiente.

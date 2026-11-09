@@ -370,6 +370,7 @@ class _ModerationActions extends StatelessWidget {
                         '!HP',
                         '!LevaHP',
                         '!LevaPA',
+                        '!AggiungiPA',
                       ])
                         ListTile(
                           title: Text(code == '!HP' ? '!AggiungiHP' : code),

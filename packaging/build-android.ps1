@@ -15,8 +15,6 @@ $env:KEY_ALIAS = $androidSigning.alias
 $env:KEY_PASSWORD = $androidSigning.password
 Push-Location $androidProject
 try {
-  & node packaging/prepare-embedded-speech.mjs
-  if ($LASTEXITCODE -ne 0) { throw 'Modello vocale integrato non verificato.' }
   if (-not $SkipChecks) {
     & $androidFlutter analyze
     if ($LASTEXITCODE -ne 0) { throw 'Analisi non superata.' }

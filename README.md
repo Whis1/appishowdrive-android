@@ -7,14 +7,15 @@ Community edition of [RealtimeChat](https://github.com/muxable/rtchat), based on
 
 Android app identity: `com.ishowdrive.chat`. The launcher icon is the image supplied by the ISHOWDRIVE community. Twitch and Kick can be connected through Settings → Accounts; both chats are merged for TTS. Original provider services remain a dependency.
 
-## Community update 1.1.1
+## Community update 1.1.2
 
 - Ten selectable interface color palettes, immediately applied and saved in Settings.
 - Larger, readable chat, dark dashboard theme, local Manrope/Space Grotesk fonts, compact Twitch/Kick icons at the right of each message. Original role/sub badges remain before the author.
-- Ten bundled Italian reading profiles (five female, five male), including Sara and Nicola and eight derived timbres. No voice-pack download or subscription. The model runs in a separate Android process, with a system-voice fallback if it cannot run. Android 8+ and sufficient available memory are required for the bundled engine; the Android system voice remains available on the app's other supported devices. Apache-2.0 model/runtime and reproducible derivation are documented in assets/KOKORO-NOTICE.txt. Supertonic 2/3 downloads and activation are retired.
+- Only the default TTS engine configured in Android is used. Bundled neural models and downloadable voice packs are removed from the APK; the first run after updating deletes their old app-owned files while keeping accounts, chat settings and audio sources.
 - Twitch badges enabled by default; public FrankerFaceZ, BetterTTV, Chatterino badges, selected Twitch pronouns and active 7TV nickname paints. History settings include per-service and all-on/off controls. One display name only, with the selected 7TV paint applied to that name. Only pure black nicknames receive the stronger contrast treatment; other colours retain their previous treatment.
 - The supplied emperor welcomes signed-in users once per cold launch, with audio-aligned lips and a closed-lip smile after speech. The touch-through mascot stays at the lower left, holds for two seconds and fades. It can be disabled in Settings and does not replay on browser/page resumes.
 - Aura Arena panel for Twitch, own-channel streamer actions and user commands. Command buttons show the real command names. Tournament controls appear in order: create → force choice → participation choice → start/end. Audience decisions and challenge accept/ignore controls are contextual.
+- Streamer-only `!AggiungiPA N @utente` is available in the command panel and the long-press user menu. The panel fills a chat draft; the user menu uses the selected Twitch login with an amount prompt.
 - User menu: immediate tagged !Processo/!Sanziona; quantity and confirmation for HP/Aura adjustments. Recipient commands in the panel, including !Sfida and !Vincites, fill the chat draft for manual completion and sending.
 - Launcher icon fills its Android mask. Preview defaults to HD Auto and retains a manual quality choice.
 
@@ -22,7 +23,7 @@ The app cannot filter the microphone captured by another Android app. An optiona
 
 Updates are distributed through this repository’s GitHub Releases. The app checks at launch, downloads new APKs with progress and verifies size, SHA256, package, increasing version and the installed app’s signing certificate. Android confirmation is required to install. APK installation restarts the app: install at the end of the live. User settings and accounts are preserved across updates to this app.
 
-The upstream Android native system-speech and speaker keep-alive mixing fixes are included. Controlled Android video/speech tests are provided in `integration_test/appishowdrive_audio_test.dart`; they do not use or trigger a streamer’s private Sound Alerts URL.
+Android system TTS playback does not request audio focus or issue pause commands to the app's independent WebView audio sources. Controlled audio/video tests are provided in `integration_test/appishowdrive_audio_test.dart`. The streamer's private Sound Alerts/StreamElements overlay and physical One UI 9 / Android 17 phone were unavailable for direct reproduction.
 
 See [community notices](NOTICE-APPISHOWDRIVE.md) and the original [Apache-2.0 license](LICENSE). Upstream deployment workflows are preserved disabled so this fork cannot deploy to the original provider’s infrastructure.
 

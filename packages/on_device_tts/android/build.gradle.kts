@@ -25,10 +25,6 @@ plugins {
     id("com.android.library")
 }
 
-// The official ONNX Runtime (MIT). Pinned: bump it deliberately, and rerun the
-// parity and emulator tests when you do.
-val onnxRuntimeVersion = "1.31.0"
-
 configure<com.android.build.api.dsl.LibraryExtension> {
     namespace = "com.muxable.ondevicetts"
 
@@ -78,19 +74,8 @@ kotlin {
     }
 }
 
-// JVM unit tests can't load the Android build's native library, so they run
-// against the desktop build of the same ONNX Runtime version instead.
-configurations.matching { it.name.endsWith("UnitTestRuntimeClasspath") }.configureEach {
-    exclude(group = "com.microsoft.onnxruntime", module = "onnxruntime-android")
-}
-
 dependencies {
-    implementation("com.microsoft.onnxruntime:onnxruntime-android:$onnxRuntimeVersion")
-
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.junit.jupiter:junit-jupiter:6.1.3")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:6.1.3")
-    if (System.getenv("SUPERTONIC_PARITY_DIR") != null) {
-        testRuntimeOnly("com.microsoft.onnxruntime:onnxruntime:$onnxRuntimeVersion")
-    }
 }

@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:on_device_tts/on_device_tts.dart';
 import 'package:provider/provider.dart';
 import 'package:rtchat/api.dart';
 import 'package:rtchat/components/chat_history/message.dart';
@@ -29,17 +28,15 @@ import 'package:rtchat/models/messages/twitch/emote.dart';
 import 'package:rtchat/models/messages/twitch/user.dart';
 import 'package:rtchat/models/style.dart';
 import 'package:rtchat/models/tts.dart';
-import 'package:rtchat/models/tts/voice_packs.dart';
 import 'package:rtchat/models/user.dart';
 import 'package:rtchat/models/views.dart';
-import 'package:rtchat/screens/settings/tts/italian_voices.dart';
+import 'package:rtchat/screens/settings/tts.dart';
 import 'package:rtchat/screens/settings/interface_themes.dart';
 import 'package:rtchat/themes.dart';
 import '../test/fakes/fake_api.dart';
 import '../test/fakes/fake_chat.dart';
 import '../test/fakes/fake_tts_engine.dart';
 import '../test/fakes/fake_user_model.dart';
-import '../test/fakes/fake_voice_pack_repository.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -60,14 +57,8 @@ void main() {
     addTearDown(Api.debugReset);
     addTearDown(user.dispose);
     addTearDown(aura.dispose);
-    final tts = TtsModel.fromJson({}, engine: FakeTtsEngine())
-      ..neuralEngine = FakeTtsEngine(availableVoices: packVoices(['it']));
+    final tts = TtsModel.fromJson({}, engine: FakeTtsEngine());
     addTearDown(tts.dispose);
-    final repo =
-        FakeVoicePackRepository()
-          ..add(installedPackOf(bundledVoicePacks.first));
-    final packs = VoicePacksModel(repo, isSupported: true);
-    addTearDown(packs.dispose);
     final key = GlobalKey();
     final navigator = GlobalKey<NavigatorState>();
     Future<void> capture(String name) async {
@@ -108,7 +99,6 @@ void main() {
             ChangeNotifierProvider<UserModel>.value(value: user),
             ChangeNotifierProvider<AuraArenaModel>.value(value: aura),
             ChangeNotifierProvider<TtsModel>.value(value: tts),
-            ChangeNotifierProvider<VoicePacksModel>.value(value: packs),
             ChangeNotifierProvider(create: (_) => StyleModel.fromJson({})),
             ChangeNotifierProvider(create: (_) => LayoutModel.fromJson({})),
             ChangeNotifierProvider(create: (_) => ViewsModel.fromJson({})),
@@ -271,9 +261,9 @@ void main() {
     await tester.tap(find.text('Ignora'));
     await tester.pumpAndSettle();
     navigator.currentState!.push(
-      MaterialPageRoute(builder: (_) => const ItalianVoicesScreen()),
+      MaterialPageRoute(builder: (_) => const TextToSpeechScreen()),
     );
-    await capture('voci-italiane');
+    await capture('tts-android-sistema');
     navigator.currentState!.pop();
     await tester.pumpAndSettle();
     navigator.currentState!.push(

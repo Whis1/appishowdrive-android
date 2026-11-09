@@ -4,46 +4,32 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:rtchat/l10n/app_localizations.dart';
 import 'package:rtchat/models/tts.dart';
-import 'package:rtchat/models/tts/language.dart';
-import 'package:rtchat/models/tts/voice_packs.dart';
 import 'package:rtchat/screens/settings/tts.dart';
 
 import '../../fakes/fake_tts_engine.dart';
-import '../../fakes/fake_voice_pack_repository.dart';
 
 void main() {
-  late TtsModel tts;
-
-  Future<void> open(
-    WidgetTester tester, {
-    String language = 'en',
-    bool neural = false,
-    bool isSupported = true,
-  }) async {
-    final packs = VoicePacksModel(
-      FakeVoicePackRepository(),
-      isSupported: isSupported,
+  testWidgets('TTS settings use only Android system speech and preserve controls', (
+    tester,
+  ) async {
+    final engine = FakeTtsEngine();
+    final model = TtsModel.fromJson(
+      TtsModel.migrateCommunitySettings({
+        'speechEngine': 'kokoro-v1',
+        'voicePack': 'supertonic-3',
+        'neuralVoices': {'it': 'F1'},
+        'platformVoices': {'twitch': 'M2'},
+        'speed': .65,
+        'pitch': .8,
+      }),
+      engine: engine,
+      reportError: (error, _) => throw error,
     );
-    tts = TtsModel.fromJson(
-      const {},
-      engine: FakeTtsEngine(),
-      reportError: (e, st) => throw e,
-    )..language = Language(language);
-    if (neural) {
-      tts.neuralEngine = FakeTtsEngine(
-        availableVoices: packVoices(['en', 'fr']),
-      );
-    }
-    addTearDown(() {
-      packs.dispose();
-      tts.dispose();
-    });
+    addTearDown(model.dispose);
+
     await tester.pumpWidget(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider.value(value: tts),
-          ChangeNotifierProvider.value(value: packs),
-        ],
+      ChangeNotifierProvider.value(
+        value: model,
         child: const MaterialApp(
           localizationsDelegates: [
             ...AppLocalizations.localizationsDelegates,
@@ -55,75 +41,18 @@ void main() {
       ),
     );
     await tester.pumpAndSettle();
-  }
 
-  testWidgets('reads with the system voice without a voice pack', (
-    tester,
-  ) async {
-    await open(tester);
     expect(find.text('System voice'), findsOneWidget);
-    expect(find.text('Voices'), findsNothing);
-
     expect(find.text('Voice packs'), findsNothing);
-    await tester.tap(find.text('Voci italiane IA'));
-    await tester.pumpAndSettle();
-    expect(find.text('Supertonic 3'), findsNothing);
-    expect(find.text('Voce Android'), findsOneWidget);
-  });
+    expect(find.text('Voci italiane IA'), findsNothing);
+    expect(find.text('Voce Android'), findsNothing);
+    expect(model.toJson()['speechEngine'], 'system');
+    expect(model.toJson().containsKey('voicePack'), isFalse);
+    expect(model.toJson().containsKey('neuralVoices'), isFalse);
+    expect(model.toJson().containsKey('platformVoices'), isFalse);
 
-  testWidgets('reads with the neural voice once a pack is installed', (
-    tester,
-  ) async {
-    await open(tester, neural: true);
-    expect(find.text('Neural voice (on-device)'), findsOneWidget);
-    expect(find.textContaining("isn't supported"), findsNothing);
-
-    await tester.tap(find.text('Voices'));
-    await tester.pumpAndSettle();
-    expect(find.text('Per-viewer voice'), findsOneWidget);
-  });
-
-  testWidgets('says when the stream language is not supported', (tester) async {
-    await open(tester, language: 'th', neural: true);
-    expect(
-      find.text(
-        "Thai isn't supported by your voice packs; the system voice will be used",
-      ),
-      findsOneWidget,
-    );
-  });
-
-  testWidgets('tells once that neural voices cannot run', (tester) async {
-    await open(tester, neural: true);
-    tts.fallBackToSystemVoices(NeuralTtsFallback.lowMemoryDevice);
-    await tester.pumpAndSettle();
-    expect(find.text('System voice'), findsOneWidget);
-    expect(find.textContaining("doesn't have enough memory"), findsOneWidget);
-    expect(find.text('Voices'), findsNothing);
-
-    await tester.tap(find.byTooltip('Close'));
-    await tester.pumpAndSettle();
-    expect(tts.isNeuralFallbackNoticePending, isFalse);
-    expect(find.textContaining("doesn't have enough memory"), findsNothing);
-    expect(find.text('System voice'), findsOneWidget);
-  });
-
-  testWidgets('hides the voice settings where neural voices are unsupported', (
-    tester,
-  ) async {
-    await open(tester, isSupported: false);
-    expect(find.text('System voice'), findsNothing);
-    expect(find.text('Voice packs'), findsNothing);
-  });
-  testWidgets('previews French text from an English settings screen', (
-    tester,
-  ) async {
-    await open(tester, language: 'fr', neural: true);
     await tester.tap(find.text('Play sample message'));
     await tester.pumpAndSettle();
-    final spoken = (tts.neuralEngine! as FakeTtsEngine).utterances.single;
-    expect(spoken.text, contains('message pour la synthèse vocale'));
-    expect(spoken.language, 'fr');
-    await tts.releaseNeuralModels();
+    expect(engine.spoken, hasLength(1));
   });
 }

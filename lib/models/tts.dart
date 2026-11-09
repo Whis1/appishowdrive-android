@@ -150,20 +150,15 @@ class TtsModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Installation alone never switches either chat from the Android voice.
+  /// Old custom voice choices are ignored; Android's configured voice is used.
   static Map<String, dynamic> migrateCommunitySettings(
     Map<String, dynamic> json,
   ) => {
     ...json,
-    'speechEngine': 'kokoro-v1',
+    'speechEngine': 'system',
     'voicePack': null,
-    'neuralVoices': json['speechEngine'] == 'kokoro-v1' ? json['neuralVoices'] : {},
-    'platformVoices': {
-      'twitch': 'system',
-      'kick': 'system',
-      if (json['speechEngine'] == 'kokoro-v1' && json['platformVoices'] is Map)
-        ...Map<String, dynamic>.from(json['platformVoices']),
-    },
+    'neuralVoices': <String, String>{},
+    'platformVoices': <String, String>{},
   };
 
   Future<void> _previousUtterance = Future.value();
@@ -1005,8 +1000,11 @@ class TtsModel extends ChangeNotifier {
   }
 
   void _updateFromJsonInternal(Map<String, dynamic> json) {
-    _preferredVoicePackId =
-        json['voicePack'] is String ? json['voicePack'] as String : null;
+    // Voice-pack and per-platform neural selections from older releases are
+    // intentionally retired. The platform default is the only active voice.
+    _preferredVoicePackId = null;
+    _platformVoices.clear();
+    _neuralVoices.clear();
     if (json['isBotMuted'] != null) {
       _isBotMuted = json['isBotMuted'];
     }
@@ -1031,27 +1029,6 @@ class TtsModel extends ChangeNotifier {
     // the `voice` key of versions with cloud tts held cloud voice names
     // (e.g. fr-FR-Wavenet-A), which mean nothing to neural voices: it's
     // ignored, and dropped on the next save.
-    final platformVoices = json['platformVoices'];
-    if (platformVoices is Map) {
-      _platformVoices.clear();
-      for (final provider in Providers.all) {
-        final id = platformVoices[provider];
-        if (id is String &&
-            (id == 'system' || RegExp(r'^[FM][1-5]$').hasMatch(id))) {
-          _platformVoices[provider] = id;
-        }
-      }
-    }
-    final voicesJson = json['neuralVoices'];
-    if (voicesJson is Map) {
-      // the saved map is a full snapshot, so it replaces the current one.
-      _neuralVoices
-        ..clear()
-        ..addAll({
-          for (final MapEntry(:key, :value) in voicesJson.entries)
-            if (key is String && value is String) _voiceKeyFor(key): value,
-        });
-    }
     final userJson = json['mutedUsers'];
     if (userJson != null) {
       // the saved list is a full snapshot, so it replaces the current one.
@@ -1108,10 +1085,7 @@ class TtsModel extends ChangeNotifier {
     "language": language.languageCode,
     "pitch": pitch,
     "speed": speed,
-      'speechEngine': 'kokoro-v1',
-    "neuralVoices": Map.of(_neuralVoices),
-    if (_platformVoices.isNotEmpty) "platformVoices": Map.of(_platformVoices),
-    if (_preferredVoicePackId != null) "voicePack": _preferredVoicePackId,
+      'speechEngine': 'system',
     'mutedUsers': _mutedUsers.map((e) => e.toJson()).toList(),
   };
 }

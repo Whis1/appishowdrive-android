@@ -1,8 +1,8 @@
 # APPISHOWDRIVE Android — guida rapida
 
-[Scarica l’APK Android firmato](https://github.com/Whis1/appishowdrive-android/releases/latest/download/APPISHOWDRIVE-Android.apk) · Versione 1.1.1 · App: Android 7 o successivo. Voci integrate: Android 8+ a 64 bit e memoria sufficiente.
+[Scarica l’APK Android firmato](https://github.com/Whis1/appishowdrive-android/releases/latest/download/APPISHOWDRIVE-Android.apk) · Versione 1.1.2 · Android 7 o successivo. Usa la voce predefinita configurata su Android.
 
-Puoi inoltrare questo collegamento su Discord. Il modello delle nuove voci è già nell’APK: il file è più grande e non richiede un altro pacchetto da scaricare.
+Puoi inoltrare questo collegamento su Discord. Le voci TTS aggiuntive e i relativi modelli sono stati rimossi; non serve scaricare pacchetti vocali.
 
 ## Installazione
 
@@ -22,13 +22,11 @@ Non devi creare applicazioni sviluppatore, copiare Client ID, password o chiavi 
 
 Se il browser non si apre o preferisci un altro dispositivo, nella schermata di collegamento trovi il QR. Puoi riaprire il browser dal pulsante dedicato. Se l'accesso scade, chiudi il collegamento e riprova.
 
-## Voci italiane IA
+## Sintesi vocale Android
 
-In **Impostazioni → Testo in voce → Voci italiane IA** trovi dieci profili già inclusi: cinque femminili e cinque maschili. Nessun download vocale separato. Sara e Nicola sono le voci originali; gli altri otto timbri sono derivati da queste voci italiane. La sintesi avviene sul telefono, anche offline. Supertonic 2 e 3 sono rimossi dall’uso e i vecchi pacchetti vengono eliminati.
+In **Impostazioni → Testo in voce** l'app usa soltanto la voce predefinita configurata nelle impostazioni TTS di Android. Puoi ascoltare il messaggio di prova e regolare velocità e tono. Le voci aggiuntive e il modello di grandi dimensioni sono stati rimossi; al primo avvio dopo l'aggiornamento vengono eliminati solo i vecchi file vocali dell'app. Account, chat, impostazioni e sorgenti audio restano conservati.
 
-Ascolta il pulsante di anteprima accanto a una voce. Seleziona **Usa per Twitch**, **Usa per Kick**, oppure entrambe le spunte sulla stessa voce. Puoi scegliere due voci diverse. **Usa velocità naturale** imposta il ritmo di partenza; il cursore consente di regolarlo. Attiva il TTS dalla barra della chat come spiegato sopra.
-
-La riga **Voce Android** permette di tornare alla voce di sistema per una o entrambe le piattaforme e ha un pulsante di anteprima. Le opzioni avanzate originali, i filtri e gli utenti silenziati rimangono disponibili. Dopo l’aggiornamento la voce Android resta selezionata finché scegli uno dei nuovi profili. Il nuovo motore è separato dalla chat; se non può funzionare, la lettura ripiega sulla voce Android. Le prestazioni dipendono dal telefono: non tutte le voci IA possono funzionare su ogni modello Android. In caso di difficoltà usa **Diagnostica voci** per copiare le informazioni del telefono.
+La lettura della chat non prende audio focus e non invia comandi di pausa alle sorgenti audio/video dell'app. Per il collaudo è stata usata una pagina locale di test: il collegamento privato di Sound Alerts/StreamElements e il telefono One UI 9 / Android 17 non erano disponibili per una prova diretta.
 
 ## Badge, pronomi e nomi
 
@@ -48,7 +46,7 @@ In **Impostazioni → Colori dell’interfaccia** trovi dieci riquadri: ciano, n
 
 Accanto alle emote premi l'icona Aura Arena: trovi **Comandi Aura**, con le sezioni **Solo Streamer** e **Solo utenti**. I comandi amministrativi sono utilizzabili dall'account proprietario del canale Twitch; il bot del gioco continua a verificarne i permessi.
 
-Dall'elenco **!Processo, !Sanziona, !HP, !LevaHP, !LevaPA** compilano soltanto la bozza nella chat: completa nome/quantità e premi Invio. Il comando reale per aggiungere HP è **!HP N @utente**. Tenendo invece premuto il messaggio di un utente, **!Processo** e **!Sanziona** inviano subito il tag; **!AggiungiHP, !LevaHP, !LevaPA** chiedono la quantità e la spunta verde di invio.
+Dall'elenco **!Processo, !Sanziona, !HP, !LevaHP, !LevaPA, !AggiungiPA** compilano soltanto la bozza nella chat: completa nome/quantità e premi Invio. I comandi sono `!AggiungiPA quantità @utente` e `!LevaPA quantità @utente`. Il comando reale per aggiungere HP è **!HP N @utente**. Tenendo invece premuto il messaggio di un utente, **!Processo** e **!Sanziona** inviano subito il tag; **!AggiungiHP, !LevaHP, !LevaPA, !AggiungiPA** chiedono la quantità e usano il nome Twitch del messaggio selezionato.
 
 Dopo **!Creatorneo** appaiono soltanto **ForzaTorneo / Senza Forzare**. Dopo la scelta appaiono **Partecipa al Torneo / Non partecipare**. Soltanto dopo questa seconda scelta compaiono **Iniziatorneo / Terminatorneo**. Le scelte Senza Forzare e Non partecipare non inviano comandi inventati. Il bot mantiene le regole del torneo, compreso il minimo di iscritti.
 

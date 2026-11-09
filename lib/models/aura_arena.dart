@@ -29,6 +29,11 @@ const auraStreamerCommands = [
   AuraCommand('!HP', 'Aggiungi HP', argument: AuraArgument.userNumber),
   AuraCommand('!LevaHP', 'Leva HP', argument: AuraArgument.userNumber),
   AuraCommand('!LevaPA', 'Leva Punti Aura', argument: AuraArgument.userNumber),
+  AuraCommand(
+    '!AggiungiPA',
+    'Aggiungi Punti Aura',
+    argument: AuraArgument.userNumber,
+  ),
   AuraCommand('!ImpostaBIT', 'Imposta Bit HP', argument: AuraArgument.number),
   AuraCommand('!AggiornaAPP', 'Aggiorna app Arena'),
   AuraCommand('!Stopapp', 'Ferma Arena'),

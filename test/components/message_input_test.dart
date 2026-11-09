@@ -144,7 +144,7 @@ void main() {
   }
 
   testWidgets(
-    'Aura: i cinque comandi nel pannello preparano solo la bozza; invio esclusivamente dal campo chat',
+    'Aura: i comandi destinatario nel pannello preparano solo la bozza; invio esclusivamente dal campo chat',
     (tester) async {
       final account = fakeAccount(twitch, appName: 'aura-draft'),
           api = fakeApiFor(account);
@@ -157,6 +157,7 @@ void main() {
         ('!HP', '!HP'),
         ('!LevaHP', '!LevaHP'),
         ('!LevaPA', '!LevaPA'),
+        ('!AggiungiPA', '!AggiungiPA'),
       ]) {
         await tester.tap(find.byTooltip('Aura Arena'));
         await tester.pumpAndSettle();

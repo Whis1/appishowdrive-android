@@ -109,6 +109,18 @@ Future<void> openModeration(WidgetTester tester) async {
   await tester.pumpAndSettle();
 }
 
+Future<void> tapModerationItem(WidgetTester tester, Finder item) async {
+  final scrollable = find.descendant(
+    of: find.byType(Dialog),
+    matching: find.byType(Scrollable),
+  ).first;
+  await tester.scrollUntilVisible(item, 100, scrollable: scrollable);
+  await tester.ensureVisible(item);
+  await tester.pumpAndSettle();
+  await tester.tap(item);
+  await tester.pumpAndSettle();
+}
+
 class _FailingFunctions extends Fake implements FirebaseFunctions {
   final Future<void> Function() fail;
   final calls = <String>[];
@@ -144,6 +156,25 @@ void main() {
     expect(find.textContaining('Timeout'), findsOneWidget);
     // muting kick users isn't supported yet.
     expect(find.textContaining('Mute'), findsNothing);
+  });
+
+  testWidgets('streamer user menu exposes AggiungiPA for the selected login', (
+    tester,
+  ) async {
+    final userModel = FakeUserModel(userChannel: twitchChannel);
+    await pumpMessage(tester, userModel, twitchMessage(), twitchChannel);
+    await openModeration(tester);
+    await tester.scrollUntilVisible(
+      find.text('!AggiungiPA'),
+      100,
+      scrollable: find.descendant(
+        of: find.byType(Dialog),
+        matching: find.byType(Scrollable),
+      ).first,
+    );
+    expect(find.text('AURA ARENA · @viewer'), findsOneWidget);
+    expect(find.text('!AggiungiPA'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('viewers of someone else\'s kick chat cannot', (tester) async {
@@ -204,9 +235,7 @@ void main() {
               channel,
             );
             await openModeration(tester);
-            await tester.scrollUntilVisible(find.text(action.key), 120, scrollable: find.descendant(of: find.byType(Dialog), matching: find.byType(Scrollable)).first);
-            await tester.tap(find.text(action.key));
-            await tester.pumpAndSettle();
+            await tapModerationItem(tester, find.text(action.key));
             if (action.value == 'timeout') {
               expect(functions.calls, isEmpty);
               await tester.tap(find.byType(TextButton).last);
@@ -296,12 +325,10 @@ void main() {
     ) async {
       await pumpMessage(tester, userModel, twitchMessage(), twitchChannel);
       await openModeration(tester);
-      await tester.tap(find.text('Delete Message'));
-      await tester.pumpAndSettle();
+      await tapModerationItem(tester, find.text('Delete Message'));
       await pumpMessage(tester, userModel, kickMessage(), kickChannel);
       await openModeration(tester);
-      await tester.tap(find.text('Delete Message'));
-      await tester.pumpAndSettle();
+      await tapModerationItem(tester, find.text('Delete Message'));
 
       expect(twitchApi.calls.single.data['provider'], Providers.twitch);
       expect(kickApi.calls.single.data['provider'], Providers.kick);
@@ -347,8 +374,7 @@ void main() {
     testWidgets('a kick timeout calls as the kick account', (tester) async {
       await pumpMessage(tester, userModel, kickMessage(), kickChannel);
       await openModeration(tester);
-      await tester.tap(find.textContaining('Timeout'));
-      await tester.pumpAndSettle();
+      await tapModerationItem(tester, find.textContaining('Timeout'));
       await tester.tap(find.byType(TextButton).last);
       await tester.pumpAndSettle();
 
@@ -361,8 +387,7 @@ void main() {
     testWidgets('a twitch delete calls as the twitch account', (tester) async {
       await pumpMessage(tester, userModel, twitchMessage(), twitchChannel);
       await openModeration(tester);
-      await tester.tap(find.text('Delete Message'));
-      await tester.pumpAndSettle();
+      await tapModerationItem(tester, find.text('Delete Message'));
 
       expect(kickApi.calls, isEmpty);
       expect(twitchApi.calls.single.name, 'deleteMessage');

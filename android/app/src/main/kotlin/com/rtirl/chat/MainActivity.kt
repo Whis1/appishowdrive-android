@@ -16,7 +16,6 @@ class MainActivity : FlutterActivity() {
 
   private var sharedData: String = ""
   private var appUpdates: AppUpdates? = null
-  private var embeddedSpeech: EmbeddedSpeechClient? = null
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -24,7 +23,6 @@ class MainActivity : FlutterActivity() {
   }
 
   override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
-    embeddedSpeech = EmbeddedSpeechClient(this, MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.ishowdrive.chat/embedded-speech"))
     appUpdates = AppUpdates(this, MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.ishowdrive.chat/updates"))
     val ttsServiceChannel =
         MethodChannel(
@@ -136,8 +134,6 @@ class MainActivity : FlutterActivity() {
   }
 
   override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
-    embeddedSpeech?.dispose()
-    embeddedSpeech = null
     appUpdates?.close()
     appUpdates = null
     super.cleanUpFlutterEngine(flutterEngine)

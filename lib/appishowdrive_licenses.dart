@@ -7,13 +7,6 @@ void registerCommunityLicenses() {
     yield LicenseEntryWithLineBreaks([
       'RealtimeChat · Muxable',
     ], await rootBundle.loadString('assets/rtchat-LICENSE.txt'));
-    yield LicenseEntryWithLineBreaks([
-      'Kokoro · profili italiani integrati',
-      'MediaPipe / LiteRT-LM',
-    ], await rootBundle.loadString('assets/KOKORO-LICENSE.txt'));
-    yield LicenseEntryWithLineBreaks([
-      'Kokoro · attribuzioni e modifiche',
-    ], await rootBundle.loadString('assets/KOKORO-NOTICE.txt'));
     for (final font in ['Manrope', 'SpaceGrotesk']) {
       yield LicenseEntryWithLineBreaks([
         font,
