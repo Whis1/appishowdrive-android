@@ -174,6 +174,11 @@ void main() {
     );
     expect(find.text('AURA ARENA · @viewer'), findsOneWidget);
     expect(find.text('!AggiungiPA'), findsOneWidget);
+    await tapModerationItem(tester, find.text('!AggiungiPA'));
+    final targetField = tester.widget<TextField>(find.byType(TextField).first);
+    expect(targetField.controller!.text, 'viewer');
+    expect(targetField.readOnly, isTrue);
+    expect(find.text('Quantità'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
