@@ -1,4 +1,21 @@
-# Verifica APPISHOWDRIVE Android 1.1.0/build11
+# Verifica APPISHOWDRIVE Android 1.1.2/build13 — 9 novembre 2026
+
+Revisione del codice rilasciato, con nuove misure sulla versione corrente:
+
+- 597 test Flutter dell’app e 94 del plugin passati; analyzer senza segnalazioni. I vecchi conteggi 632/47 riportati nel resoconto locale 1.1.2 provenivano dalla versione con i modelli neurali: non descrivevano la suite corrente dopo la loro rimozione.
+- 12 test JVM attuali: 10 per l’identità degli aggiornamenti e 2 per la sicurezza delle callback TTS. I test dei motori neurali rimossi non sono più inclusi.
+- Nuova prova nativa su emulatore Android API35, compilata dai sorgenti 1.1.2: sei letture con TTS Android e sei impulsi keep-alive mentre la sorgente video rimane attiva. Il video avanza, non viene messo in pausa e la pagina si apre una sola volta.
+- Cattura audio indipendente: tono del video presente in tutte le 1.012 finestre di 20 ms misurate durante il parlato, 0 ms di vuoto rilevato. Anche il TTS è udibile nel mix. Il controllo deliberato pausa/ripresa è passato.
+- Verificata la migrazione che elimina soltanto i modelli vocali dell’app e conserva le altre preferenze. `!AggiungiPA` verificato come bozza dalla lista e come login selezionato più quantità dal menu utente.
+- Aggiunto un vincolo alla pubblicazione: la misura audio deve corrispondere all’impronta dei sorgenti vocali, nativi e della versione attuale. Un report di una versione precedente viene rifiutato.
+
+Il report audio precedente del 7 novembre era stato richiamato dal resoconto locale della 1.1.2. Questa revisione lo sostituisce con una registrazione nuova del 9 novembre, riferita ai sorgenti correnti. L’APK pubblico 1.1.2 resta quello rilasciato: 98.913.335 byte, SHA256 `e2a146529e1f754cd3f14ec05242ef0abb8bbc39b1e03d15f95bffb6f0d240b5`.
+
+La misura riguarda una sorgente controllata sull’emulatore. Link privato Sound Alerts/StreamElements, donazioni reali e telefono dello streamer restano da provare. La cattura QA non è inclusa nell’app. Non è stato modificato il codice runtime dell’APK durante questa revisione.
+
+---
+
+## Storico 1.1.0/build11
 
 Verifiche dell'8 novembre 2026:
 

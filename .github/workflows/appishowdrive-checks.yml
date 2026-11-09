@@ -18,5 +18,6 @@ jobs:
       - run: flutter analyze
       - run: flutter test
       - run: node --test test/assets/twitch_tunnel_test.cjs
+      - run: node --test packaging/test/*.test.mjs
       - run: flutter test
         working-directory: packages/on_device_tts
