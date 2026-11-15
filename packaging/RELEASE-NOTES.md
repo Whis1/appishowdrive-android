@@ -1,4 +1,10 @@
-# APPISHOWDRIVE Android 1.1.2
+# APPISHOWDRIVE Android 1.1.3
+
+- Comandi Aura aggiornati: sfida e accettazione web, spiegazione dell'Arena Manuale, Ranking, scommesse, scassinamento e segnalazione. Aggiunti anche la bozza di Proposta e gli elenchi dei comandi.
+- `!WipeRanking` è disponibile solo al proprietario del canale, nella sezione Solo Streamer, con conferma prima dell'invio. Il server mantiene il proprio controllo sul mittente.
+- Il menu aperto tenendo premuto un messaggio include `!Sfida` e `!Segnalazione`, con il login dell'autore già selezionato.
+
+## 1.1.2
 
 - Rimossi il modello vocale integrato da circa 295 MB e tutti i pacchetti vocali TTS aggiuntivi; resta il motore predefinito configurato su Android. Restano le preferenze di velocità, tono e lettura.
 - La migrazione al primo avvio elimina dal telefono solo le cartelle dei vecchi modelli vocali dell'app. Account, chat, impostazioni, sorgenti audio e aggiornamenti restano conservati.

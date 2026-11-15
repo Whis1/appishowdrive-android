@@ -304,6 +304,7 @@ class AuraCommandPanel extends StatelessWidget {
       final command = commands[i];
       final composeOnly =
           [
+            '!Proposta',
             '!Processo',
             '!Sanziona',
             '!HP',

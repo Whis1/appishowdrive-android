@@ -72,6 +72,42 @@ void main() {
     model.sent(channel, '!Iniziatorneo');
     expect(model.state(channel).tournament, 0);
   });
+  test('Aura: nuovi comandi pubblici e Ranking riservato allo streamer', () {
+    AuraCommand command(String code) =>
+        auraUserCommands.firstWhere((c) => c.command == code);
+    for (final code in [
+      '!Sfidas',
+      '!Accettas',
+      '!ArenaIshowdrive',
+      '!Ranking',
+      '!Scommesse',
+      '!Scommetto',
+      '!Scassina',
+      '!Segnalazione',
+    ]) {
+      expect(command(code).streamer, isFalse);
+    }
+    expect(auraEncode(command('!Sfidas'), target: 'Alice'), '!Sfidas @alice');
+    expect(
+      auraEncode(command('!Segnalazione'), target: '@Alice'),
+      '!Segnalazione @alice',
+    );
+    expect(
+      auraEncode(command('!Scommetto'), target: 'Alice', amount: '0010'),
+      '!Scommetto 10 @alice',
+    );
+    final wipe = auraStreamerCommands.firstWhere(
+      (c) => c.command == '!WipeRanking',
+    );
+    expect(wipe.streamer, isTrue);
+    expect(wipe.destructive, isTrue);
+    expect(
+      auraUserCommands.any((c) => c.command.toLowerCase() == '!wiperanking'),
+      isFalse,
+    );
+    final all = [...auraUserCommands, ...auraStreamerCommands];
+    expect(all.map((c) => c.command.toLowerCase()).toSet().length, all.length);
+  });
   test(
     'Aura: inviti solo dal bot Twitch, nome destinatario corretto e scadenza assoluta',
     () {
@@ -131,5 +167,4 @@ void main() {
       expect(model.invitation(channel), isNull);
     },
   );
-
 }

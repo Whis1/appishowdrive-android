@@ -365,6 +365,8 @@ class _ModerationActions extends StatelessWidget {
                         ),
                       ),
                       for (final code in [
+                        '!Sfida',
+                        '!Segnalazione',
                         '!Processo',
                         '!Sanziona',
                         '!HP',
@@ -382,9 +384,10 @@ class _ModerationActions extends StatelessWidget {
                             runAuraCommand(
                               thisContext,
                               channel,
-                              auraStreamerCommands.firstWhere(
-                                (c) => c.command == code,
-                              ),
+                              [
+                                ...auraUserCommands,
+                                ...auraStreamerCommands,
+                              ].firstWhere((c) => c.command == code),
                               target: author.login,
                             );
                           },

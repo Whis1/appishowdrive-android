@@ -40,6 +40,8 @@ const auraStreamerCommands = [
   AuraCommand('!Avviaapp', 'Avvia Arena'),
   AuraCommand('!Wipe', 'Azzera classifica', destructive: true),
   AuraCommand('!WipePA', 'Azzera Punti Aura', destructive: true),
+  AuraCommand('!WipeRanking', 'Azzera Ranking stagionale', destructive: true),
+  AuraCommand('!Comandiaurastreamer', 'Elenco comandi streamer'),
 ];
 // These commands appear only at their step after !Creatorneo.
 const auraTournamentCommands = [
@@ -61,6 +63,34 @@ const auraUserCommands = [
     argument: AuraArgument.user,
   ),
   AuraCommand('!Accetta', 'Accetta sfida', streamer: false),
+  AuraCommand(
+    '!Sfidas',
+    'Sfida in Aura Arena Manuale',
+    streamer: false,
+    argument: AuraArgument.user,
+  ),
+  AuraCommand('!Accettas', 'Accetta sfida manuale', streamer: false),
+  AuraCommand(
+    '!ArenaIshowdrive',
+    'Come funziona Aura Arena Manuale',
+    streamer: false,
+  ),
+  AuraCommand('!Ranking', 'Ranking stagionale', streamer: false),
+  AuraCommand('!Scommesse', 'Come funzionano le scommesse', streamer: false),
+  AuraCommand(
+    '!Scommetto',
+    'Scommetti su un combattente',
+    streamer: false,
+    argument: AuraArgument.userNumber,
+  ),
+  AuraCommand('!Scassina', 'Tenta la fuga dalla cella', streamer: false),
+  AuraCommand(
+    '!Segnalazione',
+    'Segnala un utente',
+    streamer: false,
+    argument: AuraArgument.user,
+  ),
+  AuraCommand('!Comandiaura', 'Elenco comandi utenti', streamer: false),
   AuraCommand('!Classificaura', 'Classifica Aura', streamer: false),
   AuraCommand(
     '!Puntiaura',
@@ -80,6 +110,7 @@ const auraUserCommands = [
   AuraCommand('!AgenteSuinos', 'Agente Suinos', streamer: false),
   AuraCommand('!Sistemalivelli', 'Sistema livelli', streamer: false),
   AuraCommand('!Proposteapprovate', 'Proposte approvate', streamer: false),
+  AuraCommand('!Proposta', 'Scrivi una proposta', streamer: false),
   AuraCommand('!Ruotas', 'Gira la ruota', streamer: false),
   AuraCommand(
     '!Vincites',

@@ -93,6 +93,58 @@ void main() {
         isFalse,
       );
       expect(api.calls, isEmpty);
+      expect(
+        await sendAura(
+          context,
+          channel,
+          auraStreamerCommands.firstWhere((c) => c.command == '!WipeRanking'),
+        ),
+        isFalse,
+      );
+      expect(find.text('!WipeRanking'), findsNothing);
+      expect(api.calls, isEmpty);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+  testWidgets(
+    'Aura: WipeRanking richiede conferma prima di inviare come proprietario',
+    (tester) async {
+      final model = AuraArenaModel(),
+          user = FakeUserModel(userChannel: channel);
+      addTearDown(model.dispose);
+      addTearDown(user.dispose);
+      final api = fakeApiFor(user.accounts.single);
+      await tester.pumpWidget(
+        app(
+          model,
+          user,
+          Builder(
+            builder:
+                (context) => TextButton(
+                  onPressed:
+                      () => runAuraCommand(
+                        context,
+                        channel,
+                        auraStreamerCommands.firstWhere(
+                          (c) => c.command == '!WipeRanking',
+                        ),
+                      ),
+                  child: const Text('Reset Ranking'),
+                ),
+          ),
+        ),
+      );
+      await tester.tap(find.text('Reset Ranking'));
+      await tester.pumpAndSettle();
+      expect(api.calls, isEmpty);
+      await tester.tap(find.text('Annulla'));
+      await tester.pumpAndSettle();
+      expect(api.calls, isEmpty);
+      await tester.tap(find.text('Reset Ranking'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Conferma'));
+      await tester.pumpAndSettle();
+      expect(api.calls.single.data['message'], '!WipeRanking');
       await tester.pumpWidget(const SizedBox());
     },
   );

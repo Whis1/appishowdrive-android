@@ -8,6 +8,8 @@ import 'package:rtchat/api.dart';
 import 'package:rtchat/components/chat_history/message.dart';
 import 'package:rtchat/l10n/app_localizations.dart';
 import 'package:rtchat/models/accounts.dart';
+import 'package:rtchat/models/aura_arena.dart';
+import 'package:rtchat/models/commands.dart';
 import 'package:rtchat/models/channels.dart';
 import 'package:rtchat/models/layout.dart';
 import 'package:rtchat/models/messages/kick/message.dart';
@@ -68,6 +70,8 @@ Future<void> pumpMessage(
   await tester.pumpWidget(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => AuraArenaModel()),
+        ChangeNotifierProvider(create: (_) => CommandsModel.fromJson({})),
         ChangeNotifierProvider<UserModel>.value(value: userModel),
         ChangeNotifierProvider<TtsModel>.value(
           value: TtsModel.fromJson({}, engine: FakeTtsEngine()),
@@ -110,10 +114,13 @@ Future<void> openModeration(WidgetTester tester) async {
 }
 
 Future<void> tapModerationItem(WidgetTester tester, Finder item) async {
-  final scrollable = find.descendant(
-    of: find.byType(Dialog),
-    matching: find.byType(Scrollable),
-  ).first;
+  final scrollable =
+      find
+          .descendant(
+            of: find.byType(Dialog),
+            matching: find.byType(Scrollable),
+          )
+          .first;
   await tester.scrollUntilVisible(item, 100, scrollable: scrollable);
   await tester.ensureVisible(item);
   await tester.pumpAndSettle();
@@ -167,10 +174,13 @@ void main() {
     await tester.scrollUntilVisible(
       find.text('!AggiungiPA'),
       100,
-      scrollable: find.descendant(
-        of: find.byType(Dialog),
-        matching: find.byType(Scrollable),
-      ).first,
+      scrollable:
+          find
+              .descendant(
+                of: find.byType(Dialog),
+                matching: find.byType(Scrollable),
+              )
+              .first,
     );
     expect(find.text('AURA ARENA · @viewer'), findsOneWidget);
     expect(find.text('!AggiungiPA'), findsOneWidget);
@@ -186,6 +196,23 @@ void main() {
     await pump(tester, Channel(Providers.kick, '99', 'me'));
     expect(find.byType(InkWell), findsNothing);
   });
+  for (final code in ['!Sfida', '!Segnalazione']) {
+    testWidgets('menu messaggio invia $code al login selezionato', (
+      tester,
+    ) async {
+      final user = FakeUserModel(userChannel: twitchChannel);
+      addTearDown(user.dispose);
+      addTearDown(Api.debugReset);
+      final api = fakeApiFor(user.accounts.single);
+      await pumpMessage(tester, user, twitchMessage(), twitchChannel);
+      await openModeration(tester);
+      await tapModerationItem(tester, find.text(code));
+      expect(api.calls.single.data['message'], '$code @viewer');
+      expect(find.byType(Dialog), findsNothing);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    });
+  }
 
   testWidgets('a twitch channel with the same id is not the kick channel', (
     tester,
@@ -289,7 +316,17 @@ void main() {
           visible: visible,
         );
         await openModeration(tester);
-        await tester.scrollUntilVisible(find.text('Ban viewer'), 120, scrollable: find.descendant(of: find.byType(Dialog), matching: find.byType(Scrollable)).first);
+        await tester.scrollUntilVisible(
+          find.text('Ban viewer'),
+          120,
+          scrollable:
+              find
+                  .descendant(
+                    of: find.byType(Dialog),
+                    matching: find.byType(Scrollable),
+                  )
+                  .first,
+        );
         await tester.tap(find.text('Ban viewer'));
         await tester.pumpAndSettle();
         if (disposed) {
@@ -346,8 +383,18 @@ void main() {
         await pumpMessage(tester, userModel, kickMessage(), kickChannel);
         await openModeration(tester);
         if (timeout) {
-          await tester.scrollUntilVisible(find.text('Timeout viewer'), 120, scrollable: find.descendant(of: find.byType(Dialog), matching: find.byType(Scrollable)).first);
-        await tester.tap(find.text('Timeout viewer'));
+          await tester.scrollUntilVisible(
+            find.text('Timeout viewer'),
+            120,
+            scrollable:
+                find
+                    .descendant(
+                      of: find.byType(Dialog),
+                      matching: find.byType(Scrollable),
+                    )
+                    .first,
+          );
+          await tester.tap(find.text('Timeout viewer'));
           await tester.pumpAndSettle();
         }
         await tester.tapAt(const Offset(1, 1));
@@ -361,7 +408,17 @@ void main() {
     testWidgets('a kick ban calls as the kick account', (tester) async {
       await pumpMessage(tester, userModel, kickMessage(), kickChannel);
       await openModeration(tester);
-      await tester.scrollUntilVisible(find.textContaining('Ban'), 120, scrollable: find.descendant(of: find.byType(Dialog), matching: find.byType(Scrollable)).first);
+      await tester.scrollUntilVisible(
+        find.textContaining('Ban'),
+        120,
+        scrollable:
+            find
+                .descendant(
+                  of: find.byType(Dialog),
+                  matching: find.byType(Scrollable),
+                )
+                .first,
+      );
       await tester.tap(find.textContaining('Ban'));
       await tester.pumpAndSettle();
 
@@ -406,7 +463,17 @@ void main() {
     testWidgets('a twitch ban calls as the twitch account', (tester) async {
       await pumpMessage(tester, userModel, twitchMessage(), twitchChannel);
       await openModeration(tester);
-      await tester.scrollUntilVisible(find.textContaining('Ban'), 120, scrollable: find.descendant(of: find.byType(Dialog), matching: find.byType(Scrollable)).first);
+      await tester.scrollUntilVisible(
+        find.textContaining('Ban'),
+        120,
+        scrollable:
+            find
+                .descendant(
+                  of: find.byType(Dialog),
+                  matching: find.byType(Scrollable),
+                )
+                .first,
+      );
       await tester.tap(find.textContaining('Ban'));
       await tester.pumpAndSettle();
 
